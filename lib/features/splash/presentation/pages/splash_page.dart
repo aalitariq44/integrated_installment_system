@@ -23,15 +23,15 @@ class _SplashPageState extends State<SplashPage> {
     try {
       // إضافة تأخير للسماح بعرض splash screen
       await Future.delayed(const Duration(seconds: 2));
-      
+
       if (!mounted) return;
-      
+
       // التحقق من حالة تسجيل الدخول
       final authCubit = context.read<AuthCubit>();
       await authCubit.checkAuthStatus();
-      
+
       if (!mounted) return;
-      
+
       // التنقل بناءً على حالة المصادقة
       final authState = authCubit.state;
       if (authState is AuthAuthenticated) {
@@ -41,7 +41,7 @@ class _SplashPageState extends State<SplashPage> {
       }
     } catch (error) {
       if (!mounted) return;
-      
+
       // في حالة الخطأ، انتقل إلى صفحة تسجيل الدخول
       Navigator.of(context).pushReplacementNamed(AppRoutes.login);
     }
@@ -56,10 +56,7 @@ class _SplashPageState extends State<SplashPage> {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [
-              AppColors.primary,
-              AppColors.primary.withOpacity(0.8),
-            ],
+            colors: [AppColors.primary, AppColors.primary.withOpacity(0.8)],
           ),
         ),
         child: Center(
@@ -87,9 +84,9 @@ class _SplashPageState extends State<SplashPage> {
                   color: AppColors.primary,
                 ),
               ),
-              
+
               const SizedBox(height: AppSizes.xl),
-              
+
               // اسم التطبيق
               Text(
                 AppConstants.appName,
@@ -99,9 +96,9 @@ class _SplashPageState extends State<SplashPage> {
                 ),
                 textAlign: TextAlign.center,
               ),
-              
+
               const SizedBox(height: AppSizes.sm),
-              
+
               // وصف التطبيق
               Text(
                 'نظام إدارة الأقساط المتكامل',
@@ -110,23 +107,21 @@ class _SplashPageState extends State<SplashPage> {
                 ),
                 textAlign: TextAlign.center,
               ),
-              
+
               const SizedBox(height: AppSizes.xxl),
-              
+
               // مؤشر التحميل
               SizedBox(
                 width: 40,
                 height: 40,
                 child: CircularProgressIndicator(
                   strokeWidth: 3,
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                    AppColors.surface,
-                  ),
+                  valueColor: AlwaysStoppedAnimation<Color>(AppColors.surface),
                 ),
               ),
-              
+
               const SizedBox(height: AppSizes.lg),
-              
+
               Text(
                 'جاري تحميل التطبيق...',
                 style: AppTextStyles.bodySmall.copyWith(
