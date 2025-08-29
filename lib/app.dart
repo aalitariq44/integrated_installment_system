@@ -19,6 +19,9 @@ import 'features/auth/logic/auth_cubit.dart';
 import 'app/routes/app_routes.dart';
 import 'app/routes/route_generator.dart';
 
+final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
+    GlobalKey<ScaffoldMessengerState>();
+
 class InstallmentApp extends StatelessWidget {
   const InstallmentApp({super.key});
 
@@ -95,6 +98,7 @@ class InstallmentApp extends StatelessWidget {
           ),
         ],
         child: MaterialApp(
+          scaffoldMessengerKey: scaffoldMessengerKey, // Assign the global key
           title: 'نظام الأقساط المتكامل',
           theme: AppTheme.lightTheme,
           darkTheme: AppTheme.darkTheme,
