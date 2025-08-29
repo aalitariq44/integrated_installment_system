@@ -1,5 +1,6 @@
 import '../../../core/database/database_helper.dart';
-import '../../../core/database/models/settings_model.dart';
+import '../../../core/database/models/settings_model.dart' as core_settings_model;
+import '../../../core/database/models/key_value_settings_model.dart';
 import '../../../core/constants/database_constants.dart';
 
 class SettingsRepository {
@@ -9,7 +10,7 @@ class SettingsRepository {
     : _databaseHelper = databaseHelper;
 
   // Get app settings
-  Future<SettingsModel?> getSettings() async {
+  Future<core_settings_model.SettingsModel?> getSettings() async {
     try {
       final result = await _databaseHelper.queryFirst(
         DatabaseConstants.settingsTable,
@@ -18,7 +19,7 @@ class SettingsRepository {
       );
 
       if (result != null) {
-        return SettingsModel.fromMap(result);
+        return core_settings_model.SettingsModel.fromMap(result);
       }
       return null;
     } catch (e) {
@@ -174,10 +175,45 @@ class SettingsRepository {
   }
 
   // Get all settings (for compatibility with cubit)
-  Future<Map<String, dynamic>> getAllSettings() async {
+  Future<List<KeyValueSettingsModel>> getAllSettings() async {
     try {
       final settings = await getSettings();
-      return settings?.toMap() ?? {};
+      if (settings == null) {
+        return [];
+      }
+
+      final List<KeyValueSettingsModel> keyValueSettings = [];
+
+      // Convert SettingsModel fields to KeyValueSettingsModel
+      keyValueSettings.add(KeyValueSettingsModel(
+        key: 'appPassword',
+        value: settings.appPassword,
+        description: 'كلمة مرور التطبيق',
+      ));
+      if (settings.businessName != null) {
+        keyValueSettings.add(KeyValueSettingsModel(
+          key: 'businessName',
+          value: settings.businessName!,
+          description: 'اسم الشركة',
+        ));
+      }
+      if (settings.ownerName != null) {
+        keyValueSettings.add(KeyValueSettingsModel(
+          key: 'ownerName',
+          value: settings.ownerName!,
+          description: 'اسم المالك',
+        ));
+      }
+      if (settings.phone != null) {
+        keyValueSettings.add(KeyValueSettingsModel(
+          key: 'phone',
+          value: settings.phone!,
+          description: 'رقم الهاتف',
+        ));
+      }
+      // Add other fields from SettingsModel if necessary
+
+      return keyValueSettings;
     } catch (e) {
       throw Exception('فشل في تحميل جميع الإعدادات: $e');
     }
@@ -239,21 +275,19 @@ class SettingsRepository {
   }
 
   // Update business settings
-  Future<bool> updateBusinessSettings(Map<String, dynamic> businessSettings) async {
+  Future<bool> updateBusinessSettings(
+    Map<String, dynamic> businessSettings,
+  ) async {
     return await updateBusinessInfo(
-      businessName: businessSettings['businessName'],
-      ownerName: businessSettings['ownerName'],
-      phone: businessSettings['phone'],
+      businessName: businessSettings['businessName']?.toString(),
+      ownerName: businessSettings['ownerName']?.toString(),
+      phone: businessSettings['phone']?.toString(),
     );
   }
 
   // Get app preferences (placeholder for future features)
   Future<Map<String, dynamic>> getAppPreferences() async {
-    return {
-      'theme': 'light',
-      'language': 'ar',
-      'notifications': true,
-    };
+    return {'theme': 'light', 'language': 'ar', 'notifications': true};
   }
 
   // Update app preferences
@@ -296,15 +330,16 @@ class SettingsRepository {
   Future<bool> importSettings(Map<String, dynamic> settingsData) async {
     try {
       final now = DateTime.now();
-      settingsData[DatabaseConstants.settingsUpdatedDate] = now.toIso8601String();
-      
+      settingsData[DatabaseConstants.settingsUpdatedDate] = now
+          .toIso8601String();
+
       final updateCount = await _databaseHelper.update(
         DatabaseConstants.settingsTable,
         settingsData,
         where: '${DatabaseConstants.settingsId} = ?',
         whereArgs: [1],
       );
-      
+
       return updateCount > 0;
     } catch (e) {
       throw Exception('فشل في استيراد الإعدادات: $e');

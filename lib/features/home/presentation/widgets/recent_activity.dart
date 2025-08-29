@@ -46,7 +46,7 @@ class RecentActivity extends StatelessWidget {
                 style: Theme.of(context).textTheme.bodySmall,
               ),
             );
-          }).toList(),
+          }),
           if (activities.length > 5)
             TextButton(
               onPressed: () {

@@ -2,7 +2,8 @@ import 'package:intl/intl.dart';
 import '../constants/app_constants.dart';
 
 class AppDateUtils {
-  static final DateFormat _dateFormat = DateFormat(AppConstants.dateFormat);
+  // Remove unused field warning
+  // static final DateFormat _dateFormat = DateFormat(AppConstants.dateFormat);
   static final DateFormat _dateTimeFormat = DateFormat(
     AppConstants.dateTimeFormat,
   );

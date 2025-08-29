@@ -40,16 +40,16 @@ class SettingsCubit extends Cubit<SettingsState> {
   }
 
   // Update or create setting
-  Future<void> updateSetting(KeyValueSettingsModel setting) async {
+  Future<void> updateSetting(String key, dynamic value) async {
     try {
       emit(const SettingsLoading());
 
-      final existingSetting = await _settingsRepository.getSetting(setting.key);
+      final existingSetting = await _settingsRepository.getSetting(key);
 
       if (existingSetting != null) {
-        await _settingsRepository.updateSetting(setting);
+        await _settingsRepository.updateSetting(key, value);
       } else {
-        await _settingsRepository.createSetting(setting);
+        await _settingsRepository.createSetting(key, value);
       }
 
       // Reload settings after update
@@ -82,7 +82,7 @@ class SettingsCubit extends Cubit<SettingsState> {
   }
 
   // Update business settings
-  Future<void> updateBusinessSettings(Map<String, String> settings) async {
+  Future<void> updateBusinessSettings(Map<String, dynamic> settings) async {
     try {
       emit(const SettingsLoading());
       await _settingsRepository.updateBusinessSettings(settings);
@@ -104,7 +104,7 @@ class SettingsCubit extends Cubit<SettingsState> {
   }
 
   // Update app preferences
-  Future<void> updateAppPreferences(Map<String, String> preferences) async {
+  Future<void> updateAppPreferences(Map<String, dynamic> preferences) async {
     try {
       emit(const SettingsLoading());
       await _settingsRepository.updateAppPreferences(preferences);
@@ -126,7 +126,7 @@ class SettingsCubit extends Cubit<SettingsState> {
   }
 
   // Update backup settings
-  Future<void> updateBackupSettings(Map<String, String> settings) async {
+  Future<void> updateBackupSettings(Map<String, dynamic> settings) async {
     try {
       emit(const SettingsLoading());
       await _settingsRepository.updateBackupSettings(settings);

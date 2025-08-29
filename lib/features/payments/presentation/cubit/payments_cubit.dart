@@ -210,16 +210,16 @@ class PaymentsCubit extends Cubit<PaymentsState> {
 
   // Calculate payment schedule
   Future<void> calculatePaymentSchedule({
-    required double totalAmount,
+    required int productId,
     required double monthlyPayment,
     required DateTime startDate,
   }) async {
     try {
       emit(const PaymentsLoading());
       final schedule = await _paymentsRepository.calculatePaymentSchedule(
-        totalAmount: totalAmount,
-        monthlyPayment: monthlyPayment,
-        startDate: startDate,
+        productId,
+        monthlyPayment,
+        startDate,
       );
       emit(PaymentScheduleCalculated(schedule: schedule));
     } catch (e) {

@@ -486,6 +486,291 @@ class PaymentsRepository {
     }
   }
 
+  // Process payment - enhanced addPayment with receipt generation
+  Future<Map<String, dynamic>> processPayment(PaymentModel payment) async {
+    try {
+      return await _databaseHelper.transaction((txn) async {
+        // Add payment
+        final paymentId = await txn.insert(
+          DatabaseConstants.paymentsTable,
+          payment.toMap(),
+        );
+
+        // Update product totals
+        await _updateProductTotalPaid(txn, payment.productId);
+
+        // Generate receipt number
+        final receiptNumber = await _generateReceiptNumber();
+        await txn.update(
+          DatabaseConstants.paymentsTable,
+          {DatabaseConstants.paymentsReceiptNumber: receiptNumber},
+          where: '${DatabaseConstants.paymentsId} = ?',
+          whereArgs: [paymentId],
+        );
+
+        return {
+          'paymentId': paymentId,
+          'receiptNumber': receiptNumber,
+          'success': true,
+        };
+      });
+    } catch (e) {
+      throw Exception('فشل في معالجة الدفعة: $e');
+    }
+  }
+
+  // Get payments by date range
+  Future<List<PaymentModel>> getPaymentsByDateRange(
+    DateTime startDate,
+    DateTime endDate,
+  ) async {
+    try {
+      final results = await _databaseHelper.query(
+        DatabaseConstants.paymentsTable,
+        where: '${DatabaseConstants.paymentsDate} BETWEEN ? AND ?',
+        whereArgs: [
+          startDate.toIso8601String(),
+          endDate.toIso8601String(),
+        ],
+        orderBy: '${DatabaseConstants.paymentsDate} DESC',
+      );
+
+      return results.map((json) => PaymentModel.fromMap(json)).toList();
+    } catch (e) {
+      throw Exception('فشل في تحميل المدفوعات حسب النطاق الزمني: $e');
+    }
+  }
+
+  // Search payments
+  Future<List<PaymentModel>> searchPayments(String query) async {
+    try {
+      const sql = '''
+        SELECT p.*, c.${DatabaseConstants.customersName}, pr.${DatabaseConstants.productsName}
+        FROM ${DatabaseConstants.paymentsTable} p
+        LEFT JOIN ${DatabaseConstants.customersTable} c ON p.${DatabaseConstants.paymentsCustomerId} = c.${DatabaseConstants.customersId}
+        LEFT JOIN ${DatabaseConstants.productsTable} pr ON p.${DatabaseConstants.paymentsProductId} = pr.${DatabaseConstants.productsId}
+        WHERE c.${DatabaseConstants.customersName} LIKE ? 
+        OR pr.${DatabaseConstants.productsName} LIKE ?
+        OR p.${DatabaseConstants.paymentsReceiptNumber} LIKE ?
+        ORDER BY p.${DatabaseConstants.paymentsDate} DESC
+      ''';
+
+      final results = await _databaseHelper.rawQuery(sql, [
+        '%$query%',
+        '%$query%',
+        '%$query%',
+      ]);
+
+      return results.map((json) => PaymentModel.fromMap(json)).toList();
+    } catch (e) {
+      throw Exception('فشل في البحث عن المدفوعات: $e');
+    }
+  }
+
+  // Get payments with details (including customer and product info)
+  Future<List<Map<String, dynamic>>> getPaymentsWithDetails() async {
+    try {
+      const sql = '''
+        SELECT p.*, 
+               c.${DatabaseConstants.customersName} as customer_name,
+               c.${DatabaseConstants.customersPhone} as customer_phone,
+               pr.${DatabaseConstants.productsName} as product_name,
+               pr.${DatabaseConstants.productsFinalPrice} as product_price
+        FROM ${DatabaseConstants.paymentsTable} p
+        LEFT JOIN ${DatabaseConstants.customersTable} c ON p.${DatabaseConstants.paymentsCustomerId} = c.${DatabaseConstants.customersId}
+        LEFT JOIN ${DatabaseConstants.productsTable} pr ON p.${DatabaseConstants.paymentsProductId} = pr.${DatabaseConstants.productsId}
+        ORDER BY p.${DatabaseConstants.paymentsDate} DESC
+      ''';
+
+      return await _databaseHelper.rawQuery(sql);
+    } catch (e) {
+      throw Exception('فشل في تحميل تفاصيل المدفوعات: $e');
+    }
+  }
+
+  // Get overdue payments
+  Future<List<Map<String, dynamic>>> getOverduePayments() async {
+    try {
+      final now = DateTime.now();
+      const sql = '''
+        SELECT p.*, 
+               c.${DatabaseConstants.customersName} as customer_name,
+               c.${DatabaseConstants.customersPhone} as customer_phone,
+               pr.${DatabaseConstants.productsName} as product_name
+        FROM ${DatabaseConstants.paymentsTable} p
+        LEFT JOIN ${DatabaseConstants.customersTable} c ON p.${DatabaseConstants.paymentsCustomerId} = c.${DatabaseConstants.customersId}
+        LEFT JOIN ${DatabaseConstants.productsTable} pr ON p.${DatabaseConstants.paymentsProductId} = pr.${DatabaseConstants.productsId}
+        WHERE p.${DatabaseConstants.paymentsNextDueDate} < ? 
+        AND pr.${DatabaseConstants.productsIsCompleted} = 0
+        ORDER BY p.${DatabaseConstants.paymentsNextDueDate} ASC
+      ''';
+
+      return await _databaseHelper.rawQuery(sql, [now.toIso8601String()]);
+    } catch (e) {
+      throw Exception('فشل في تحميل المدفوعات المتأخرة: $e');
+    }
+  }
+
+  // Generate payment receipt
+  Future<Map<String, dynamic>> generatePaymentReceipt(int paymentId) async {
+    try {
+      const sql = '''
+        SELECT p.*, 
+               c.${DatabaseConstants.customersName} as customer_name,
+               c.${DatabaseConstants.customersPhone} as customer_phone,
+               c.${DatabaseConstants.customersAddress} as customer_address,
+               pr.${DatabaseConstants.productsName} as product_name,
+               pr.${DatabaseConstants.productsFinalPrice} as product_price,
+               pr.${DatabaseConstants.productsTotalPaid} as total_paid,
+               pr.${DatabaseConstants.productsRemainingAmount} as remaining_amount
+        FROM ${DatabaseConstants.paymentsTable} p
+        LEFT JOIN ${DatabaseConstants.customersTable} c ON p.${DatabaseConstants.paymentsCustomerId} = c.${DatabaseConstants.customersId}
+        LEFT JOIN ${DatabaseConstants.productsTable} pr ON p.${DatabaseConstants.paymentsProductId} = pr.${DatabaseConstants.productsId}
+        WHERE p.${DatabaseConstants.paymentsId} = ?
+      ''';
+
+      final results = await _databaseHelper.rawQuery(sql, [paymentId]);
+      if (results.isEmpty) {
+        throw Exception('الدفعة غير موجودة');
+      }
+
+      final receiptData = results.first;
+      receiptData['receipt_date'] = DateTime.now().toIso8601String();
+      receiptData['currency'] = AppConstants.currencySymbol;
+
+      return receiptData;
+    } catch (e) {
+      throw Exception('فشل في إنشاء إيصال الدفع: $e');
+    }
+  }
+
+  // Calculate payment schedule
+  Future<List<Map<String, dynamic>>> calculatePaymentSchedule(
+    int productId,
+    double monthlyAmount,
+    DateTime startDate,
+  ) async {
+    try {
+      // Get product details
+      final productResult = await _databaseHelper.queryFirst(
+        DatabaseConstants.productsTable,
+        where: '${DatabaseConstants.productsId} = ?',
+        whereArgs: [productId],
+      );
+
+      if (productResult == null) {
+        throw Exception('المنتج غير موجود');
+      }
+
+      final finalPrice = (productResult[DatabaseConstants.productsFinalPrice] as num).toDouble();
+      final totalPaid = (productResult[DatabaseConstants.productsTotalPaid] as num?)?.toDouble() ?? 0.0;
+      final remainingAmount = finalPrice - totalPaid;
+
+      final schedule = <Map<String, dynamic>>[];
+      double remaining = remainingAmount;
+      DateTime currentDate = startDate;
+      int installmentNumber = 1;
+
+      while (remaining > 0) {
+        final paymentAmount = remaining >= monthlyAmount ? monthlyAmount : remaining;
+        
+        schedule.add({
+          'installment_number': installmentNumber,
+          'due_date': currentDate.toIso8601String(),
+          'amount': paymentAmount,
+          'remaining_after_payment': remaining - paymentAmount,
+        });
+
+        remaining -= paymentAmount;
+        currentDate = DateTime(currentDate.year, currentDate.month + 1, currentDate.day);
+        installmentNumber++;
+      }
+
+      return schedule;
+    } catch (e) {
+      throw Exception('فشل في حساب جدولة الدفعات: $e');
+    }
+  }
+
+  // Export payments
+  Future<List<Map<String, dynamic>>> exportPayments() async {
+    try {
+      return await getPaymentsWithDetails();
+    } catch (e) {
+      throw Exception('فشل في تصدير المدفوعات: $e');
+    }
+  }
+
+  // Import payments
+  Future<Map<String, dynamic>> importPayments(List<Map<String, dynamic>> paymentsData) async {
+    int imported = 0;
+    int skipped = 0;
+    int errors = 0;
+
+    try {
+      await _databaseHelper.transaction((txn) async {
+        for (final paymentData in paymentsData) {
+          try {
+            await txn.insert(DatabaseConstants.paymentsTable, paymentData);
+            imported++;
+          } catch (e) {
+            errors++;
+          }
+        }
+      });
+
+      return {
+        'imported': imported,
+        'skipped': skipped,
+        'errors': errors,
+      };
+    } catch (e) {
+      throw Exception('فشل في استيراد المدفوعات: $e');
+    }
+  }
+
+  // Validate payment
+  Future<Map<String, dynamic>> validatePayment(PaymentModel payment) async {
+    final errors = <String>[];
+
+    // Check amount
+    if (payment.paymentAmount <= 0) {
+      errors.add('مبلغ الدفعة يجب أن يكون أكبر من صفر');
+    }
+
+    // Check if product exists
+    final productExists = await _databaseHelper.queryFirst(
+      DatabaseConstants.productsTable,
+      where: '${DatabaseConstants.productsId} = ?',
+      whereArgs: [payment.productId],
+    );
+
+    if (productExists == null) {
+      errors.add('المنتج غير موجود');
+    } else {
+      final remainingAmount = (productExists[DatabaseConstants.productsRemainingAmount] as num?)?.toDouble() ?? 0.0;
+      if (payment.paymentAmount > remainingAmount) {
+        errors.add('مبلغ الدفعة أكبر من المبلغ المتبقي');
+      }
+    }
+
+    // Check if customer exists
+    final customerExists = await _databaseHelper.queryFirst(
+      DatabaseConstants.customersTable,
+      where: '${DatabaseConstants.customersId} = ?',
+      whereArgs: [payment.customerId],
+    );
+
+    if (customerExists == null) {
+      errors.add('العميل غير موجود');
+    }
+
+    return {
+      'isValid': errors.isEmpty,
+      'errors': errors,
+    };
+  }
+
   Future<void> _updateProductTotalPaid(dynamic txn, int productId) async {
     // Calculate total paid for the product
     final totalPaidResult = await txn.rawQuery(

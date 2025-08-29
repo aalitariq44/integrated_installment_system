@@ -10,7 +10,7 @@ class AppTheme {
         brightness: Brightness.light,
       ),
       fontFamily: 'Cairo',
-      
+
       // App Bar Theme
       appBarTheme: AppBarTheme(
         backgroundColor: AppColors.primary,
@@ -118,7 +118,7 @@ class AppTheme {
         brightness: Brightness.dark,
       ),
       fontFamily: 'Cairo',
-      
+
       // App Bar Theme
       appBarTheme: AppBarTheme(
         backgroundColor: AppColors.primary,

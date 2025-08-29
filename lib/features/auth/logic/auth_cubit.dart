@@ -8,8 +8,8 @@ class AuthCubit extends Cubit<AuthState> {
   final SettingsRepository _settingsRepository;
 
   AuthCubit({required SettingsRepository settingsRepository})
-      : _settingsRepository = settingsRepository,
-        super(const AuthInitial());
+    : _settingsRepository = settingsRepository,
+      super(const AuthInitial());
 
   // Check if user is authenticated
   Future<void> checkAuthStatus() async {
@@ -50,14 +50,16 @@ class AuthCubit extends Cubit<AuthState> {
   Future<void> changePassword(String oldPassword, String newPassword) async {
     try {
       emit(const AuthLoading());
-      
+
       // Validate old password
-      final isOldPasswordValid = await _settingsRepository.validatePassword(oldPassword);
+      final isOldPasswordValid = await _settingsRepository.validatePassword(
+        oldPassword,
+      );
       if (!isOldPasswordValid) {
         emit(const AuthError(message: 'كلمة المرور الحالية غير صحيحة'));
         return;
       }
-      
+
       // Update password
       final success = await _settingsRepository.updatePassword(newPassword);
       if (success) {
@@ -74,7 +76,9 @@ class AuthCubit extends Cubit<AuthState> {
   Future<void> setupPassword(String password) async {
     try {
       emit(const AuthLoading());
-      final success = await _settingsRepository.initializeSettings(password: password);
+      final success = await _settingsRepository.initializeSettings(
+        password: password,
+      );
       if (success) {
         emit(const AuthAuthenticated());
       } else {

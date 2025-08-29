@@ -446,4 +446,155 @@ class ProductsRepository {
       throw Exception('فشل في تصدير بيانات المنتجات: $e');
     }
   }
+
+  // Create product (alternative method name)
+  Future<int> createProduct(ProductModel product) async {
+    return await addProduct(product);
+  }
+
+  // Get products statistics
+  Future<Map<String, dynamic>> getProductsStatistics() async {
+    try {
+      const sql = '''
+        SELECT 
+          COUNT(*) as total_products,
+          COUNT(CASE WHEN ${DatabaseConstants.productsIsCompleted} = 1 THEN 1 END) as completed_products,
+          COUNT(CASE WHEN ${DatabaseConstants.productsIsCompleted} = 0 THEN 1 END) as active_products,
+          COALESCE(SUM(${DatabaseConstants.productsFinalPrice}), 0) as total_sales,
+          COALESCE(SUM(${DatabaseConstants.productsTotalPaid}), 0) as total_collected,
+          COALESCE(SUM(${DatabaseConstants.productsRemainingAmount}), 0) as total_remaining
+        FROM ${DatabaseConstants.productsTable}
+      ''';
+
+      final result = await _databaseHelper.rawQuery(sql);
+      return result.isNotEmpty ? result.first : {};
+    } catch (e) {
+      throw Exception('فشل في تحميل إحصائيات المنتجات: $e');
+    }
+  }
+
+  // Get products with payment details
+  Future<List<Map<String, dynamic>>> getProductsWithPaymentDetails() async {
+    try {
+      const sql = '''
+        SELECT 
+          p.*,
+          c.${DatabaseConstants.customersName} as customer_name,
+          c.${DatabaseConstants.customersPhone} as customer_phone,
+          COUNT(pay.${DatabaseConstants.paymentsId}) as payments_count,
+          MAX(pay.${DatabaseConstants.paymentsDate}) as last_payment_date,
+          MIN(pay.${DatabaseConstants.paymentsNextDueDate}) as next_due_date
+        FROM ${DatabaseConstants.productsTable} p
+        LEFT JOIN ${DatabaseConstants.customersTable} c ON p.${DatabaseConstants.productsCustomerId} = c.${DatabaseConstants.customersId}
+        LEFT JOIN ${DatabaseConstants.paymentsTable} pay ON p.${DatabaseConstants.productsId} = pay.${DatabaseConstants.paymentsProductId}
+        GROUP BY p.${DatabaseConstants.productsId}
+        ORDER BY p.${DatabaseConstants.productsSaleDate} DESC
+      ''';
+
+      return await _databaseHelper.rawQuery(sql);
+    } catch (e) {
+      throw Exception('فشل في تحميل المنتجات مع تفاصيل الدفع: $e');
+    }
+  }
+
+  // Update product completion status
+  Future<bool> updateProductCompletionStatus(int productId, bool isCompleted) async {
+    try {
+      final now = DateTime.now();
+      final updateCount = await _databaseHelper.update(
+        DatabaseConstants.productsTable,
+        {
+          DatabaseConstants.productsIsCompleted: isCompleted ? 1 : 0,
+          DatabaseConstants.productsUpdatedDate: now.toIso8601String(),
+        },
+        where: '${DatabaseConstants.productsId} = ?',
+        whereArgs: [productId],
+      );
+
+      return updateCount > 0;
+    } catch (e) {
+      throw Exception('فشل في تحديث حالة إكمال المنتج: $e');
+    }
+  }
+
+  // Export products
+  Future<List<Map<String, dynamic>>> exportProducts() async {
+    try {
+      return await getProductsWithPaymentDetails();
+    } catch (e) {
+      throw Exception('فشل في تصدير المنتجات: $e');
+    }
+  }
+
+  // Import products
+  Future<Map<String, dynamic>> importProducts(List<Map<String, dynamic>> productsData) async {
+    int imported = 0;
+    int skipped = 0;
+    int errors = 0;
+
+    try {
+      await _databaseHelper.transaction((txn) async {
+        for (final productData in productsData) {
+          try {
+            await txn.insert(DatabaseConstants.productsTable, productData);
+            imported++;
+          } catch (e) {
+            errors++;
+          }
+        }
+      });
+
+      return {
+        'imported': imported,
+        'skipped': skipped,
+        'errors': errors,
+      };
+    } catch (e) {
+      throw Exception('فشل في استيراد المنتجات: $e');
+    }
+  }
+
+  // Validate product
+  Future<Map<String, dynamic>> validateProduct(ProductModel product) async {
+    final errors = <String>[];
+
+    // Check product name
+    if (product.productName.trim().isEmpty) {
+      errors.add('اسم المنتج مطلوب');
+    }
+
+    // Check prices
+    if (product.originalPrice <= 0) {
+      errors.add('سعر المنتج الأصلي يجب أن يكون أكبر من صفر');
+    }
+
+    if (product.finalPrice <= 0) {
+      errors.add('السعر النهائي يجب أن يكون أكبر من صفر');
+    }
+
+    if (product.finalPrice < product.originalPrice) {
+      errors.add('السعر النهائي لا يمكن أن يكون أقل من السعر الأصلي');
+    }
+
+    // Check payment interval
+    if (product.paymentIntervalDays <= 0) {
+      errors.add('فترة الدفع يجب أن تكون أكبر من صفر');
+    }
+
+    // Check if customer exists
+    final customerExists = await _databaseHelper.queryFirst(
+      DatabaseConstants.customersTable,
+      where: '${DatabaseConstants.customersId} = ?',
+      whereArgs: [product.customerId],
+    );
+
+    if (customerExists == null) {
+      errors.add('العميل غير موجود');
+    }
+
+    return {
+      'isValid': errors.isEmpty,
+      'errors': errors,
+    };
+  }
 }

@@ -2,11 +2,12 @@ import 'package:intl/intl.dart';
 import '../constants/app_constants.dart';
 
 class CurrencyUtils {
-  static final NumberFormat _currencyFormat = NumberFormat.currency(
-    locale: 'ar',
-    symbol: AppConstants.currencySymbol,
-    decimalDigits: 2,
-  );
+  // Remove unused field warning
+  // static final NumberFormat _currencyFormat = NumberFormat.currency(
+  //   locale: 'ar',
+  //   symbol: AppConstants.currencySymbol,
+  //   decimalDigits: 2,
+  // );
 
   static final NumberFormat _numberFormat = NumberFormat('#,##0.00', 'ar');
 
@@ -186,8 +187,9 @@ class CurrencyUtils {
 
   // Format for different contexts
   static String formatForDisplay(double? amount, {bool showSymbol = true}) {
-    if (amount == null)
+    if (amount == null) {
       return showSymbol ? '0.00 ${AppConstants.currencySymbol}' : '0.00';
+    }
 
     if (showSymbol) {
       return formatCurrency(amount);
