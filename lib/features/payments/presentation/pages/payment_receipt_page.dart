@@ -149,27 +149,36 @@ class _PaymentReceiptPageState extends State<PaymentReceiptPage> {
                   textDirection: pw.TextDirection.rtl,
                 ),
                 pw.SizedBox(height: 10),
-                pw.Text(
-                  'اسم المنتج: ${widget.productData!['product_name']}',
-                  style: pw.TextStyle(fontSize: 14, font: arabicFont),
-                  textDirection: pw.TextDirection.rtl,
-                ),
-                pw.Text(
-                  'السعر النهائي: ${(widget.productData!['final_price'] as num).toStringAsFixed(0)} د.ع',
-                  style: pw.TextStyle(fontSize: 14, font: arabicFont),
-                  textDirection: pw.TextDirection.rtl,
+                pw.Row(
+                  mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                  children: [
+                    pw.Text(
+                      'اسم المنتج: ${widget.productData!['product_name']}',
+                      style: pw.TextStyle(fontSize: 14, font: arabicFont),
+                      textDirection: pw.TextDirection.rtl,
+                    ),
+                    pw.Text(
+                      'السعر النهائي: ${(widget.productData!['final_price'] as num).toStringAsFixed(0)} د.ع',
+                      style: pw.TextStyle(fontSize: 14, font: arabicFont),
+                      textDirection: pw.TextDirection.rtl,
+                    ),
+                  ],
                 ),
                 pw.SizedBox(height: 5),
-                pw.Text(
-                  'المبلغ الإجمالي المدفوع: ${(widget.productData!['total_paid'] as num?)?.toStringAsFixed(0) ?? '0'} د.ع',
-                  style: pw.TextStyle(fontSize: 14, font: arabicFont),
-                  textDirection: pw.TextDirection.rtl,
-                ),
-                pw.SizedBox(height: 5),
-                pw.Text(
-                  'المبلغ المتبقي: ${(widget.productData!['remaining_amount'] as num?)?.toStringAsFixed(0) ?? '0'} د.ع',
-                  style: pw.TextStyle(fontSize: 14, font: arabicFont),
-                  textDirection: pw.TextDirection.rtl,
+                pw.Row(
+                  mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                  children: [
+                    pw.Text(
+                      'المبلغ الإجمالي المدفوع: ${(widget.productData!['total_paid'] as num?)?.toStringAsFixed(0) ?? '0'} د.ع',
+                      style: pw.TextStyle(fontSize: 14, font: arabicFont),
+                      textDirection: pw.TextDirection.rtl,
+                    ),
+                    pw.Text(
+                      'المبلغ المتبقي: ${(widget.productData!['remaining_amount'] as num?)?.toStringAsFixed(0) ?? '0'} د.ع',
+                      style: pw.TextStyle(fontSize: 14, font: arabicFont),
+                      textDirection: pw.TextDirection.rtl,
+                    ),
+                  ],
                 ),
                 pw.SizedBox(height: 20),
               ],
