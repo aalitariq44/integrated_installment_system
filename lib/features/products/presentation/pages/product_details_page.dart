@@ -8,6 +8,7 @@ import '../../../payments/presentation/cubit/payments_cubit.dart';
 import '../../../customers/presentation/cubit/customers_cubit.dart';
 import '../../../../app/routes/app_routes.dart';
 import '../../../settings/data/settings_repository.dart';
+import '../../../../core/utils/currency_utils.dart';
 
 class ProductDetailsPage extends StatefulWidget {
   final int productId;
@@ -235,7 +236,9 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                     ),
                                   ),
                                   Text(
-                                    '${product!.originalPrice.toStringAsFixed(0)} د.ع',
+                                    CurrencyUtils.formatCurrency(
+                                      product!.originalPrice,
+                                    ),
                                     style: const TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold,
@@ -256,7 +259,9 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                     ),
                                   ),
                                   Text(
-                                    '${product!.finalPrice.toStringAsFixed(0)} د.ع',
+                                    CurrencyUtils.formatCurrency(
+                                      product!.finalPrice,
+                                    ),
                                     style: const TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold,
@@ -286,7 +291,9 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                     ),
                                   ),
                                   Text(
-                                    '${product!.profit.toStringAsFixed(0)} د.ع',
+                                    CurrencyUtils.formatCurrency(
+                                      product!.profit,
+                                    ),
                                     style: const TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold,
@@ -334,11 +341,11 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
-                                        'المدفوع: ${product!.totalPaid.toStringAsFixed(0)} د.ع',
+                                        'المدفوع: ${CurrencyUtils.formatCurrency(product!.totalPaid)}',
                                         style: const TextStyle(fontSize: 14),
                                       ),
                                       Text(
-                                        'المتبقي: ${product!.remainingBalance.toStringAsFixed(0)} د.ع',
+                                        'المتبقي: ${CurrencyUtils.formatCurrency(product!.remainingBalance)}',
                                         style: TextStyle(
                                           fontSize: 14,
                                           color: product!.remainingBalance == 0
@@ -456,7 +463,9 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                   ),
                                 ),
                                 title: Text(
-                                  '${payment.paymentAmount.toStringAsFixed(0)} د.ع',
+                                  CurrencyUtils.formatCurrency(
+                                    payment.paymentAmount,
+                                  ),
                                   style: const TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 16,
