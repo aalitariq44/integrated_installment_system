@@ -16,6 +16,7 @@ class _CustomersPageState extends State<CustomersPage> {
   String _searchQuery = '';
   late CustomersCubit _customersCubit;
   int _totalCustomersCount = 0;
+  bool _isBackupLoading = false;
 
   @override
   void initState() {
@@ -41,6 +42,10 @@ class _CustomersPageState extends State<CustomersPage> {
   }
 
   Future<void> _createBackup() async {
+    if (_isBackupLoading) return; // Prevent multiple taps
+
+    setState(() => _isBackupLoading = true);
+
     try {
       final settingsCubit = context.read<SettingsCubit>();
       await settingsCubit.createBackup();
@@ -51,7 +56,7 @@ class _CustomersPageState extends State<CustomersPage> {
         const SnackBar(
           content: Text('تم رفع النسخة الاحتياطية بنجاح'),
           backgroundColor: Colors.green,
-          duration: Duration(seconds: 4),
+          duration: Duration(seconds: 2),
         ),
       );
     } catch (e) {
@@ -61,9 +66,13 @@ class _CustomersPageState extends State<CustomersPage> {
         SnackBar(
           content: Text('خطأ في رفع النسخة الاحتياطية: $e'),
           backgroundColor: Colors.red,
-          duration: const Duration(seconds: 4),
+          duration: const Duration(seconds: 2),
         ),
       );
+    } finally {
+      if (mounted) {
+        setState(() => _isBackupLoading = false);
+      }
     }
   }
 
@@ -85,7 +94,22 @@ class _CustomersPageState extends State<CustomersPage> {
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
         actions: [
-          IconButton(icon: const Icon(Icons.backup), onPressed: _createBackup),
+          _isBackupLoading
+              ? const SizedBox(
+                  width: 48,
+                  height: 48,
+                  child: Padding(
+                    padding: EdgeInsets.all(12),
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                    ),
+                  ),
+                )
+              : IconButton(
+                  icon: const Icon(Icons.backup),
+                  onPressed: _createBackup,
+                ),
           IconButton(
             icon: const Icon(Icons.settings),
             onPressed: () {
