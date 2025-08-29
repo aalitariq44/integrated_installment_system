@@ -71,7 +71,8 @@ class _AllPaymentsPageState extends State<AllPaymentsPage> {
       _filteredPayments = _allPayments.where((payment) {
         final customerName = (payment['customer_name'] as String).toLowerCase();
         final productName = (payment['product_name'] as String).toLowerCase();
-        final receiptNumber = (payment['receipt_number'] as String? ?? '').toLowerCase();
+        final receiptNumber = (payment['receipt_number'] as String? ?? '')
+            .toLowerCase();
         return customerName.contains(query) ||
             productName.contains(query) ||
             receiptNumber.contains(query);
@@ -100,7 +101,7 @@ class _AllPaymentsPageState extends State<AllPaymentsPage> {
             child: TextField(
               controller: _searchController,
               decoration: InputDecoration(
-                hintText: 'البحث عن دفعة (اسم الزبون، السلعة، رقم الإيصال)',
+                hintText: 'البحث عن دفعة (اسم الزبون، السلعة، رمز الإيصال)',
                 prefixIcon: const Icon(Icons.search),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
