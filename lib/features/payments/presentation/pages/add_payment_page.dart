@@ -187,7 +187,7 @@ class _AddPaymentPageState extends State<AddPaymentPage> {
                   receiptNumber: state.receiptNumber,
                   createdDate: DateTime.now(),
                 ).toMap(),
-                'productData': _product?.toMap(),
+                'productData': state.productData,
                 'customerData': _customer?.toMap(),
               },
             );

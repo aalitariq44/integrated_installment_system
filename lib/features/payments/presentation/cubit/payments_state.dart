@@ -37,15 +37,17 @@ class PaymentProcessed extends PaymentsState {
   final int paymentId;
   final String receiptNumber;
   final bool isCompleted;
+  final Map<String, dynamic>? productData;
 
   const PaymentProcessed({
     required this.paymentId,
     required this.receiptNumber,
     required this.isCompleted,
+    this.productData,
   });
 
   @override
-  List<Object?> get props => [paymentId, receiptNumber, isCompleted];
+  List<Object?> get props => [paymentId, receiptNumber, isCompleted, productData];
 }
 
 class PaymentsStatisticsLoaded extends PaymentsState {

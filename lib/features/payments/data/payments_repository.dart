@@ -135,6 +135,7 @@ class PaymentsRepository {
           'paymentId': paymentId,
           'receiptNumber': receiptNumber,
           'isCompleted': productInfo?[DatabaseConstants.productsIsCompleted] == 1,
+          'productData': productInfo,
         };
       });
     } catch (e) {

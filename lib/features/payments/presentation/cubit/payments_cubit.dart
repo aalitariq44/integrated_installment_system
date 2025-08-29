@@ -49,6 +49,7 @@ class PaymentsCubit extends Cubit<PaymentsState> {
           paymentId: result['paymentId'],
           receiptNumber: result['receiptNumber'],
           isCompleted: result['isCompleted'],
+          productData: result['productData'],
         ),
       );
       // Reload payments after processing
