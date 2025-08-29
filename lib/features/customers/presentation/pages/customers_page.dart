@@ -188,12 +188,13 @@ class _CustomersPageState extends State<CustomersPage> {
                               ],
                             ],
                           ),
-                          onTap: () {
-                            Navigator.pushNamed(
+                          onTap: () async {
+                            await Navigator.pushNamed(
                               context,
                               AppRoutes.customerDetails,
                               arguments: customer.customerId,
                             );
+                            _customersCubit.loadCustomers();
                           },
                         ),
                       );
