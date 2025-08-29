@@ -480,18 +480,84 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                       ),
                                   ],
                                 ),
-                                trailing: IconButton(
-                                  icon: const Icon(
-                                    Icons.receipt,
-                                    color: Colors.blue,
-                                  ),
-                                  onPressed: () {
-                                    Navigator.pushNamed(
-                                      context,
-                                      AppRoutes.paymentReceipt,
-                                      arguments: payment.paymentId,
-                                    );
-                                  },
+                                trailing: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    IconButton(
+                                      tooltip: 'إيصال',
+                                      icon: const Icon(
+                                        Icons.receipt_long,
+                                        color: Colors.blue,
+                                      ),
+                                      onPressed: () {
+                                        if (payment.receiptNumber == null) {
+                                          ScaffoldMessenger.of(
+                                            context,
+                                          ).showSnackBar(
+                                            const SnackBar(
+                                              content: Text(
+                                                'لا يوجد رقم إيصال لهذه الدفعة',
+                                              ),
+                                              backgroundColor: Colors.orange,
+                                            ),
+                                          );
+                                          return;
+                                        }
+
+                                        // بناء بيانات الإيصال المطلوبة
+                                        final paymentData = {
+                                          'payment_amount':
+                                              payment.paymentAmount,
+                                          'payment_date': payment.paymentDate
+                                              ?.toIso8601String(),
+                                          'notes': payment.notes,
+                                        };
+
+                                        final productData = product == null
+                                            ? null
+                                            : {
+                                                'product_name':
+                                                    product!.productName,
+                                                'final_price':
+                                                    product!.finalPrice,
+                                              };
+
+                                        final customerData = customer == null
+                                            ? null
+                                            : {
+                                                'customer_name':
+                                                    customer!.customerName,
+                                                'phone_number':
+                                                    customer!.phoneNumber,
+                                              };
+
+                                        Navigator.pushNamed(
+                                          context,
+                                          AppRoutes.paymentReceipt,
+                                          arguments: {
+                                            'receiptNumber':
+                                                payment.receiptNumber,
+                                            'paymentData': paymentData,
+                                            'productData': productData,
+                                            'customerData': customerData,
+                                          },
+                                        );
+                                      },
+                                    ),
+                                    IconButton(
+                                      tooltip: 'حذف الدفعة',
+                                      icon: const Icon(
+                                        Icons.delete_forever,
+                                        color: Colors.red,
+                                      ),
+                                      onPressed: () {
+                                        if (payment.paymentId == null) return;
+                                        _confirmDeletePayment(
+                                          payment.paymentId!,
+                                        );
+                                      },
+                                    ),
+                                  ],
                                 ),
                               ),
                             );
@@ -573,6 +639,57 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('خطأ في حذف المنتج: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
+  void _confirmDeletePayment(int paymentId) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('تأكيد حذف الدفعة'),
+        content: const Text(
+          'هل أنت متأكد من حذف هذه الدفعة؟ سيتم تحديث المبالغ تلقائياً.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('إلغاء'),
+          ),
+          TextButton(
+            onPressed: () async {
+              Navigator.of(context).pop();
+              await _deletePayment(paymentId);
+            },
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            child: const Text('حذف'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _deletePayment(int paymentId) async {
+    try {
+      final paymentsCubit = context.read<PaymentsCubit>();
+      await paymentsCubit.deletePayment(paymentId);
+
+      // إعادة تحميل البيانات بعد الحذف
+      await _loadProductDetails();
+      await _loadProductPayments();
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('تم حذف الدفعة بنجاح'),
+          backgroundColor: Colors.green,
+        ),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('فشل حذف الدفعة: $e'),
           backgroundColor: Colors.red,
         ),
       );
