@@ -5,6 +5,7 @@ import '../../../../core/database/models/product_model.dart';
 import '../cubit/customers_cubit.dart';
 import '../../../products/presentation/cubit/products_cubit.dart';
 import '../../../../app/routes/app_routes.dart';
+import '../../../settings/data/settings_repository.dart';
 
 class CustomerDetailsPage extends StatefulWidget {
   final int customerId;
@@ -358,31 +359,144 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage> {
   }
 
   void _showDeleteDialog() {
+    // التحقق من وجود سلع مرتبطة بالعميل
+    if (products.isNotEmpty) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('لا يمكن الحذف'),
+            content: const Text(
+              'لا يمكن حذف هذا العميل لأنه لديه سلع مشتراة.\n\nيجب حذف جميع السلع لهذا الزبون أولاً ثم حذف الزبون.',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('موافق'),
+              ),
+            ],
+          );
+        },
+      );
+      return;
+    }
+
+    // إذا لم يكن هناك سلع، عرض حوار كلمة المرور
+    final _passwordController = TextEditingController();
+    final _formKey = GlobalKey<FormState>();
+    bool _obscurePassword = true;
+
     showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('تأكيد الحذف'),
-          content: const Text(
-            'هل أنت متأكد من حذف هذا العميل؟\nسيتم حذف جميع السلع والدفعات المرتبطة به.',
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('إلغاء'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                _deleteCustomer();
-              },
-              style: TextButton.styleFrom(foregroundColor: Colors.red),
-              child: const Text('حذف'),
-            ),
-          ],
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: const Text('تأكيد حذف العميل'),
+              content: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Text(
+                      'هل أنت متأكد من حذف هذا العميل؟\nسيتم حذف جميع البيانات المرتبطة به.',
+                      style: TextStyle(fontSize: 14),
+                    ),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: _passwordController,
+                      obscureText: _obscurePassword,
+                      textDirection: TextDirection.ltr,
+                      decoration: InputDecoration(
+                        labelText: 'كلمة المرور',
+                        hintText: 'أدخل كلمة مرور التطبيق',
+                        prefixIcon: const Icon(Icons.lock),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _obscurePassword
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _obscurePassword = !_obscurePassword;
+                            });
+                          },
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'كلمة المرور مطلوبة';
+                        }
+                        return null;
+                      },
+                      onFieldSubmitted: (_) => _verifyAndDeleteCustomer(
+                        _passwordController,
+                        _formKey,
+                        context,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text('إلغاء'),
+                ),
+                TextButton(
+                  onPressed: () => _verifyAndDeleteCustomer(
+                    _passwordController,
+                    _formKey,
+                    context,
+                  ),
+                  style: TextButton.styleFrom(foregroundColor: Colors.red),
+                  child: const Text('حذف'),
+                ),
+              ],
+            );
+          },
         );
       },
     );
+  }
+
+  Future<void> _verifyAndDeleteCustomer(
+    TextEditingController passwordController,
+    GlobalKey<FormState> formKey,
+    BuildContext dialogContext,
+  ) async {
+    if (!formKey.currentState!.validate()) return;
+
+    try {
+      final settingsRepository = context.read<SettingsRepository>();
+      final isValid = await settingsRepository.validatePassword(
+        passwordController.text.trim(),
+      );
+
+      if (isValid) {
+        Navigator.of(dialogContext).pop(); // Close dialog
+        await _deleteCustomer();
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('كلمة المرور غير صحيحة'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('خطأ في التحقق من كلمة المرور: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 
   Future<void> _deleteCustomer() async {
