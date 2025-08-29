@@ -67,7 +67,7 @@ class _PaymentReceiptPageState extends State<PaymentReceiptPage> {
                     pw.Text(
                       'محلات فدك',
                       style: pw.TextStyle(
-                        fontSize: 20,
+                        fontSize: 24,
                         fontWeight: pw.FontWeight.bold,
                         font: arabicFont,
                       ),
@@ -77,7 +77,7 @@ class _PaymentReceiptPageState extends State<PaymentReceiptPage> {
                     pw.Text(
                       'إيصال دفعة',
                       style: pw.TextStyle(
-                        fontSize: 24,
+                        fontSize: 20,
                         fontWeight: pw.FontWeight.bold,
                         font: arabicFont,
                       ),
@@ -112,7 +112,7 @@ class _PaymentReceiptPageState extends State<PaymentReceiptPage> {
                 pw.Text(
                   'بيانات العميل:',
                   style: pw.TextStyle(
-                    fontSize: 18,
+                    fontSize: 16,
                     fontWeight: pw.FontWeight.bold,
                     font: arabicFont,
                   ),
@@ -142,7 +142,7 @@ class _PaymentReceiptPageState extends State<PaymentReceiptPage> {
                 pw.Text(
                   'بيانات المنتج:',
                   style: pw.TextStyle(
-                    fontSize: 18,
+                    fontSize: 16,
                     fontWeight: pw.FontWeight.bold,
                     font: arabicFont,
                   ),
@@ -187,7 +187,7 @@ class _PaymentReceiptPageState extends State<PaymentReceiptPage> {
               pw.Text(
                 'تفاصيل الدفعة:',
                 style: pw.TextStyle(
-                  fontSize: 18,
+                  fontSize: 16,
                   fontWeight: pw.FontWeight.bold,
                   font: arabicFont,
                 ),
@@ -211,7 +211,7 @@ class _PaymentReceiptPageState extends State<PaymentReceiptPage> {
                       children: [
                         pw.Text(
                           'مبلغ الدفعة:',
-                          style: pw.TextStyle(font: arabicFont),
+                          style: pw.TextStyle(font: arabicFont, fontSize: 16),
                           textDirection: pw.TextDirection.rtl,
                         ),
                         pw.Text(
@@ -231,12 +231,12 @@ class _PaymentReceiptPageState extends State<PaymentReceiptPage> {
                       children: [
                         pw.Text(
                           'تاريخ الدفع:',
-                          style: pw.TextStyle(font: arabicFont),
+                          style: pw.TextStyle(font: arabicFont, fontSize: 16),
                           textDirection: pw.TextDirection.rtl,
                         ),
                         pw.Text(
                           '${paymentDate.day}/${paymentDate.month}/${paymentDate.year}',
-                          style: pw.TextStyle(font: arabicFont),
+                          style: pw.TextStyle(font: arabicFont, fontSize: 16),
                         ),
                       ],
                     ),
@@ -262,7 +262,7 @@ class _PaymentReceiptPageState extends State<PaymentReceiptPage> {
                     pw.SizedBox(height: 10),
                     pw.Text(
                       'تم إنشاء الإيصال بتاريخ: ${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}',
-                      style: pw.TextStyle(fontSize: 12, font: arabicFont),
+                      style: pw.TextStyle(fontSize: 14, font: arabicFont),
                       textDirection: pw.TextDirection.rtl,
                     ),
                     pw.SizedBox(height: 5),
@@ -279,7 +279,7 @@ class _PaymentReceiptPageState extends State<PaymentReceiptPage> {
                     pw.Text(
                       'شكراً لك',
                       style: pw.TextStyle(
-                        fontSize: 16,
+                        fontSize: 14,
                         fontWeight: pw.FontWeight.bold,
                         font: arabicFont,
                       ),
