@@ -44,6 +44,8 @@ class _AddEditProductPageState extends State<AddEditProductPage> {
     _selectedCustomerId = widget.customerId;
     if (widget.isEdit && widget.productId != null) {
       _loadProductData();
+    } else {
+      _paymentIntervalController.text = '30'; // Set default to 30 days
     }
     if (widget.customerId != null) {
       _loadCustomerData();
