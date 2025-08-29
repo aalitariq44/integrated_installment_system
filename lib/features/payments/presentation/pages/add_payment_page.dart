@@ -175,8 +175,10 @@ class _AddPaymentPageState extends State<AddPaymentPage> {
                   customerId: widget.customerId,
                   paymentAmount: double.parse(_amountController.text.trim()),
                   paymentDate: _paymentDate,
-                  nextDueDate: _product != null 
-                      ? _paymentDate.add(Duration(days: _product!.paymentIntervalDays))
+                  nextDueDate: _product != null
+                      ? _paymentDate.add(
+                          Duration(days: _product!.paymentIntervalDays),
+                        )
                       : null,
                   notes: _notesController.text.trim().isEmpty
                       ? null
@@ -200,231 +202,232 @@ class _AddPaymentPageState extends State<AddPaymentPage> {
         },
         child: _isLoading && (_product == null || _customer == null)
             ? const Center(child: CircularProgressIndicator())
-            : Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Form(
-                  key: _formKey,
-                  child: ListView(
-                    children: [
-                      // معلومات العميل والمنتج
-                      if (_customer != null && _product != null)
-                        Container(
-                          padding: const EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            color: Colors.blue.shade50,
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(color: Colors.blue.shade200),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  const Icon(Icons.person, color: Colors.blue),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    'العميل: ${_customer!.customerName}',
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16,
+            : LoadingOverlay(
+                isLoading:
+                    _isLoading && (_product != null && _customer != null),
+                message: 'جاري معالجة الدفعة...',
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Form(
+                    key: _formKey,
+                    child: ListView(
+                      children: [
+                        // معلومات العميل والمنتج
+                        if (_customer != null && _product != null)
+                          Container(
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              color: Colors.blue.shade50,
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(color: Colors.blue.shade200),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.person,
+                                      color: Colors.blue,
                                     ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 8),
-                              Row(
-                                children: [
-                                  const Icon(
-                                    Icons.shopping_bag,
-                                    color: Colors.blue,
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Expanded(
-                                    child: Text(
-                                      'المنتج: ${_product!.productName}',
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      'العميل: ${_customer!.customerName}',
                                       style: const TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 16,
                                       ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 12),
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          'المدفوع',
-                                          style: TextStyle(
-                                            fontSize: 12,
-                                            color: Colors.grey[600],
-                                          ),
-                                        ),
-                                        Text(
-                                          '${_product!.totalPaid.toStringAsFixed(0)} د.ع',
-                                          style: const TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          'المتبقي',
-                                          style: TextStyle(
-                                            fontSize: 12,
-                                            color: Colors.grey[600],
-                                          ),
-                                        ),
-                                        Text(
-                                          '${_product!.remainingBalance.toStringAsFixed(0)} د.ع',
-                                          style: const TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.orange,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      const SizedBox(height: 24),
-
-                      // مبلغ الدفعة
-                      TextFormField(
-                        controller: _amountController,
-                        decoration: const InputDecoration(
-                          labelText: 'مبلغ الدفعة *',
-                          border: OutlineInputBorder(),
-                          prefixIcon: Icon(Icons.attach_money),
-                          suffixText: 'د.ع',
-                        ),
-                        keyboardType: TextInputType.number,
-                        validator: (value) {
-                          if (value == null || value.trim().isEmpty) {
-                            return 'الرجاء إدخال مبلغ الدفعة';
-                          }
-                          final amount = double.tryParse(value.trim());
-                          if (amount == null) {
-                            return 'الرجاء إدخال رقم صحيح';
-                          }
-                          if (amount <= 0) {
-                            return 'مبلغ الدفعة يجب أن يكون أكبر من صفر';
-                          }
-                          if (_product != null &&
-                              amount > _product!.remainingBalance) {
-                            return 'مبلغ الدفعة أكبر من المبلغ المتبقي';
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 16),
-
-                      // تاريخ الدفعة
-                      InkWell(
-                        onTap: _selectDate,
-                        child: InputDecorator(
-                          decoration: const InputDecoration(
-                            labelText: 'تاريخ الدفعة',
-                            border: OutlineInputBorder(),
-                            prefixIcon: Icon(Icons.event),
-                          ),
-                          child: Text(
-                            '${_paymentDate.day}/${_paymentDate.month}/${_paymentDate.year}',
-                            style: const TextStyle(fontSize: 16),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-
-                      // ملاحظات
-                      TextFormField(
-                        controller: _notesController,
-                        decoration: const InputDecoration(
-                          labelText: 'ملاحظات الدفعة',
-                          border: OutlineInputBorder(),
-                          prefixIcon: Icon(Icons.note),
-                          alignLabelWithHint: true,
-                        ),
-                        maxLines: 3,
-                      ),
-                      const SizedBox(height: 24),
-
-                      // أزرار العمل
-                      Row(
-                        children: [
-                          Expanded(
-                            child: OutlinedButton(
-                              onPressed: _isLoading
-                                  ? null
-                                  : () => Navigator.pop(context),
-                              style: OutlinedButton.styleFrom(
-                                padding: const EdgeInsets.symmetric(vertical: 16),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
+                                  ],
                                 ),
-                              ),
-                              child: const Text(
-                                'إلغاء',
-                                style: TextStyle(fontSize: 16),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 16),
-                          Expanded(
-                            flex: 2,
-                            child: ElevatedButton(
-                              onPressed: _isLoading ? null : _processPayment,
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.blue,
-                                foregroundColor: Colors.white,
-                                padding: const EdgeInsets.symmetric(vertical: 16),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                              ),
-                              child: _isLoading
-                                  ? const SizedBox(
-                                      height: 20,
-                                      width: 20,
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 2,
-                                        valueColor: AlwaysStoppedAnimation<Color>(
-                                          Colors.white,
+                                const SizedBox(height: 8),
+                                Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.shopping_bag,
+                                      color: Colors.blue,
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Expanded(
+                                      child: Text(
+                                        'المنتج: ${_product!.productName}',
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16,
                                         ),
                                       ),
-                                    )
-                                  : const Text(
-                                      'إضافة الدفعة',
-                                      style: TextStyle(fontSize: 16),
                                     ),
+                                  ],
+                                ),
+                                const SizedBox(height: 12),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            'المدفوع',
+                                            style: TextStyle(
+                                              fontSize: 12,
+                                              color: Colors.grey[600],
+                                            ),
+                                          ),
+                                          Text(
+                                            '${_product!.totalPaid.toStringAsFixed(0)} د.ع',
+                                            style: const TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            'المتبقي',
+                                            style: TextStyle(
+                                              fontSize: 12,
+                                              color: Colors.grey[600],
+                                            ),
+                                          ),
+                                          Text(
+                                            '${_product!.remainingBalance.toStringAsFixed(0)} د.ع',
+                                            style: const TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.orange,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
                             ),
                           ),
-                        ],
-                      ),
-                      const SizedBox(height: 16),
+                        const SizedBox(height: 24),
 
-                      // ملاحظة
-                      const Text(
-                        '* الحقول المطلوبة',
-                        style: TextStyle(fontSize: 12, color: Colors.grey),
-                      ),
-                    ],
+                        // مبلغ الدفعة
+                        TextFormField(
+                          controller: _amountController,
+                          decoration: const InputDecoration(
+                            labelText: 'مبلغ الدفعة *',
+                            border: OutlineInputBorder(),
+                            prefixIcon: Icon(Icons.attach_money),
+                            suffixText: 'د.ع',
+                          ),
+                          keyboardType: TextInputType.number,
+                          validator: (value) {
+                            if (value == null || value.trim().isEmpty) {
+                              return 'الرجاء إدخال مبلغ الدفعة';
+                            }
+                            final amount = double.tryParse(value.trim());
+                            if (amount == null) {
+                              return 'الرجاء إدخال رقم صحيح';
+                            }
+                            if (amount <= 0) {
+                              return 'مبلغ الدفعة يجب أن يكون أكبر من صفر';
+                            }
+                            if (_product != null &&
+                                amount > _product!.remainingBalance) {
+                              return 'مبلغ الدفعة أكبر من المبلغ المتبقي';
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 16),
+
+                        // تاريخ الدفعة
+                        InkWell(
+                          onTap: _selectDate,
+                          child: InputDecorator(
+                            decoration: const InputDecoration(
+                              labelText: 'تاريخ الدفعة',
+                              border: OutlineInputBorder(),
+                              prefixIcon: Icon(Icons.event),
+                            ),
+                            child: Text(
+                              '${_paymentDate.day}/${_paymentDate.month}/${_paymentDate.year}',
+                              style: const TextStyle(fontSize: 16),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+
+                        // ملاحظات
+                        TextFormField(
+                          controller: _notesController,
+                          decoration: const InputDecoration(
+                            labelText: 'ملاحظات الدفعة',
+                            border: OutlineInputBorder(),
+                            prefixIcon: Icon(Icons.note),
+                            alignLabelWithHint: true,
+                          ),
+                          maxLines: 3,
+                        ),
+                        const SizedBox(height: 24),
+
+                        // أزرار العمل
+                        Row(
+                          children: [
+                            Expanded(
+                              child: OutlinedButton(
+                                onPressed: _isLoading
+                                    ? null
+                                    : () => Navigator.pop(context),
+                                style: OutlinedButton.styleFrom(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 16,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                ),
+                                child: const Text(
+                                  'إلغاء',
+                                  style: TextStyle(fontSize: 16),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 16),
+                            Expanded(
+                              flex: 2,
+                              child: ElevatedButton(
+                                onPressed: _isLoading ? null : _processPayment,
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.blue,
+                                  foregroundColor: Colors.white,
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 16,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                ),
+                                child: const Text(
+                                  'إضافة الدفعة',
+                                  style: TextStyle(fontSize: 16),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 16),
+
+                        // ملاحظة
+                        const Text(
+                          '* الحقول المطلوبة',
+                          style: TextStyle(fontSize: 12, color: Colors.grey),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
