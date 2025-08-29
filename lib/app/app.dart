@@ -17,6 +17,7 @@ import '../features/payments/data/payments_repository.dart';
 import '../features/statistics/data/statistics_repository.dart';
 import '../features/settings/data/settings_repository.dart';
 import '../core/database/database_helper.dart';
+import '../features/auth/data/auth_repository.dart'; // Import AuthRepository
 
 class InstallmentsApp extends StatelessWidget {
   const InstallmentsApp({super.key});
@@ -27,6 +28,11 @@ class InstallmentsApp extends StatelessWidget {
       providers: [
         RepositoryProvider<DatabaseHelper>(
           create: (context) => DatabaseHelper(),
+        ),
+        RepositoryProvider<AuthRepository>(
+          create: (context) => AuthRepository(
+            databaseHelper: context.read<DatabaseHelper>(),
+          ),
         ),
         RepositoryProvider<CustomersRepository>(
           create: (context) => CustomersRepository(
@@ -58,6 +64,7 @@ class InstallmentsApp extends StatelessWidget {
         providers: [
           BlocProvider<AuthCubit>(
             create: (context) => AuthCubit(
+              authRepository: context.read<AuthRepository>(),
               settingsRepository: context.read<SettingsRepository>(),
             ),
           ),
