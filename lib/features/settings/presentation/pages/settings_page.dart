@@ -32,7 +32,7 @@ class _SettingsPageState extends State<SettingsPage> {
       await settingsCubit.createBackup();
 
       if (!mounted) return;
-      
+
       scaffoldMessenger.showSnackBar(
         const SnackBar(
           content: Text('تم رفع النسخة الاحتياطية بنجاح'),
@@ -153,7 +153,10 @@ class _SettingsPageState extends State<SettingsPage> {
                   } catch (e) {
                     String errorMessage = 'خطأ في تغيير كلمة المرور';
                     if (e is Exception) {
-                      errorMessage = e.toString().replaceFirst('Exception: ', '');
+                      errorMessage = e.toString().replaceFirst(
+                        'Exception: ',
+                        '',
+                      );
                     } else {
                       errorMessage = e.toString();
                     }

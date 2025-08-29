@@ -68,10 +68,7 @@ class _CustomersPageState extends State<CustomersPage> {
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
         actions: [
-          IconButton(
-            icon: const Icon(Icons.backup),
-            onPressed: _createBackup,
-          ),
+          IconButton(icon: const Icon(Icons.backup), onPressed: _createBackup),
           IconButton(
             icon: const Icon(Icons.settings),
             onPressed: () {

@@ -386,18 +386,27 @@ class SettingsRepository {
       print("Step 4: Preparing to upload. Filename: $fileName");
 
       final supabase = Supabase.instance.client;
-      debugPrint("Step 5: Attempting to upload to Supabase Storage bucket 'Fadak'.");
-      debugPrint("  - Bucket: 'Fadak', Filename: '$fileName', Bytes length: ${bytes.lengthInBytes}");
-      
-      await supabase.storage.from('Fadak').uploadBinary(
+      debugPrint(
+        "Step 5: Attempting to upload to Supabase Storage bucket 'Fadak'.",
+      );
+      debugPrint(
+        "  - Bucket: 'Fadak', Filename: '$fileName', Bytes length: ${bytes.lengthInBytes}",
+      );
+
+      await supabase.storage
+          .from('Fadak')
+          .uploadBinary(
             fileName,
             bytes,
             fileOptions: const FileOptions(upsert: false),
-          ).timeout(const Duration(seconds: 30), onTimeout: () {
-            throw Exception('Supabase upload timed out after 30 seconds.');
-          });
+          )
+          .timeout(
+            const Duration(seconds: 30),
+            onTimeout: () {
+              throw Exception('Supabase upload timed out after 30 seconds.');
+            },
+          );
       debugPrint("  - Success: Upload completed.");
-
     } catch (e, stackTrace) {
       debugPrint("---!!! ERROR in backup process !!!---");
       debugPrint("  - Error Type: ${e.runtimeType}");
