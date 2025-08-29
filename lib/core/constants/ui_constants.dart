@@ -72,6 +72,7 @@ class AppTextStyles {
     fontWeight: FontWeight.bold,
     color: AppColors.textPrimary,
     height: 1.2,
+    fontFamily: 'Cairo',
   );
 
   static const TextStyle displayMedium = TextStyle(
@@ -79,6 +80,7 @@ class AppTextStyles {
     fontWeight: FontWeight.bold,
     color: AppColors.textPrimary,
     height: 1.2,
+    fontFamily: 'Cairo',
   );
 
   static const TextStyle displaySmall = TextStyle(
@@ -86,6 +88,7 @@ class AppTextStyles {
     fontWeight: FontWeight.w600,
     color: AppColors.textPrimary,
     height: 1.3,
+    fontFamily: 'Cairo',
   );
 
   // Headline Styles
@@ -94,6 +97,7 @@ class AppTextStyles {
     fontWeight: FontWeight.w600,
     color: AppColors.textPrimary,
     height: 1.3,
+    fontFamily: 'Cairo',
   );
 
   static const TextStyle headlineMedium = TextStyle(
@@ -101,6 +105,7 @@ class AppTextStyles {
     fontWeight: FontWeight.w600,
     color: AppColors.textPrimary,
     height: 1.3,
+    fontFamily: 'Cairo',
   );
 
   static const TextStyle headlineSmall = TextStyle(
@@ -108,6 +113,7 @@ class AppTextStyles {
     fontWeight: FontWeight.w500,
     color: AppColors.textPrimary,
     height: 1.4,
+    fontFamily: 'Cairo',
   );
 
   // Title Styles
@@ -116,6 +122,7 @@ class AppTextStyles {
     fontWeight: FontWeight.w500,
     color: AppColors.textPrimary,
     height: 1.4,
+    fontFamily: 'Cairo',
   );
 
   static const TextStyle titleMedium = TextStyle(
@@ -123,6 +130,7 @@ class AppTextStyles {
     fontWeight: FontWeight.w500,
     color: AppColors.textPrimary,
     height: 1.4,
+    fontFamily: 'Cairo',
   );
 
   static const TextStyle titleSmall = TextStyle(
@@ -130,6 +138,7 @@ class AppTextStyles {
     fontWeight: FontWeight.w500,
     color: AppColors.textSecondary,
     height: 1.4,
+    fontFamily: 'Cairo',
   );
 
   // Body Styles
@@ -138,6 +147,7 @@ class AppTextStyles {
     fontWeight: FontWeight.normal,
     color: AppColors.textPrimary,
     height: 1.5,
+    fontFamily: 'Cairo',
   );
 
   static const TextStyle bodyMedium = TextStyle(
@@ -145,6 +155,7 @@ class AppTextStyles {
     fontWeight: FontWeight.normal,
     color: AppColors.textPrimary,
     height: 1.5,
+    fontFamily: 'Cairo',
   );
 
   static const TextStyle bodySmall = TextStyle(
@@ -152,6 +163,7 @@ class AppTextStyles {
     fontWeight: FontWeight.normal,
     color: AppColors.textSecondary,
     height: 1.5,
+    fontFamily: 'Cairo',
   );
 
   // Label Styles
@@ -160,6 +172,7 @@ class AppTextStyles {
     fontWeight: FontWeight.w500,
     color: AppColors.textPrimary,
     height: 1.4,
+    fontFamily: 'Cairo',
   );
 
   static const TextStyle labelMedium = TextStyle(
@@ -167,6 +180,7 @@ class AppTextStyles {
     fontWeight: FontWeight.w500,
     color: AppColors.textSecondary,
     height: 1.4,
+    fontFamily: 'Cairo',
   );
 
   static const TextStyle labelSmall = TextStyle(
@@ -174,6 +188,7 @@ class AppTextStyles {
     fontWeight: FontWeight.w500,
     color: AppColors.textHint,
     height: 1.4,
+    fontFamily: 'Cairo',
   );
 
   // Button Styles
@@ -182,6 +197,7 @@ class AppTextStyles {
     fontWeight: FontWeight.w600,
     color: AppColors.textOnPrimary,
     height: 1.2,
+    fontFamily: 'Cairo',
   );
 
   static const TextStyle buttonMedium = TextStyle(
@@ -189,6 +205,7 @@ class AppTextStyles {
     fontWeight: FontWeight.w600,
     color: AppColors.textOnPrimary,
     height: 1.2,
+    fontFamily: 'Cairo',
   );
 
   static const TextStyle buttonSmall = TextStyle(
@@ -196,6 +213,7 @@ class AppTextStyles {
     fontWeight: FontWeight.w600,
     color: AppColors.textOnPrimary,
     height: 1.2,
+    fontFamily: 'Cairo',
   );
 
   // Currency Styles
@@ -204,6 +222,7 @@ class AppTextStyles {
     fontWeight: FontWeight.bold,
     color: AppColors.success,
     height: 1.2,
+    fontFamily: 'Cairo',
   );
 
   static const TextStyle currencyMedium = TextStyle(
@@ -211,6 +230,7 @@ class AppTextStyles {
     fontWeight: FontWeight.w600,
     color: AppColors.success,
     height: 1.2,
+    fontFamily: 'Cairo',
   );
 
   static const TextStyle currencySmall = TextStyle(
@@ -218,6 +238,7 @@ class AppTextStyles {
     fontWeight: FontWeight.w500,
     color: AppColors.success,
     height: 1.2,
+    fontFamily: 'Cairo',
   );
 
   // Status Styles
@@ -226,6 +247,7 @@ class AppTextStyles {
     fontWeight: FontWeight.w600,
     color: AppColors.success,
     height: 1.2,
+    fontFamily: 'Cairo',
   );
 
   static const TextStyle statusOverdue = TextStyle(
@@ -233,6 +255,7 @@ class AppTextStyles {
     fontWeight: FontWeight.w600,
     color: AppColors.error,
     height: 1.2,
+    fontFamily: 'Cairo',
   );
 
   static const TextStyle statusDue = TextStyle(
@@ -240,6 +263,7 @@ class AppTextStyles {
     fontWeight: FontWeight.w600,
     color: AppColors.warning,
     height: 1.2,
+    fontFamily: 'Cairo',
   );
 }
 
