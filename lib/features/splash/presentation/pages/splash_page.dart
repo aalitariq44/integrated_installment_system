@@ -4,6 +4,7 @@ import '../../../../app/routes/app_routes.dart';
 import '../../../../core/constants/ui_constants.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../auth/logic/auth_cubit.dart';
+import '../../../settings/data/settings_repository.dart'; // Import SettingsRepository
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -26,24 +27,39 @@ class _SplashPageState extends State<SplashPage> {
 
       if (!mounted) return;
 
-      // التحقق من حالة تسجيل الدخول
-      final authCubit = context.read<AuthCubit>();
-      await authCubit.checkAuthStatus();
+      final settingsRepository = context.read<SettingsRepository>();
+      final hasSettings = await settingsRepository.hasSettings();
 
       if (!mounted) return;
 
-      // التنقل بناءً على حالة المصادقة
-      final authState = authCubit.state;
-      if (authState is AuthAuthenticated) {
-        Navigator.of(context).pushReplacementNamed(AppRoutes.home);
+      if (!hasSettings) {
+        // If no settings (and thus no password) exist, navigate to setup password page
+        Navigator.of(context).pushReplacementNamed(AppRoutes.setupPassword);
       } else {
-        Navigator.of(context).pushReplacementNamed(AppRoutes.login);
+        // If settings exist, proceed with authentication check
+        final authCubit = context.read<AuthCubit>();
+        await authCubit.checkAuthStatus();
+
+        if (!mounted) return;
+
+        final authState = authCubit.state;
+        if (authState is AuthAuthenticated) {
+          Navigator.of(context).pushReplacementNamed(AppRoutes.home);
+        } else {
+          Navigator.of(context).pushReplacementNamed(AppRoutes.login);
+        }
       }
     } catch (error) {
       if (!mounted) return;
 
-      // في حالة الخطأ، انتقل إلى صفحة تسجيل الدخول
-      Navigator.of(context).pushReplacementNamed(AppRoutes.login);
+      // In case of any error, navigate to the login page (or setup if no settings)
+      final settingsRepository = context.read<SettingsRepository>();
+      final hasSettings = await settingsRepository.hasSettings();
+      if (!hasSettings) {
+        Navigator.of(context).pushReplacementNamed(AppRoutes.setupPassword);
+      } else {
+        Navigator.of(context).pushReplacementNamed(AppRoutes.login);
+      }
     }
   }
 

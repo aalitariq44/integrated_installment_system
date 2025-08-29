@@ -2,6 +2,7 @@ class AppRoutes {
   // Authentication routes
   static const String splash = '/';
   static const String login = '/login';
+  static const String setupPassword = '/setup-password'; // New route
 
   // Main navigation routes
   static const String home = '/home';

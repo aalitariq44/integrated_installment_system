@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'app_routes.dart';
 import '../../features/splash/presentation/pages/splash_page.dart';
 import '../../features/auth/presentation/pages/login_page.dart';
+import '../../features/auth/presentation/pages/setup_password_page.dart'; // New import
 import '../../features/customers/presentation/pages/customers_page.dart';
 import '../../features/customers/presentation/pages/customer_details_page.dart';
 import '../../features/customers/presentation/pages/add_edit_customer_page.dart';
@@ -30,6 +31,12 @@ class RouteGenerator {
       case AppRoutes.login:
         return MaterialPageRoute(
           builder: (_) => const LoginPage(),
+          settings: settings,
+        );
+
+      case AppRoutes.setupPassword: // New route case
+        return MaterialPageRoute(
+          builder: (_) => const SetupPasswordPage(),
           settings: settings,
         );
 
