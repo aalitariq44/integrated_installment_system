@@ -4,7 +4,6 @@ import 'package:printing/printing.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:share_plus/share_plus.dart';
-import 'dart:typed_data';
 
 class PaymentReceiptPage extends StatefulWidget {
   final String receiptNumber;
@@ -49,6 +48,10 @@ class _PaymentReceiptPageState extends State<PaymentReceiptPage> {
   Future<Uint8List> _generatePdf() async {
     final pdf = pw.Document();
 
+    // Load Arabic font
+    final fontData = await rootBundle.load('assets/fonts/Cairo-Regular.ttf');
+    final arabicFont = pw.Font.ttf(fontData);
+
     pdf.addPage(
       pw.Page(
         pageFormat: PdfPageFormat.a4,
@@ -62,16 +65,22 @@ class _PaymentReceiptPageState extends State<PaymentReceiptPage> {
                 child: pw.Column(
                   children: [
                     pw.Text(
-                      'Payment Receipt - ايصال دفعة',
+                      'إيصال دفعة',
                       style: pw.TextStyle(
                         fontSize: 24,
                         fontWeight: pw.FontWeight.bold,
+                        font: arabicFont,
                       ),
+                      textDirection: pw.TextDirection.rtl,
                     ),
                     pw.SizedBox(height: 10),
                     pw.Text(
-                      'Receipt Number: ${widget.receiptNumber}',
-                      style: const pw.TextStyle(fontSize: 16),
+                      'رقم الإيصال: ${widget.receiptNumber}',
+                      style: pw.TextStyle(
+                        fontSize: 16,
+                        font: arabicFont,
+                      ),
+                      textDirection: pw.TextDirection.rtl,
                     ),
                   ],
                 ),
@@ -84,21 +93,31 @@ class _PaymentReceiptPageState extends State<PaymentReceiptPage> {
               // Customer Info
               if (widget.customerData != null) ...[
                 pw.Text(
-                  'Customer Info:',
+                  'بيانات العميل:',
                   style: pw.TextStyle(
                     fontSize: 18,
                     fontWeight: pw.FontWeight.bold,
+                    font: arabicFont,
                   ),
+                  textDirection: pw.TextDirection.rtl,
                 ),
                 pw.SizedBox(height: 10),
                 pw.Text(
-                  'Name: ${widget.customerData!['customer_name']}',
-                  style: const pw.TextStyle(fontSize: 14),
+                  'الاسم: ${widget.customerData!['customer_name']}',
+                  style: pw.TextStyle(
+                    fontSize: 14,
+                    font: arabicFont,
+                  ),
+                  textDirection: pw.TextDirection.rtl,
                 ),
                 if (widget.customerData!['phone_number'] != null)
                   pw.Text(
-                    'Phone: ${widget.customerData!['phone_number']}',
-                    style: const pw.TextStyle(fontSize: 14),
+                    'الهاتف: ${widget.customerData!['phone_number']}',
+                    style: pw.TextStyle(
+                      fontSize: 14,
+                      font: arabicFont,
+                    ),
+                    textDirection: pw.TextDirection.rtl,
                   ),
                 pw.SizedBox(height: 20),
               ],
@@ -106,31 +125,43 @@ class _PaymentReceiptPageState extends State<PaymentReceiptPage> {
               // Product Info
               if (widget.productData != null) ...[
                 pw.Text(
-                  'Product Info:',
+                  'بيانات المنتج:',
                   style: pw.TextStyle(
                     fontSize: 18,
                     fontWeight: pw.FontWeight.bold,
+                    font: arabicFont,
                   ),
+                  textDirection: pw.TextDirection.rtl,
                 ),
                 pw.SizedBox(height: 10),
                 pw.Text(
-                  'Product: ${widget.productData!['product_name']}',
-                  style: const pw.TextStyle(fontSize: 14),
+                  'اسم المنتج: ${widget.productData!['product_name']}',
+                  style: pw.TextStyle(
+                    fontSize: 14,
+                    font: arabicFont,
+                  ),
+                  textDirection: pw.TextDirection.rtl,
                 ),
                 pw.Text(
-                  'Final Price: ${(widget.productData!['final_price'] as num).toStringAsFixed(0)} SAR',
-                  style: const pw.TextStyle(fontSize: 14),
+                  'السعر النهائي: ${(widget.productData!['final_price'] as num).toStringAsFixed(0)} د.ع',
+                  style: pw.TextStyle(
+                    fontSize: 14,
+                    font: arabicFont,
+                  ),
+                  textDirection: pw.TextDirection.rtl,
                 ),
                 pw.SizedBox(height: 20),
               ],
 
               // Payment Info
               pw.Text(
-                'Payment Details:',
+                'تفاصيل الدفعة:',
                 style: pw.TextStyle(
                   fontSize: 18,
                   fontWeight: pw.FontWeight.bold,
+                  font: arabicFont,
                 ),
+                textDirection: pw.TextDirection.rtl,
               ),
               pw.SizedBox(height: 10),
 
@@ -148,13 +179,19 @@ class _PaymentReceiptPageState extends State<PaymentReceiptPage> {
                     pw.Row(
                       mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                       children: [
-                        pw.Text('Amount Paid:'),
                         pw.Text(
-                          '${paymentAmount.toStringAsFixed(0)} SAR',
+                          'مبلغ الدفعة:',
+                          style: pw.TextStyle(font: arabicFont),
+                          textDirection: pw.TextDirection.rtl,
+                        ),
+                        pw.Text(
+                          '${paymentAmount.toStringAsFixed(0)} د.ع',
                           style: pw.TextStyle(
                             fontSize: 16,
                             fontWeight: pw.FontWeight.bold,
+                            font: arabicFont,
                           ),
+                          textDirection: pw.TextDirection.rtl,
                         ),
                       ],
                     ),
@@ -162,15 +199,24 @@ class _PaymentReceiptPageState extends State<PaymentReceiptPage> {
                     pw.Row(
                       mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                       children: [
-                        pw.Text('Payment Date:'),
+                        pw.Text(
+                          'تاريخ الدفع:',
+                          style: pw.TextStyle(font: arabicFont),
+                          textDirection: pw.TextDirection.rtl,
+                        ),
                         pw.Text(
                           '${paymentDate.day}/${paymentDate.month}/${paymentDate.year}',
+                          style: pw.TextStyle(font: arabicFont),
                         ),
                       ],
                     ),
                     if (notes != null && notes!.isNotEmpty) ...[
                       pw.SizedBox(height: 5),
-                      pw.Text('Notes: $notes'),
+                      pw.Text(
+                        'ملاحظات: $notes',
+                        style: pw.TextStyle(font: arabicFont),
+                        textDirection: pw.TextDirection.rtl,
+                      ),
                     ],
                   ],
                 ),
@@ -185,15 +231,21 @@ class _PaymentReceiptPageState extends State<PaymentReceiptPage> {
                     pw.Divider(),
                     pw.SizedBox(height: 10),
                     pw.Text(
-                      'Generated on: ${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}',
-                      style: const pw.TextStyle(fontSize: 12),
+                      'تم إنشاء الإيصال بتاريخ: ${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}',
+                      style: pw.TextStyle(
+                        fontSize: 12,
+                        font: arabicFont,
+                      ),
+                      textDirection: pw.TextDirection.rtl,
                     ),
                     pw.Text(
-                      'Thank You',
+                      'شكراً لك',
                       style: pw.TextStyle(
                         fontSize: 16,
                         fontWeight: pw.FontWeight.bold,
+                        font: arabicFont,
                       ),
+                      textDirection: pw.TextDirection.rtl,
                     ),
                   ],
                 ),
@@ -245,7 +297,9 @@ class _PaymentReceiptPageState extends State<PaymentReceiptPage> {
       final pdfData = await _generatePdf();
       final images = await Printing.raster(pdfData, pages: [0], dpi: 300);
 
-      await for (final image in images) {
+      final imageList = await images.toList();
+      if (imageList.isNotEmpty) {
+        final image = imageList.first;
         final bytes = await image.toPng();
         await Share.shareXFiles([
           XFile.fromData(
@@ -254,7 +308,6 @@ class _PaymentReceiptPageState extends State<PaymentReceiptPage> {
             mimeType: 'image/png',
           ),
         ], text: 'إيصال دفعة رقم: ${widget.receiptNumber}');
-        break; // Only share the first page
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
