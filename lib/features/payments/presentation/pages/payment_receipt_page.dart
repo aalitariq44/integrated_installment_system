@@ -120,6 +120,11 @@ class _PaymentReceiptPageState extends State<PaymentReceiptPage> {
                 ),
                 pw.SizedBox(height: 10),
                 pw.Text(
+                  'رقم الزبون: ${widget.paymentData['customer_id']}',
+                  style: pw.TextStyle(fontSize: 14, font: arabicFont),
+                  textDirection: pw.TextDirection.rtl,
+                ),
+                pw.Text(
                   'الاسم: ${widget.customerData!['customer_name']}',
                   style: pw.TextStyle(fontSize: 14, font: arabicFont),
                   textDirection: pw.TextDirection.rtl,
@@ -447,6 +452,10 @@ class _PaymentReceiptPageState extends State<PaymentReceiptPage> {
                         ],
                       ),
                       const SizedBox(height: 12),
+                      Text(
+                        'رقم الزبون: ${widget.paymentData['customer_id']}',
+                        style: const TextStyle(fontSize: 16),
+                      ),
                       Text(
                         'الاسم: ${widget.customerData!['customer_name']}',
                         style: const TextStyle(fontSize: 16),

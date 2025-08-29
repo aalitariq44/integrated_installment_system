@@ -627,6 +627,7 @@ class PaymentsRepository {
       const sql =
           '''
         SELECT p.*, 
+               c.${DatabaseConstants.customersId} as customer_id,
                c.${DatabaseConstants.customersName} as customer_name,
                c.${DatabaseConstants.customersPhone} as customer_phone,
                c.${DatabaseConstants.customersAddress} as customer_address,
