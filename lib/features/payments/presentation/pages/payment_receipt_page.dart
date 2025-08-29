@@ -31,6 +31,7 @@ class _PaymentReceiptPageState extends State<PaymentReceiptPage> {
   @override
   void initState() {
     super.initState();
+    print(widget.paymentData);
     _initializeData();
   }
 
@@ -93,7 +94,7 @@ class _PaymentReceiptPageState extends State<PaymentReceiptPage> {
                           textDirection: pw.TextDirection.rtl,
                         ),
                         pw.Text(
-                          'رقم الإيصال: ${widget.paymentData['id'] ?? 'غير محدد'}',
+                          'رقم الإيصال: ${widget.paymentData['payment_id'] ?? 'غير محدد'}',
                           style: pw.TextStyle(fontSize: 16, font: arabicFont),
                           textDirection: pw.TextDirection.rtl,
                         ),
@@ -407,7 +408,7 @@ class _PaymentReceiptPageState extends State<PaymentReceiptPage> {
                                 ),
                               ),
                               Text(
-                                'رقم الإيصال: ${widget.paymentData['id'] ?? 'غير محدد'}',
+                                'رقم الإيصال: ${widget.paymentData['payment_id'] ?? 'غير محدد'}',
                                 style: const TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w500,

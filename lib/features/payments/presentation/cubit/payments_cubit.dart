@@ -46,6 +46,7 @@ class PaymentsCubit extends Cubit<PaymentsState> {
       final result = await _paymentsRepository.addPayment(payment);
       emit(
         PaymentProcessed(
+          paymentId: result['paymentId'],
           receiptNumber: result['receiptNumber'],
           isCompleted: result['isCompleted'],
         ),

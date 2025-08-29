@@ -34,16 +34,18 @@ class PaymentLoaded extends PaymentsState {
 }
 
 class PaymentProcessed extends PaymentsState {
+  final int paymentId;
   final String receiptNumber;
   final bool isCompleted;
 
   const PaymentProcessed({
+    required this.paymentId,
     required this.receiptNumber,
     required this.isCompleted,
   });
 
   @override
-  List<Object?> get props => [receiptNumber, isCompleted];
+  List<Object?> get props => [paymentId, receiptNumber, isCompleted];
 }
 
 class PaymentsStatisticsLoaded extends PaymentsState {
