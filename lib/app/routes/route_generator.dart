@@ -37,7 +37,7 @@ class RouteGenerator {
         );
 
       case AppRoutes.customerDetails:
-        final customerId = args?[AppRoutes.customerIdParam] as int?;
+        final customerId = settings.arguments as int?;
         if (customerId == null) {
           return _errorRoute('معرف العميل مطلوب');
         }
@@ -47,8 +47,10 @@ class RouteGenerator {
         );
 
       case AppRoutes.addEditCustomer:
-        final customerId = args?[AppRoutes.customerIdParam] as int?;
-        final isEdit = args?[AppRoutes.isEditParam] as bool? ?? false;
+        final Map<String, dynamic>? arguments =
+            settings.arguments as Map<String, dynamic>?;
+        final customerId = arguments?['customerId'] as int?;
+        final isEdit = arguments?['isEdit'] as bool? ?? false;
         return MaterialPageRoute(
           builder: (_) =>
               AddEditCustomerPage(customerId: customerId, isEdit: isEdit),
@@ -56,7 +58,7 @@ class RouteGenerator {
         );
 
       case AppRoutes.productDetails:
-        final productId = args?[AppRoutes.productIdParam] as int?;
+        final productId = settings.arguments as int?;
         if (productId == null) {
           return _errorRoute('معرف المنتج مطلوب');
         }
@@ -66,9 +68,11 @@ class RouteGenerator {
         );
 
       case AppRoutes.addEditProduct:
-        final customerId = args?[AppRoutes.customerIdParam] as int?;
-        final productId = args?[AppRoutes.productIdParam] as int?;
-        final isEdit = args?[AppRoutes.isEditParam] as bool? ?? false;
+        final Map<String, dynamic>? arguments =
+            settings.arguments as Map<String, dynamic>?;
+        final customerId = arguments?['customerId'] as int?;
+        final productId = arguments?['productId'] as int?;
+        final isEdit = arguments?['isEdit'] as bool? ?? false;
 
         if (!isEdit && customerId == null) {
           return _errorRoute('معرف العميل مطلوب لإضافة منتج جديد');
@@ -84,22 +88,34 @@ class RouteGenerator {
         );
 
       case AppRoutes.addPayment:
-        final productId = args?[AppRoutes.productIdParam] as int?;
-        if (productId == null) {
-          return _errorRoute('معرف المنتج مطلوب');
+        final productId = args?['productId'] as int?;
+        final customerId = args?['customerId'] as int?;
+        if (productId == null || customerId == null) {
+          return _errorRoute('معرف المنتج والعميل مطلوبان');
         }
         return MaterialPageRoute(
-          builder: (_) => AddPaymentPage(productId: productId),
+          builder: (_) =>
+              AddPaymentPage(productId: productId, customerId: customerId),
           settings: settings,
         );
 
       case AppRoutes.paymentReceipt:
-        final paymentId = args?[AppRoutes.paymentIdParam] as int?;
-        if (paymentId == null) {
-          return _errorRoute('معرف الدفعة مطلوب');
+        final receiptNumber = args?['receiptNumber'] as String?;
+        final paymentData = args?['paymentData'] as Map<String, dynamic>?;
+        final productData = args?['productData'] as Map<String, dynamic>?;
+        final customerData = args?['customerData'] as Map<String, dynamic>?;
+
+        if (receiptNumber == null || paymentData == null) {
+          return _errorRoute('بيانات الإيصال مطلوبة');
         }
+
         return MaterialPageRoute(
-          builder: (_) => PaymentReceiptPage(paymentId: paymentId),
+          builder: (_) => PaymentReceiptPage(
+            receiptNumber: receiptNumber,
+            paymentData: paymentData,
+            productData: productData,
+            customerData: customerData,
+          ),
           settings: settings,
         );
 

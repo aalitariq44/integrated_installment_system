@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:integrated_installment_system/app/routes/app_routes.dart';
+import '../../../../core/database/models/customer_model.dart';
+import '../cubit/customers_cubit.dart';
 
 class CustomersPage extends StatefulWidget {
   const CustomersPage({super.key});
@@ -8,42 +12,23 @@ class CustomersPage extends StatefulWidget {
 }
 
 class _CustomersPageState extends State<CustomersPage> {
-  final List<Map<String, dynamic>> _customers = [
-    {
-      'id': 1,
-      'name': 'أحمد محمد',
-      'phone': '0501234567',
-      'totalAmount': 5000.0,
-      'paidAmount': 2000.0,
-      'isOverdue': false,
-    },
-    {
-      'id': 2,
-      'name': 'فاطمة عبدالله',
-      'phone': '0551234567',
-      'totalAmount': 3000.0,
-      'paidAmount': 1500.0,
-      'isOverdue': true,
-    },
-    {
-      'id': 3,
-      'name': 'محمد السعيد',
-      'phone': '0561234567',
-      'totalAmount': 7500.0,
-      'paidAmount': 7500.0,
-      'isOverdue': false,
-    },
-  ];
-
   String _searchQuery = '';
+  late CustomersCubit _customersCubit;
 
-  List<Map<String, dynamic>> get _filteredCustomers {
-    if (_searchQuery.isEmpty) return _customers;
-    return _customers.where((customer) {
-      return customer['name'].toString().toLowerCase().contains(
+  @override
+  void initState() {
+    super.initState();
+    _customersCubit = context.read<CustomersCubit>();
+    _customersCubit.loadCustomers();
+  }
+
+  List<CustomerModel> _filteredCustomers(List<CustomerModel> customers) {
+    if (_searchQuery.isEmpty) return customers;
+    return customers.where((customer) {
+      return customer.customerName.toLowerCase().contains(
             _searchQuery.toLowerCase(),
           ) ||
-          customer['phone'].toString().contains(_searchQuery);
+          (customer.phoneNumber?.contains(_searchQuery) ?? false);
     }).toList();
   }
 
@@ -96,44 +81,76 @@ class _CustomersPageState extends State<CustomersPage> {
 
           // Customers List
           Expanded(
-            child: _filteredCustomers.isEmpty
-                ? const Center(
+            child: BlocBuilder<CustomersCubit, CustomersState>(
+              builder: (context, state) {
+                if (state is CustomersLoading) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (state is CustomersError) {
+                  return Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(
-                          Icons.people_outline,
+                        const Icon(
+                          Icons.error_outline,
                           size: 64,
-                          color: Colors.grey,
+                          color: Colors.red,
                         ),
-                        SizedBox(height: 16),
+                        const SizedBox(height: 16),
                         Text(
-                          'لا توجد عملاء',
-                          style: TextStyle(fontSize: 18, color: Colors.grey),
+                          'خطأ: ${state.message}',
+                          style: const TextStyle(
+                            fontSize: 18,
+                            color: Colors.red,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 16),
+                        ElevatedButton(
+                          onPressed: () => _customersCubit.loadCustomers(),
+                          child: const Text('إعادة المحاولة'),
                         ),
                       ],
                     ),
-                  )
-                : ListView.builder(
+                  );
+                } else if (state is CustomersLoaded) {
+                  final filteredCustomers = _filteredCustomers(state.customers);
+
+                  if (filteredCustomers.isEmpty) {
+                    return const Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.people_outline,
+                            size: 64,
+                            color: Colors.grey,
+                          ),
+                          SizedBox(height: 16),
+                          Text(
+                            'لا توجد عملاء',
+                            style: TextStyle(fontSize: 18, color: Colors.grey),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+
+                  return ListView.builder(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
-                    itemCount: _filteredCustomers.length,
+                    itemCount: filteredCustomers.length,
                     itemBuilder: (context, index) {
-                      final customer = _filteredCustomers[index];
-                      final remainingAmount =
-                          customer['totalAmount'] - customer['paidAmount'];
-                      final progress =
-                          customer['paidAmount'] / customer['totalAmount'];
+                      final customer = filteredCustomers[index];
 
                       return Card(
                         margin: const EdgeInsets.only(bottom: 12),
                         child: ListTile(
                           contentPadding: const EdgeInsets.all(16),
                           leading: CircleAvatar(
-                            backgroundColor: customer['isOverdue']
-                                ? Colors.red
-                                : Colors.blue,
+                            backgroundColor: Colors.blue,
                             child: Text(
-                              customer['name'][0],
+                              customer.customerName.isNotEmpty
+                                  ? customer.customerName[0].toUpperCase()
+                                  : '؟',
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
@@ -141,7 +158,7 @@ class _CustomersPageState extends State<CustomersPage> {
                             ),
                           ),
                           title: Text(
-                            customer['name'],
+                            customer.customerName,
                             style: const TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 16,
@@ -150,74 +167,49 @@ class _CustomersPageState extends State<CustomersPage> {
                           subtitle: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const SizedBox(height: 4),
-                              Text('الهاتف: ${customer['phone']}'),
-                              const SizedBox(height: 8),
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: LinearProgressIndicator(
-                                      value: progress,
-                                      backgroundColor: Colors.grey[300],
-                                      valueColor: AlwaysStoppedAnimation<Color>(
-                                        progress == 1.0
-                                            ? Colors.green
-                                            : Colors.blue,
-                                      ),
-                                    ),
+                              if (customer.phoneNumber != null) ...[
+                                const SizedBox(height: 4),
+                                Text('الهاتف: ${customer.phoneNumber}'),
+                              ],
+                              if (customer.address != null) ...[
+                                const SizedBox(height: 4),
+                                Text('العنوان: ${customer.address}'),
+                              ],
+                              if (customer.notes != null &&
+                                  customer.notes!.isNotEmpty) ...[
+                                const SizedBox(height: 4),
+                                Text(
+                                  'ملاحظات: ${customer.notes}',
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.grey,
                                   ),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    '${(progress * 100).toInt()}%',
-                                    style: const TextStyle(fontSize: 12),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                'المتبقي: ${remainingAmount.toStringAsFixed(0)} ريال',
-                                style: TextStyle(
-                                  color: remainingAmount == 0
-                                      ? Colors.green
-                                      : Colors.orange,
-                                  fontSize: 12,
                                 ),
-                              ),
+                              ],
                             ],
                           ),
-                          trailing: customer['isOverdue']
-                              ? Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 8,
-                                    vertical: 4,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: Colors.red,
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  child: const Text(
-                                    'متأخر',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 12,
-                                    ),
-                                  ),
-                                )
-                              : null,
                           onTap: () {
-                            // Navigate to customer details
+                            Navigator.pushNamed(
+                              context,
+                              AppRoutes.customerDetails,
+                              arguments: customer.customerId,
+                            );
                           },
                         ),
                       );
                     },
-                  ),
+                  );
+                }
+                return const Center(child: Text('لا توجد بيانات'));
+              },
+            ),
           ),
         ],
       ),
 
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Navigate to add customer page
+          Navigator.pushNamed(context, AppRoutes.addEditCustomer);
         },
         backgroundColor: Colors.blue,
         child: const Icon(Icons.add, color: Colors.white),
