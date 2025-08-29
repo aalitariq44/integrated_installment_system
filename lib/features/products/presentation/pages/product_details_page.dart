@@ -7,6 +7,7 @@ import '../cubit/products_cubit.dart';
 import '../../../payments/presentation/cubit/payments_cubit.dart';
 import '../../../customers/presentation/cubit/customers_cubit.dart';
 import '../../../../app/routes/app_routes.dart';
+import '../../../settings/data/settings_repository.dart';
 
 class ProductDetailsPage extends StatefulWidget {
   final int productId;
@@ -575,7 +576,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
-                _deleteProduct();
+                _showPasswordDialog();
               },
               style: TextButton.styleFrom(foregroundColor: Colors.red),
               child: const Text('حذف'),
@@ -584,6 +585,123 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
         );
       },
     );
+  }
+
+  void _showPasswordDialog() {
+    final _passwordController = TextEditingController();
+    final _formKey = GlobalKey<FormState>();
+    bool _obscurePassword = true;
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: const Text('تأكيد كلمة المرور'),
+              content: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Text(
+                      'أدخل كلمة مرور التطبيق لتأكيد الحذف',
+                      style: TextStyle(fontSize: 14),
+                    ),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: _passwordController,
+                      obscureText: _obscurePassword,
+                      textDirection: TextDirection.ltr,
+                      decoration: InputDecoration(
+                        labelText: 'كلمة المرور',
+                        prefixIcon: const Icon(Icons.lock),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _obscurePassword
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _obscurePassword = !_obscurePassword;
+                            });
+                          },
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'كلمة المرور مطلوبة';
+                        }
+                        return null;
+                      },
+                      onFieldSubmitted: (_) => _verifyAndDelete(
+                        _passwordController,
+                        _formKey,
+                        context,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text('إلغاء'),
+                ),
+                TextButton(
+                  onPressed: () => _verifyAndDelete(
+                    _passwordController,
+                    _formKey,
+                    context,
+                  ),
+                  style: TextButton.styleFrom(foregroundColor: Colors.red),
+                  child: const Text('حذف'),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Future<void> _verifyAndDelete(
+    TextEditingController passwordController,
+    GlobalKey<FormState> formKey,
+    BuildContext dialogContext,
+  ) async {
+    if (!formKey.currentState!.validate()) return;
+
+    try {
+      final settingsRepository = context.read<SettingsRepository>();
+      final isValid = await settingsRepository.validatePassword(
+        passwordController.text.trim(),
+      );
+
+      if (isValid) {
+        Navigator.of(dialogContext).pop(); // Close password dialog
+        await _deleteProduct();
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('كلمة المرور غير صحيحة'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('خطأ في التحقق من كلمة المرور: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 
   Future<void> _deleteProduct() async {
