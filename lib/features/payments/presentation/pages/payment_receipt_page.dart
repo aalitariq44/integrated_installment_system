@@ -84,10 +84,20 @@ class _PaymentReceiptPageState extends State<PaymentReceiptPage> {
                       textDirection: pw.TextDirection.rtl,
                     ),
                     pw.SizedBox(height: 10),
-                    pw.Text(
-                      'رقم الإيصال: ${widget.receiptNumber}',
-                      style: pw.TextStyle(fontSize: 16, font: arabicFont),
-                      textDirection: pw.TextDirection.rtl,
+                    pw.Row(
+                      mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                      children: [
+                        pw.Text(
+                          'رمز الإيصال: ${widget.receiptNumber}',
+                          style: pw.TextStyle(fontSize: 16, font: arabicFont),
+                          textDirection: pw.TextDirection.rtl,
+                        ),
+                        pw.Text(
+                          'رقم الإيصال: ${widget.paymentData['id'] ?? 'غير محدد'}',
+                          style: pw.TextStyle(fontSize: 16, font: arabicFont),
+                          textDirection: pw.TextDirection.rtl,
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -366,12 +376,24 @@ class _PaymentReceiptPageState extends State<PaymentReceiptPage> {
                           ),
                         ),
                         const SizedBox(height: 8),
-                        Text(
-                          'رقم الإيصال: ${widget.receiptNumber}',
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                          ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'رمز الإيصال: ${widget.receiptNumber}',
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            Text(
+                              'رقم الإيصال: ${widget.paymentData['id'] ?? 'غير محدد'}',
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
