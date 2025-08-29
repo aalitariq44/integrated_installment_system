@@ -5,7 +5,7 @@ class AppTheme {
   static ThemeData get lightTheme {
     return ThemeData(
       useMaterial3: true,
-      fontFamily: 'Cairo',
+      // fontFamily: 'Cairo', // Commented out until font files are available
 
       // Color Scheme
       colorScheme: ColorScheme.fromSeed(
@@ -31,7 +31,7 @@ class AppTheme {
           fontSize: 20,
           fontWeight: FontWeight.w600,
           color: AppColors.textOnPrimary,
-          fontFamily: 'Cairo',
+          // fontFamily: 'Cairo', // Commented out until font files are available
         ),
         iconTheme: IconThemeData(
           color: AppColors.textOnPrimary,
