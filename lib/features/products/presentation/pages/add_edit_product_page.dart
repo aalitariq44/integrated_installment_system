@@ -293,12 +293,6 @@ class _AddEditProductPageState extends State<AddEditProductPage> {
                         }
                         return null;
                       },
-                      onChanged: (value) {
-                        // Auto-calculate final price if not manually entered
-                        if (_finalPriceController.text.isEmpty) {
-                          _finalPriceController.text = value;
-                        }
-                      },
                     ),
                     const SizedBox(height: 16),
 
