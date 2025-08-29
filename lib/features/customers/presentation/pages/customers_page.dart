@@ -310,7 +310,11 @@ class _CustomersPageState extends State<CustomersPage> {
               // Already on customers page
               break;
             case 1:
-              Navigator.pushNamedAndRemoveUntil(context, AppRoutes.statistics, (route) => false);
+              Navigator.pushNamedAndRemoveUntil(
+                context,
+                AppRoutes.statistics,
+                (route) => false,
+              );
               break;
           }
         },
