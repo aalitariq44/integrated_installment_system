@@ -155,6 +155,18 @@ class _PaymentReceiptPageState extends State<PaymentReceiptPage> {
                   style: pw.TextStyle(fontSize: 14, font: arabicFont),
                   textDirection: pw.TextDirection.rtl,
                 ),
+                pw.SizedBox(height: 5),
+                pw.Text(
+                  'المبلغ الإجمالي المدفوع: ${(widget.productData!['total_paid'] as num?)?.toStringAsFixed(0) ?? '0'} د.ع',
+                  style: pw.TextStyle(fontSize: 14, font: arabicFont),
+                  textDirection: pw.TextDirection.rtl,
+                ),
+                pw.SizedBox(height: 5),
+                pw.Text(
+                  'المبلغ المتبقي: ${(widget.productData!['remaining_amount'] as num?)?.toStringAsFixed(0) ?? '0'} د.ع',
+                  style: pw.TextStyle(fontSize: 14, font: arabicFont),
+                  textDirection: pw.TextDirection.rtl,
+                ),
                 pw.SizedBox(height: 20),
               ],
 
@@ -470,6 +482,16 @@ class _PaymentReceiptPageState extends State<PaymentReceiptPage> {
                       ),
                       Text(
                         'السعر النهائي: ${(widget.productData!['final_price'] as num).toStringAsFixed(0)} د.ع',
+                        style: const TextStyle(fontSize: 16),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'المبلغ الإجمالي المدفوع: ${(widget.productData!['total_paid'] as num?)?.toStringAsFixed(0) ?? '0'} د.ع',
+                        style: const TextStyle(fontSize: 16),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'المبلغ المتبقي: ${(widget.productData!['remaining_amount'] as num?)?.toStringAsFixed(0) ?? '0'} د.ع',
                         style: const TextStyle(fontSize: 16),
                       ),
                     ],
