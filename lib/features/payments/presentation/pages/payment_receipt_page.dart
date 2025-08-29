@@ -119,22 +119,21 @@ class _PaymentReceiptPageState extends State<PaymentReceiptPage> {
                   textDirection: pw.TextDirection.rtl,
                 ),
                 pw.SizedBox(height: 10),
-                pw.Text(
-                  'رقم الزبون: ${widget.paymentData['customer_id']}',
-                  style: pw.TextStyle(fontSize: 14, font: arabicFont),
-                  textDirection: pw.TextDirection.rtl,
+                pw.Row(
+                  mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                  children: [
+                    pw.Text(
+                      'الاسم: ${widget.customerData!['customer_name']}',
+                      style: pw.TextStyle(fontSize: 14, font: arabicFont),
+                      textDirection: pw.TextDirection.rtl,
+                    ),
+                    pw.Text(
+                      'رقم الزبون: ${widget.paymentData['customer_id']}',
+                      style: pw.TextStyle(fontSize: 14, font: arabicFont),
+                      textDirection: pw.TextDirection.rtl,
+                    ),
+                  ],
                 ),
-                pw.Text(
-                  'الاسم: ${widget.customerData!['customer_name']}',
-                  style: pw.TextStyle(fontSize: 14, font: arabicFont),
-                  textDirection: pw.TextDirection.rtl,
-                ),
-                if (widget.customerData!['phone_number'] != null)
-                  pw.Text(
-                    'الهاتف: ${widget.customerData!['phone_number']}',
-                    style: pw.TextStyle(fontSize: 14, font: arabicFont),
-                    textDirection: pw.TextDirection.rtl,
-                  ),
                 pw.SizedBox(height: 20),
               ],
 
