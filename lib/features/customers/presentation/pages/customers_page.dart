@@ -167,6 +167,8 @@ class _CustomersPageState extends State<CustomersPage> {
                           subtitle: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              Text('رقم الزبون: ${customer.customerId}'),
+                              const SizedBox(height: 4),
                               if (customer.phoneNumber != null) ...[
                                 const SizedBox(height: 4),
                                 Text('الهاتف: ${customer.phoneNumber}'),
