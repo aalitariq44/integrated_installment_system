@@ -65,6 +65,16 @@ class _PaymentReceiptPageState extends State<PaymentReceiptPage> {
                 child: pw.Column(
                   children: [
                     pw.Text(
+                      'محلات فدك',
+                      style: pw.TextStyle(
+                        fontSize: 20,
+                        fontWeight: pw.FontWeight.bold,
+                        font: arabicFont,
+                      ),
+                      textDirection: pw.TextDirection.rtl,
+                    ),
+                    pw.SizedBox(height: 5),
+                    pw.Text(
                       'إيصال دفعة',
                       style: pw.TextStyle(
                         fontSize: 24,
@@ -220,6 +230,17 @@ class _PaymentReceiptPageState extends State<PaymentReceiptPage> {
                       style: pw.TextStyle(fontSize: 12, font: arabicFont),
                       textDirection: pw.TextDirection.rtl,
                     ),
+                    pw.SizedBox(height: 5),
+                    pw.Text(
+                      'للاستفسار: 07705606175',
+                      style: pw.TextStyle(
+                        fontSize: 14,
+                        fontWeight: pw.FontWeight.bold,
+                        font: arabicFont,
+                      ),
+                      textDirection: pw.TextDirection.rtl,
+                    ),
+                    pw.SizedBox(height: 5),
                     pw.Text(
                       'شكراً لك',
                       style: pw.TextStyle(
@@ -327,6 +348,15 @@ class _PaymentReceiptPageState extends State<PaymentReceiptPage> {
                     ),
                     child: Column(
                       children: [
+                        const Text(
+                          'محلات فدك',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.blue,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
                         const Text(
                           'إيصال دفعة',
                           style: TextStyle(
@@ -574,6 +604,15 @@ class _PaymentReceiptPageState extends State<PaymentReceiptPage> {
                   Text(
                     'تم إنشاء هذا الإيصال بتاريخ: ${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}',
                     style: const TextStyle(fontSize: 12, color: Colors.grey),
+                  ),
+                  const SizedBox(height: 8),
+                  const Text(
+                    'للاستفسار: 07705606175',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.blue,
+                    ),
                   ),
                   const SizedBox(height: 8),
                   const Text(
