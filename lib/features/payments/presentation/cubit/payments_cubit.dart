@@ -43,19 +43,15 @@ class PaymentsCubit extends Cubit<PaymentsState> {
   Future<void> addPayment(PaymentModel payment) async {
     try {
       emit(const PaymentsLoading());
-      final result = await _paymentsRepository.processPayment(payment);
-      if (result['success']) {
-        emit(
-          PaymentProcessed(
-            receiptNumber: result['receiptNumber'],
-            isCompleted: result['isCompleted'],
-          ),
-        );
-        // Reload payments after processing
-        await loadPayments();
-      } else {
-        emit(PaymentsError(message: result['error'] ?? 'فشل في معالجة الدفعة'));
-      }
+      final result = await _paymentsRepository.addPayment(payment);
+      emit(
+        PaymentProcessed(
+          receiptNumber: result['receiptNumber'],
+          isCompleted: result['isCompleted'],
+        ),
+      );
+      // Reload payments after processing
+      await loadPayments();
     } catch (e) {
       emit(PaymentsError(message: e.toString()));
     }

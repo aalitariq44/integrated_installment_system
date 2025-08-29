@@ -77,7 +77,7 @@ class PaymentsRepository {
   }
 
   // Add new payment
-  Future<int> addPayment(PaymentModel payment) async {
+  Future<Map<String, dynamic>> addPayment(PaymentModel payment) async {
     try {
       return await _databaseHelper.transaction((txn) async {
         final now = DateTime.now();
@@ -107,25 +107,35 @@ class PaymentsRepository {
           }
         }
 
-        final paymentData = payment
-            .copyWith(
-              paymentDate: payment.paymentDate ?? now,
-              nextDueDate: nextDueDate,
-              receiptNumber: receiptNumber,
-              createdDate: now,
-            )
-            .toMap();
+        final paymentToInsert = payment.copyWith(
+          paymentDate: payment.paymentDate ?? now,
+          nextDueDate: nextDueDate,
+          receiptNumber: receiptNumber,
+          createdDate: now,
+        );
 
         // Insert payment
         final paymentId = await txn.insert(
           DatabaseConstants.paymentsTable,
-          paymentData,
+          paymentToInsert.toMap(),
         );
 
         // Update product total paid amount
         await _updateProductTotalPaid(txn, payment.productId);
 
-        return paymentId;
+        final productInfoResult = await txn.query(
+          DatabaseConstants.productsTable,
+          where: '${DatabaseConstants.productsId} = ?',
+          whereArgs: [payment.productId],
+          limit: 1,
+        );
+        final productInfo = productInfoResult.isNotEmpty ? productInfoResult.first : null;
+
+        return {
+          'paymentId': paymentId,
+          'receiptNumber': receiptNumber,
+          'isCompleted': productInfo?[DatabaseConstants.productsIsCompleted] == 1,
+        };
       });
     } catch (e) {
       throw Exception('فشل في إضافة الدفعة: $e');
