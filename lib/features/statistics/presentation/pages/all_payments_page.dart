@@ -20,6 +20,9 @@ class _AllPaymentsPageState extends State<AllPaymentsPage> {
   String _sortBy = 'payment_date'; // Default sort by date
   bool _sortAscending = false; // Default sort descending (newest to oldest)
 
+  int _totalPaymentsCount = 0;
+  double _totalPaymentsAmount = 0.0;
+
   @override
   void initState() {
     super.initState();
@@ -54,7 +57,7 @@ class _AllPaymentsPageState extends State<AllPaymentsPage> {
 
       setState(() {
         _allPayments = payments;
-        _filteredPayments = payments;
+        _filterPayments(); // Call filter to initialize filtered list and totals
         _isLoading = false;
       });
     } catch (e) {
@@ -70,16 +73,24 @@ class _AllPaymentsPageState extends State<AllPaymentsPage> {
 
   void _filterPayments() {
     final query = _searchController.text.toLowerCase();
+    List<Map<String, dynamic>> tempFilteredPayments = _allPayments.where((payment) {
+      final customerName = (payment['customer_name'] as String).toLowerCase();
+      final productName = (payment['product_name'] as String).toLowerCase();
+      final receiptNumber = (payment['receipt_number'] as String? ?? '').toLowerCase();
+      return customerName.contains(query) ||
+          productName.contains(query) ||
+          receiptNumber.contains(query);
+    }).toList();
+
+    double currentTotalAmount = 0.0;
+    for (var payment in tempFilteredPayments) {
+      currentTotalAmount += (payment['payment_amount'] as num).toDouble();
+    }
+
     setState(() {
-      _filteredPayments = _allPayments.where((payment) {
-        final customerName = (payment['customer_name'] as String).toLowerCase();
-        final productName = (payment['product_name'] as String).toLowerCase();
-        final receiptNumber = (payment['receipt_number'] as String? ?? '')
-            .toLowerCase();
-        return customerName.contains(query) ||
-            productName.contains(query) ||
-            receiptNumber.contains(query);
-      }).toList();
+      _filteredPayments = tempFilteredPayments;
+      _totalPaymentsCount = _filteredPayments.length;
+      _totalPaymentsAmount = currentTotalAmount;
     });
   }
 
@@ -143,6 +154,67 @@ class _AllPaymentsPageState extends State<AllPaymentsPage> {
               ),
             ),
           ),
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              Expanded(
+                child: Card(
+                  color: Colors.blue.shade50,
+                  elevation: 1,
+                  child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Column(
+                      children: [
+                        Text(
+                          'مجموع الدفعات',
+                          style: TextStyle(
+                              fontSize: 14, color: Colors.blue.shade800),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          '$_totalPaymentsCount',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.blue.shade800,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Card(
+                  color: Colors.green.shade50,
+                  elevation: 1,
+                  child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Column(
+                      children: [
+                        Text(
+                          'مجموع المبلغ',
+                          style: TextStyle(
+                              fontSize: 14, color: Colors.green.shade800),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          CurrencyUtils.formatCurrency(_totalPaymentsAmount),
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.green.shade800,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
           Expanded(
             child: _isLoading
                 ? const Center(child: CircularProgressIndicator())
