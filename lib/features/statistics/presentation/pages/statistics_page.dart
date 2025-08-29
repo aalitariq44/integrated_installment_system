@@ -357,7 +357,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
         onTap: (index) {
           switch (index) {
             case 0:
-              Navigator.pushReplacementNamed(context, AppRoutes.customers);
+              Navigator.pushNamedAndRemoveUntil(context, AppRoutes.customers, (route) => false);
               break;
             case 1:
               // Already on statistics page
