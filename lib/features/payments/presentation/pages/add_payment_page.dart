@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import '../../../../core/database/models/payment_model.dart';
 import '../../../../core/database/models/product_model.dart';
 import '../../../../core/database/models/customer_model.dart';
@@ -128,16 +129,30 @@ class _AddPaymentPageState extends State<AddPaymentPage> {
   }
 
   Future<void> _selectDate() async {
-    final DateTime? picked = await showDatePicker(
+    final DateTime? pickedDate = await showDatePicker(
       context: context,
       initialDate: _paymentDate,
       firstDate: DateTime(2020),
       lastDate: DateTime.now(),
     );
-    if (picked != null && picked != _paymentDate) {
-      setState(() {
-        _paymentDate = picked;
-      });
+
+    if (pickedDate != null) {
+      final TimeOfDay? pickedTime = await showTimePicker(
+        context: context,
+        initialTime: TimeOfDay.fromDateTime(_paymentDate),
+      );
+
+      if (pickedTime != null) {
+        setState(() {
+          _paymentDate = DateTime(
+            pickedDate.year,
+            pickedDate.month,
+            pickedDate.day,
+            pickedTime.hour,
+            pickedTime.minute,
+          );
+        });
+      }
     }
   }
 
@@ -355,7 +370,7 @@ class _AddPaymentPageState extends State<AddPaymentPage> {
                               prefixIcon: Icon(Icons.event),
                             ),
                             child: Text(
-                              '${_paymentDate.day}/${_paymentDate.month}/${_paymentDate.year}',
+                              DateFormat('yyyy-MM-dd – hh:mm a').format(_paymentDate),
                               style: const TextStyle(fontSize: 16),
                             ),
                           ),

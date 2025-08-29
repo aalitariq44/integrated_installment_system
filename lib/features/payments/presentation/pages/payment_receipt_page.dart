@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 import 'package:printing/printing.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -235,7 +236,7 @@ class _PaymentReceiptPageState extends State<PaymentReceiptPage> {
                           textDirection: pw.TextDirection.rtl,
                         ),
                         pw.Text(
-                          '${paymentDate.day}/${paymentDate.month}/${paymentDate.year}',
+                          DateFormat('yyyy-MM-dd – hh:mm a').format(paymentDate),
                           style: pw.TextStyle(font: arabicFont, fontSize: 16),
                         ),
                       ],
@@ -261,7 +262,7 @@ class _PaymentReceiptPageState extends State<PaymentReceiptPage> {
                     pw.Divider(),
                     pw.SizedBox(height: 10),
                     pw.Text(
-                      'تم إنشاء الإيصال بتاريخ: ${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}',
+                      'تم إنشاء الإيصال بتاريخ: ${DateFormat('yyyy-MM-dd – hh:mm a').format(DateTime.now())}',
                       style: pw.TextStyle(fontSize: 14, font: arabicFont),
                       textDirection: pw.TextDirection.rtl,
                     ),
@@ -586,7 +587,7 @@ class _PaymentReceiptPageState extends State<PaymentReceiptPage> {
                                 style: TextStyle(fontSize: 16),
                               ),
                               Text(
-                                '${paymentDate.day}/${paymentDate.month}/${paymentDate.year}',
+                                DateFormat('yyyy-MM-dd – hh:mm a').format(paymentDate),
                                 style: const TextStyle(fontSize: 16),
                               ),
                             ],
@@ -672,7 +673,7 @@ class _PaymentReceiptPageState extends State<PaymentReceiptPage> {
                   const Divider(),
                   const SizedBox(height: 8),
                   Text(
-                    'تم إنشاء هذا الإيصال بتاريخ: ${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}',
+                    'تم إنشاء هذا الإيصال بتاريخ: ${DateFormat('yyyy-MM-dd – hh:mm a').format(DateTime.now())}',
                     style: const TextStyle(fontSize: 12, color: Colors.grey),
                   ),
                   const SizedBox(height: 8),
