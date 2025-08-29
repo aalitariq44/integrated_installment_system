@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../shared/themes/app_theme.dart';
 import '../core/constants/app_constants.dart';
@@ -94,6 +95,11 @@ class InstallmentsApp extends StatelessWidget {
           // Locale configuration for Arabic
           locale: const Locale('ar', 'SA'),
           supportedLocales: const [Locale('ar', 'SA')],
+          localizationsDelegates: [
+            GlobalMaterialLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+          ],
 
           // Text direction for RTL
           builder: (context, child) {

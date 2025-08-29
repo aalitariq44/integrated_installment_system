@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'app_routes.dart';
+import '../../features/splash/presentation/pages/splash_page.dart';
 import '../../features/auth/presentation/pages/login_page.dart';
 import '../../features/customers/presentation/pages/customers_page.dart';
 import '../../features/customers/presentation/pages/customer_details_page.dart';
@@ -10,7 +11,6 @@ import '../../features/payments/presentation/pages/add_payment_page.dart';
 import '../../features/payments/presentation/pages/payment_receipt_page.dart';
 import '../../features/statistics/presentation/pages/statistics_page.dart';
 import '../../features/settings/presentation/pages/settings_page.dart';
-import '../../shared/widgets/loading_widget.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -19,7 +19,7 @@ class RouteGenerator {
     switch (settings.name) {
       case AppRoutes.splash:
         return MaterialPageRoute(
-          builder: (_) => const LoadingWidget(message: 'جاري تحميل التطبيق...'),
+          builder: (_) => const SplashPage(),
           settings: settings,
         );
 
