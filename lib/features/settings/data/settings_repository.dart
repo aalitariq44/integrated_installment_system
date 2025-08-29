@@ -3,6 +3,9 @@ import '../../../core/database/models/settings_model.dart'
     as core_settings_model;
 import '../../../core/database/models/key_value_settings_model.dart';
 import '../../../core/constants/database_constants.dart';
+import 'dart:io';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:flutter/foundation.dart';
 
 class SettingsRepository {
   final DatabaseHelper _databaseHelper;
@@ -352,6 +355,55 @@ class SettingsRepository {
       return updateCount > 0;
     } catch (e) {
       throw Exception('فشل في استيراد الإعدادات: $e');
+    }
+  }
+
+  // Create backup
+  Future<void> createBackup() async {
+    debugPrint("Backup process started in repository.");
+
+    try {
+      debugPrint("Step 1: Getting database path.");
+      final dbPath = await _databaseHelper.getDatabasePath();
+      print("  - DB Path: $dbPath");
+
+      final dbFile = File(dbPath);
+
+      print("Step 2: Checking for database file existence.");
+      final fileExists = await dbFile.exists();
+      if (!fileExists) {
+        print("  - Error: Database file not found!");
+        throw Exception('Database file not found at path: $dbPath');
+      }
+      print("  - Success: Database file found.");
+
+      print("Step 3: Reading database file.");
+      final bytes = await dbFile.readAsBytes();
+      print("  - Success: Read ${bytes.lengthInBytes} bytes from file.");
+
+      final timestamp = DateTime.now().toIso8601String().replaceAll(':', '-');
+      final fileName = 'backup-$timestamp.db';
+      print("Step 4: Preparing to upload. Filename: $fileName");
+
+      final supabase = Supabase.instance.client;
+      debugPrint("Step 5: Attempting to upload to Supabase Storage bucket 'Fadak'.");
+      debugPrint("  - Bucket: 'Fadak', Filename: '$fileName', Bytes length: ${bytes.lengthInBytes}");
+      
+      await supabase.storage.from('Fadak').uploadBinary(
+            fileName,
+            bytes,
+            fileOptions: const FileOptions(upsert: false),
+          ).timeout(const Duration(seconds: 30), onTimeout: () {
+            throw Exception('Supabase upload timed out after 30 seconds.');
+          });
+      debugPrint("  - Success: Upload completed.");
+
+    } catch (e, stackTrace) {
+      debugPrint("---!!! ERROR in backup process !!!---");
+      debugPrint("  - Error Type: ${e.runtimeType}");
+      debugPrint("  - Error Message: $e");
+      debugPrint("  - Stack Trace: $stackTrace");
+      rethrow;
     }
   }
 }

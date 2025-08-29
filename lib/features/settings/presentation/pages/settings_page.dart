@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
-import 'dart:io';
 import '../../../../core/database/database_helper.dart';
 import '../cubit/settings_cubit.dart';
 import '../../../auth/logic/auth_cubit.dart';
@@ -21,7 +19,6 @@ class _SettingsPageState extends State<SettingsPage> {
   Future<void> _createBackup() async {
     if (!mounted) return;
     setState(() => _isLoading = true);
-    debugPrint("Backup process started. UI should show loading indicator.");
 
     // Use the global key for ScaffoldMessenger
     final scaffoldMessenger = scaffoldMessengerKey.currentState;
@@ -31,79 +28,29 @@ class _SettingsPageState extends State<SettingsPage> {
     }
 
     try {
-      debugPrint("Step 1: Initializing DatabaseHelper.");
-      final dbHelper = DatabaseHelper();
+      final settingsCubit = context.read<SettingsCubit>();
+      await settingsCubit.createBackup();
 
-      print("Step 2: Getting database path.");
-      final dbPath = await dbHelper.getDatabasePath();
-      print("  - DB Path: $dbPath");
-
-      final dbFile = File(dbPath);
-
-      print("Step 3: Checking for database file existence.");
-      final fileExists = await dbFile.exists();
-      if (!fileExists) {
-        print("  - Error: Database file not found!");
-        throw Exception('Database file not found at path: $dbPath');
-      }
-      print("  - Success: Database file found.");
-
-      print("Step 4: Reading database file.");
-      final bytes = await dbFile.readAsBytes();
-      print("  - Success: Read ${bytes.lengthInBytes} bytes from file.");
-
-      final timestamp = DateTime.now().toIso8601String().replaceAll(':', '-');
-      final fileName = 'backup-$timestamp.db';
-      print("Step 5: Preparing to upload. Filename: $fileName");
-
-      final supabase = Supabase.instance.client;
-      debugPrint("Step 6: Attempting to upload to Supabase Storage bucket 'Fadak'.");
-      debugPrint("  - Bucket: 'Fadak', Filename: '$fileName', Bytes length: ${bytes.lengthInBytes}");
+      if (!mounted) return;
       
-      await supabase.storage.from('Fadak').uploadBinary(
-            fileName,
-            bytes,
-            fileOptions: const FileOptions(upsert: false),
-          ).timeout(const Duration(seconds: 30), onTimeout: () {
-            throw Exception('Supabase upload timed out after 30 seconds.');
-          });
-      debugPrint("  - Success: Upload completed.");
-
-      if (!mounted) {
-        debugPrint("  - Warning: Widget is no longer mounted. Cannot show SnackBar.");
-        return;
-      }
-      
-      debugPrint("Step 7: Showing success SnackBar.");
       scaffoldMessenger.showSnackBar(
         const SnackBar(
           content: Text('تم رفع النسخة الاحتياطية بنجاح'),
           backgroundColor: Colors.green,
-          duration: Duration(seconds: 4), // Increased duration
+          duration: Duration(seconds: 4),
         ),
       );
+    } catch (e) {
+      if (!mounted) return;
 
-    } catch (e, stackTrace) { // Catch stack trace for more detailed error
-      debugPrint("---!!! ERROR in backup process !!!---");
-      debugPrint("  - Error Type: ${e.runtimeType}");
-      debugPrint("  - Error Message: $e");
-      debugPrint("  - Stack Trace: $stackTrace"); // Log stack trace
-      
-      if (!mounted) {
-        debugPrint("  - Warning: Widget is no longer mounted. Cannot show error SnackBar.");
-        return;
-      }
-
-      debugPrint("Step 8: Showing error SnackBar.");
       scaffoldMessenger.showSnackBar(
         SnackBar(
           content: Text('خطأ في رفع النسخة الاحتياطية: $e'),
           backgroundColor: Colors.red,
-          duration: const Duration(seconds: 4), // Increased duration
+          duration: const Duration(seconds: 4),
         ),
       );
     } finally {
-      debugPrint("Step 9: Finalizing backup process. Hiding loading indicator. Mounted: $mounted");
       if (mounted) {
         setState(() => _isLoading = false);
       }

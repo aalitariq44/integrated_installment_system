@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:integrated_installment_system/app/routes/app_routes.dart';
 import '../../../../core/database/models/customer_model.dart';
 import '../cubit/customers_cubit.dart';
+import '../../../settings/presentation/cubit/settings_cubit.dart';
 
 class CustomersPage extends StatefulWidget {
   const CustomersPage({super.key});
@@ -20,6 +21,33 @@ class _CustomersPageState extends State<CustomersPage> {
     super.initState();
     _customersCubit = context.read<CustomersCubit>();
     _customersCubit.loadCustomers();
+  }
+
+  Future<void> _createBackup() async {
+    try {
+      final settingsCubit = context.read<SettingsCubit>();
+      await settingsCubit.createBackup();
+
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('تم رفع النسخة الاحتياطية بنجاح'),
+          backgroundColor: Colors.green,
+          duration: Duration(seconds: 4),
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('خطأ في رفع النسخة الاحتياطية: $e'),
+          backgroundColor: Colors.red,
+          duration: const Duration(seconds: 4),
+        ),
+      );
+    }
   }
 
   List<CustomerModel> _filteredCustomers(List<CustomerModel> customers) {
@@ -42,11 +70,7 @@ class _CustomersPageState extends State<CustomersPage> {
         actions: [
           IconButton(
             icon: const Icon(Icons.backup),
-            onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('جاري النسخ الاحتياطي...')),
-              );
-            },
+            onPressed: _createBackup,
           ),
           IconButton(
             icon: const Icon(Icons.settings),

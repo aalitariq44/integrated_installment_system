@@ -60,6 +60,10 @@ class BackupSettingsLoaded extends SettingsState {
   List<Object?> get props => [settings];
 }
 
+class BackupCreated extends SettingsState {
+  const BackupCreated();
+}
+
 class SettingsExported extends SettingsState {
   final Map<String, dynamic> data;
 

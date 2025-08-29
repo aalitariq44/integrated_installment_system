@@ -169,6 +169,17 @@ class SettingsCubit extends Cubit<SettingsState> {
     }
   }
 
+  // Create backup
+  Future<void> createBackup() async {
+    try {
+      emit(const SettingsLoading());
+      await _settingsRepository.createBackup();
+      emit(const BackupCreated());
+    } catch (e) {
+      emit(SettingsError(message: e.toString()));
+    }
+  }
+
   // Clear state
   void clearState() {
     emit(const SettingsInitial());
