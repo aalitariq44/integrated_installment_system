@@ -15,10 +15,12 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   bool _isLoading = false;
+  bool _isBackupLoading = false;
 
   Future<void> _createBackup() async {
-    if (!mounted) return;
-    setState(() => _isLoading = true);
+    if (_isBackupLoading) return; // Prevent multiple taps
+
+    setState(() => _isBackupLoading = true);
 
     // Use the global key for ScaffoldMessenger
     final scaffoldMessenger = scaffoldMessengerKey.currentState;
@@ -37,7 +39,7 @@ class _SettingsPageState extends State<SettingsPage> {
         const SnackBar(
           content: Text('تم رفع النسخة الاحتياطية بنجاح'),
           backgroundColor: Colors.green,
-          duration: Duration(seconds: 4),
+          duration: Duration(seconds: 2),
         ),
       );
     } catch (e) {
@@ -47,12 +49,12 @@ class _SettingsPageState extends State<SettingsPage> {
         SnackBar(
           content: Text('خطأ في رفع النسخة الاحتياطية: $e'),
           backgroundColor: Colors.red,
-          duration: const Duration(seconds: 4),
+          duration: const Duration(seconds: 2),
         ),
       );
     } finally {
       if (mounted) {
-        setState(() => _isLoading = false);
+        setState(() => _isBackupLoading = false);
       }
     }
   }
@@ -217,10 +219,22 @@ class _SettingsPageState extends State<SettingsPage> {
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
         actions: [
-          IconButton(
-            icon: const Icon(Icons.backup),
-            onPressed: _isLoading ? null : _createBackup,
-          ),
+          _isBackupLoading
+              ? const SizedBox(
+                  width: 48,
+                  height: 48,
+                  child: Padding(
+                    padding: EdgeInsets.all(12),
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                    ),
+                  ),
+                )
+              : IconButton(
+                  icon: const Icon(Icons.backup),
+                  onPressed: _createBackup,
+                ),
         ],
       ),
       body: _isLoading
@@ -325,8 +339,19 @@ class _SettingsPageState extends State<SettingsPage> {
                           subtitle: const Text(
                             'حفظ جميع البيانات في ملف احتياطي',
                           ),
-                          trailing: const Icon(Icons.arrow_forward_ios),
-                          onTap: _createBackup,
+                          trailing: _isBackupLoading
+                              ? const SizedBox(
+                                  width: 24,
+                                  height: 24,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                      Colors.green,
+                                    ),
+                                  ),
+                                )
+                              : const Icon(Icons.arrow_forward_ios),
+                          onTap: _isBackupLoading ? null : _createBackup,
                         ),
                         const Divider(),
                         Container(

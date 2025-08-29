@@ -4,6 +4,7 @@ import '../../../core/database/models/settings_model.dart'
 import '../../../core/database/models/key_value_settings_model.dart';
 import '../../../core/constants/database_constants.dart';
 import 'dart:io';
+import 'dart:async';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter/foundation.dart';
 
@@ -358,11 +359,31 @@ class SettingsRepository {
     }
   }
 
+  // Check internet connectivity
+  Future<bool> _checkInternetConnectivity() async {
+    try {
+      final result = await InternetAddress.lookup('google.com');
+      return result.isNotEmpty && result[0].rawAddress.isNotEmpty;
+    } on SocketException catch (_) {
+      return false;
+    }
+  }
+
   // Create backup
   Future<void> createBackup() async {
     debugPrint("Backup process started in repository.");
 
     try {
+      // Step 0: Check internet connectivity
+      debugPrint("Step 0: Checking internet connectivity.");
+      final hasInternet = await _checkInternetConnectivity();
+      if (!hasInternet) {
+        throw Exception(
+          'لا يوجد اتصال بالإنترنت. يرجى التحقق من الاتصال والمحاولة مرة أخرى.',
+        );
+      }
+      debugPrint("  - Success: Internet connection available.");
+
       debugPrint("Step 1: Getting database path.");
       final dbPath = await _databaseHelper.getDatabasePath();
       print("  - DB Path: $dbPath");
@@ -401,9 +422,13 @@ class SettingsRepository {
             fileOptions: const FileOptions(upsert: false),
           )
           .timeout(
-            const Duration(seconds: 30),
+            const Duration(
+              seconds: 15,
+            ), // Reduced timeout from 30 to 15 seconds
             onTimeout: () {
-              throw Exception('Supabase upload timed out after 30 seconds.');
+              throw Exception(
+                'انتهت مهلة رفع النسخة الاحتياطية. يرجى التحقق من الاتصال بالإنترنت والمحاولة مرة أخرى.',
+              );
             },
           );
       debugPrint("  - Success: Upload completed.");
