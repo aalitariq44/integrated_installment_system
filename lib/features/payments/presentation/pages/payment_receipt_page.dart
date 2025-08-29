@@ -236,7 +236,9 @@ class _PaymentReceiptPageState extends State<PaymentReceiptPage> {
                           textDirection: pw.TextDirection.rtl,
                         ),
                         pw.Text(
-                          DateFormat('yyyy-MM-dd – hh:mm a').format(paymentDate),
+                          DateFormat(
+                            'yyyy-MM-dd – hh:mm a',
+                          ).format(paymentDate),
                           style: pw.TextStyle(font: arabicFont, fontSize: 16),
                         ),
                       ],
@@ -587,7 +589,9 @@ class _PaymentReceiptPageState extends State<PaymentReceiptPage> {
                                 style: TextStyle(fontSize: 16),
                               ),
                               Text(
-                                DateFormat('yyyy-MM-dd – hh:mm a').format(paymentDate),
+                                DateFormat(
+                                  'yyyy-MM-dd – hh:mm a',
+                                ).format(paymentDate),
                                 style: const TextStyle(fontSize: 16),
                               ),
                             ],
@@ -675,24 +679,6 @@ class _PaymentReceiptPageState extends State<PaymentReceiptPage> {
                   Text(
                     'تم إنشاء هذا الإيصال بتاريخ: ${DateFormat('yyyy-MM-dd – hh:mm a').format(DateTime.now())}',
                     style: const TextStyle(fontSize: 12, color: Colors.grey),
-                  ),
-                  const SizedBox(height: 8),
-                  const Text(
-                    'للاستفسار: 07705606175',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.blue,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  const Text(
-                    'شكراً لك',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.blue,
-                    ),
                   ),
                 ],
               ),
