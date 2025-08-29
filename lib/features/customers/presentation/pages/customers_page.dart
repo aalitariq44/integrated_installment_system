@@ -169,25 +169,8 @@ class _CustomersPageState extends State<CustomersPage> {
                             children: [
                               Text('رقم الزبون: ${customer.customerId}'),
                               const SizedBox(height: 4),
-                              if (customer.phoneNumber != null) ...[
-                                const SizedBox(height: 4),
-                                Text('الهاتف: ${customer.phoneNumber}'),
-                              ],
-                              if (customer.address != null) ...[
-                                const SizedBox(height: 4),
-                                Text('العنوان: ${customer.address}'),
-                              ],
-                              if (customer.notes != null &&
-                                  customer.notes!.isNotEmpty) ...[
-                                const SizedBox(height: 4),
-                                Text(
-                                  'ملاحظات: ${customer.notes}',
-                                  style: const TextStyle(
-                                    fontSize: 12,
-                                    color: Colors.grey,
-                                  ),
-                                ),
-                              ],
+                              Text(
+                                  'الهاتف: ${customer.phoneNumber ?? 'لايوجد'}'),
                             ],
                           ),
                           onTap: () async {
