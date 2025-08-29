@@ -6,6 +6,7 @@ import '../cubit/customers_cubit.dart';
 import '../../../products/presentation/cubit/products_cubit.dart';
 import '../../../../app/routes/app_routes.dart';
 import '../../../settings/data/settings_repository.dart';
+import '../../../../core/utils/currency_utils.dart';
 
 class CustomerDetailsPage extends StatefulWidget {
   final int customerId;
@@ -276,15 +277,15 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage> {
                                   children: [
                                     const SizedBox(height: 8),
                                     Text(
-                                      'السعر النهائي: ${product.finalPrice.toStringAsFixed(0)} د.ع',
+                                      'السعر النهائي: ${CurrencyUtils.formatCurrency(product.finalPrice)}',
                                       style: const TextStyle(fontSize: 14),
                                     ),
                                     Text(
-                                      'المدفوع: ${product.totalPaid.toStringAsFixed(0)} د.ع',
+                                      'المدفوع: ${CurrencyUtils.formatCurrency(product.totalPaid)}',
                                       style: const TextStyle(fontSize: 14),
                                     ),
                                     Text(
-                                      'المتبقي: ${product.remainingBalance.toStringAsFixed(0)} د.ع',
+                                      'المتبقي: ${CurrencyUtils.formatCurrency(product.remainingBalance)}',
                                       style: TextStyle(
                                         fontSize: 14,
                                         color: product.remainingBalance == 0

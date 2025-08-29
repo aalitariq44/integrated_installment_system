@@ -9,6 +9,7 @@ import '../../../products/presentation/cubit/products_cubit.dart';
 import '../../../customers/presentation/cubit/customers_cubit.dart';
 import '../../../../app/routes/app_routes.dart';
 import '../../../../shared/widgets/loading_widget.dart';
+import '../../../../core/utils/currency_utils.dart';
 
 class AddPaymentPage extends StatefulWidget {
   final int productId;
@@ -291,7 +292,7 @@ class _AddPaymentPageState extends State<AddPaymentPage> {
                                             ),
                                           ),
                                           Text(
-                                            '${_product!.totalPaid.toStringAsFixed(0)} د.ع',
+                                            '${CurrencyUtils.formatCurrency(_product!.totalPaid)}',
                                             style: const TextStyle(
                                               fontSize: 14,
                                               fontWeight: FontWeight.bold,
@@ -313,7 +314,7 @@ class _AddPaymentPageState extends State<AddPaymentPage> {
                                             ),
                                           ),
                                           Text(
-                                            '${_product!.remainingBalance.toStringAsFixed(0)} د.ع',
+                                            '${CurrencyUtils.formatCurrency(_product!.remainingBalance)}',
                                             style: const TextStyle(
                                               fontSize: 14,
                                               fontWeight: FontWeight.bold,
@@ -370,7 +371,9 @@ class _AddPaymentPageState extends State<AddPaymentPage> {
                               prefixIcon: Icon(Icons.event),
                             ),
                             child: Text(
-                              DateFormat('yyyy-MM-dd – hh:mm a').format(_paymentDate),
+                              DateFormat(
+                                'yyyy-MM-dd – hh:mm a',
+                              ).format(_paymentDate),
                               style: const TextStyle(fontSize: 16),
                             ),
                           ),

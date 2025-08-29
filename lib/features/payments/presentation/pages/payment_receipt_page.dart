@@ -5,6 +5,7 @@ import 'package:printing/printing.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:share_plus/share_plus.dart';
+import '../../../../core/utils/currency_utils.dart';
 
 class PaymentReceiptPage extends StatefulWidget {
   final String receiptNumber;
@@ -55,12 +56,15 @@ class _PaymentReceiptPageState extends State<PaymentReceiptPage> {
 
     pdf.addPage(
       pw.Page(
-        pageFormat: PdfPageFormat.a4, // Use A4 without custom margins on the page itself
+        pageFormat: PdfPageFormat
+            .a4, // Use A4 without custom margins on the page itself
         textDirection: pw.TextDirection.rtl, // Apply text direction to the page
         build: (pw.Context context) {
           return pw.Container(
             color: PdfColors.white, // Set white background for the page
-            padding: const pw.EdgeInsets.all(20), // Apply padding to the container
+            padding: const pw.EdgeInsets.all(
+              20,
+            ), // Apply padding to the container
             child: pw.Column(
               crossAxisAlignment: pw.CrossAxisAlignment.start,
               children: [
@@ -162,7 +166,7 @@ class _PaymentReceiptPageState extends State<PaymentReceiptPage> {
                         textDirection: pw.TextDirection.rtl,
                       ),
                       pw.Text(
-                        'السعر النهائي: ${(widget.productData!['final_price'] as num).toStringAsFixed(0)} د.ع',
+                        'السعر النهائي: ${CurrencyUtils.formatCurrency((widget.productData!['final_price'] as num).toDouble())}',
                         style: pw.TextStyle(fontSize: 14, font: arabicFont),
                         textDirection: pw.TextDirection.rtl,
                       ),
@@ -173,12 +177,12 @@ class _PaymentReceiptPageState extends State<PaymentReceiptPage> {
                     mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                     children: [
                       pw.Text(
-                        'المبلغ الإجمالي المدفوع: ${(widget.productData!['total_paid'] as num?)?.toStringAsFixed(0) ?? '0'} د.ع',
+                        'المبلغ الإجمالي المدفوع: ${CurrencyUtils.formatCurrency((widget.productData!['total_paid'] as num?)?.toDouble() ?? 0)}',
                         style: pw.TextStyle(fontSize: 14, font: arabicFont),
                         textDirection: pw.TextDirection.rtl,
                       ),
                       pw.Text(
-                        'المبلغ المتبقي: ${(widget.productData!['remaining_amount'] as num?)?.toStringAsFixed(0) ?? '0'} د.ع',
+                        'المبلغ المتبقي: ${CurrencyUtils.formatCurrency((widget.productData!['remaining_amount'] as num?)?.toDouble() ?? 0)}',
                         style: pw.TextStyle(fontSize: 14, font: arabicFont),
                         textDirection: pw.TextDirection.rtl,
                       ),
@@ -219,7 +223,7 @@ class _PaymentReceiptPageState extends State<PaymentReceiptPage> {
                             textDirection: pw.TextDirection.rtl,
                           ),
                           pw.Text(
-                            '${paymentAmount.toStringAsFixed(0)} د.ع',
+                            '${CurrencyUtils.formatCurrency(paymentAmount)}',
                             style: pw.TextStyle(
                               fontSize: 16,
                               fontWeight: pw.FontWeight.bold,
@@ -514,17 +518,17 @@ class _PaymentReceiptPageState extends State<PaymentReceiptPage> {
                         style: const TextStyle(fontSize: 16),
                       ),
                       Text(
-                        'السعر النهائي: ${(widget.productData!['final_price'] as num).toStringAsFixed(0)} د.ع',
+                        'السعر النهائي: ${CurrencyUtils.formatCurrency((widget.productData!['final_price'] as num).toDouble())}',
                         style: const TextStyle(fontSize: 16),
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        'المبلغ الإجمالي المدفوع: ${(widget.productData!['total_paid'] as num?)?.toStringAsFixed(0) ?? '0'} د.ع',
+                        'المبلغ الإجمالي المدفوع: ${CurrencyUtils.formatCurrency((widget.productData!['total_paid'] as num?)?.toDouble() ?? 0)}',
                         style: const TextStyle(fontSize: 16),
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        'المبلغ المتبقي: ${(widget.productData!['remaining_amount'] as num?)?.toStringAsFixed(0) ?? '0'} د.ع',
+                        'المبلغ المتبقي: ${CurrencyUtils.formatCurrency((widget.productData!['remaining_amount'] as num?)?.toDouble() ?? 0)}',
                         style: const TextStyle(fontSize: 16),
                       ),
                     ],
@@ -575,7 +579,7 @@ class _PaymentReceiptPageState extends State<PaymentReceiptPage> {
                                 style: TextStyle(fontSize: 16),
                               ),
                               Text(
-                                '${paymentAmount.toStringAsFixed(0)} د.ع',
+                                '${CurrencyUtils.formatCurrency(paymentAmount)}',
                                 style: const TextStyle(
                                   fontSize: 20,
                                   fontWeight: FontWeight.bold,
