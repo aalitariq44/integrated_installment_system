@@ -560,34 +560,6 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
   }
 
   void _showDeleteDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('تأكيد الحذف'),
-          content: const Text(
-            'هل أنت متأكد من حذف هذا المنتج؟\nسيتم حذف جميع الدفعات المرتبطة به.',
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('إلغاء'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                _showPasswordDialog();
-              },
-              style: TextButton.styleFrom(foregroundColor: Colors.red),
-              child: const Text('حذف'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _showPasswordDialog() {
     final _passwordController = TextEditingController();
     final _formKey = GlobalKey<FormState>();
     bool _obscurePassword = true;
@@ -599,14 +571,14 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
         return StatefulBuilder(
           builder: (context, setState) {
             return AlertDialog(
-              title: const Text('تأكيد كلمة المرور'),
+              title: const Text('تأكيد الحذف'),
               content: Form(
                 key: _formKey,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     const Text(
-                      'أدخل كلمة مرور التطبيق لتأكيد الحذف',
+                      'هل أنت متأكد من حذف هذا المنتج؟\nسيتم حذف جميع الدفعات المرتبطة به.',
                       style: TextStyle(fontSize: 14),
                     ),
                     const SizedBox(height: 16),
@@ -616,6 +588,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                       textDirection: TextDirection.ltr,
                       decoration: InputDecoration(
                         labelText: 'كلمة المرور',
+                        hintText: 'أدخل كلمة مرور التطبيق',
                         prefixIcon: const Icon(Icons.lock),
                         suffixIcon: IconButton(
                           icon: Icon(
@@ -681,7 +654,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
       );
 
       if (isValid) {
-        Navigator.of(dialogContext).pop(); // Close password dialog
+        Navigator.of(dialogContext).pop(); // Close dialog
         await _deleteProduct();
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
