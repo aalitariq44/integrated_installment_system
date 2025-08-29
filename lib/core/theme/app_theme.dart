@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../constants/app_constants.dart';
+import '../constants/ui_constants.dart';
 
 class AppTheme {
   static ThemeData get lightTheme {
@@ -14,21 +14,21 @@ class AppTheme {
       // App Bar Theme
       appBarTheme: AppBarTheme(
         backgroundColor: AppColors.primary,
-        foregroundColor: AppColors.onPrimary,
+        foregroundColor: AppColors.textOnPrimary,
         elevation: AppSizes.elevation,
         centerTitle: true,
-        titleTextStyle: AppTextStyles.h6.copyWith(
-          color: AppColors.onPrimary,
+        titleTextStyle: AppTextStyles.headlineSmall.copyWith(
+          color: AppColors.textOnPrimary,
           fontWeight: FontWeight.bold,
         ),
       ),
 
       // Card Theme
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         elevation: AppSizes.elevation,
-        margin: const EdgeInsets.all(AppSizes.s),
+        margin: const EdgeInsets.all(AppSizes.sm),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppSizes.m),
+          borderRadius: BorderRadius.circular(AppSizes.radiusMd),
         ),
       ),
 
@@ -36,16 +36,16 @@ class AppTheme {
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.primary,
-          foregroundColor: AppColors.onPrimary,
+          foregroundColor: AppColors.textOnPrimary,
           elevation: AppSizes.elevation,
           padding: const EdgeInsets.symmetric(
-            horizontal: AppSizes.l,
-            vertical: AppSizes.m,
+            horizontal: AppSizes.lg,
+            vertical: AppSizes.md,
           ),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppSizes.s),
+            borderRadius: BorderRadius.circular(AppSizes.radiusSm),
           ),
-          textStyle: AppTextStyles.button,
+          textStyle: AppTextStyles.buttonMedium,
         ),
       ),
 
@@ -53,31 +53,31 @@ class AppTheme {
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
           foregroundColor: AppColors.primary,
-          textStyle: AppTextStyles.button,
+          textStyle: AppTextStyles.buttonMedium,
         ),
       ),
 
       // Input Decoration Theme
       inputDecorationTheme: InputDecorationTheme(
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppSizes.s),
+          borderRadius: BorderRadius.circular(AppSizes.radiusSm),
           borderSide: BorderSide(color: AppColors.border),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppSizes.s),
+          borderRadius: BorderRadius.circular(AppSizes.radiusSm),
           borderSide: BorderSide(color: AppColors.border),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppSizes.s),
+          borderRadius: BorderRadius.circular(AppSizes.radiusSm),
           borderSide: BorderSide(color: AppColors.primary, width: 2),
         ),
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppSizes.s),
+          borderRadius: BorderRadius.circular(AppSizes.radiusSm),
           borderSide: BorderSide(color: AppColors.error),
         ),
-        contentPadding: const EdgeInsets.all(AppSizes.m),
-        labelStyle: AppTextStyles.body1,
-        hintStyle: AppTextStyles.body2.copyWith(
+        contentPadding: const EdgeInsets.all(AppSizes.md),
+        labelStyle: AppTextStyles.bodyLarge,
+        hintStyle: AppTextStyles.bodyMedium.copyWith(
           color: AppColors.textSecondary,
         ),
       ),
@@ -85,7 +85,7 @@ class AppTheme {
       // FAB Theme
       floatingActionButtonTheme: FloatingActionButtonThemeData(
         backgroundColor: AppColors.primary,
-        foregroundColor: AppColors.onPrimary,
+        foregroundColor: AppColors.textOnPrimary,
         elevation: AppSizes.elevation,
       ),
 
@@ -93,17 +93,17 @@ class AppTheme {
       dividerTheme: DividerThemeData(
         color: AppColors.border,
         thickness: 1,
-        space: AppSizes.s,
+        space: AppSizes.sm,
       ),
 
       // List Tile Theme
       listTileTheme: ListTileThemeData(
         contentPadding: const EdgeInsets.symmetric(
-          horizontal: AppSizes.m,
+          horizontal: AppSizes.md,
           vertical: AppSizes.xs,
         ),
-        titleTextStyle: AppTextStyles.body1,
-        subtitleTextStyle: AppTextStyles.body2.copyWith(
+        titleTextStyle: AppTextStyles.bodyLarge,
+        subtitleTextStyle: AppTextStyles.bodyMedium.copyWith(
           color: AppColors.textSecondary,
         ),
       ),
@@ -122,21 +122,21 @@ class AppTheme {
       // App Bar Theme
       appBarTheme: AppBarTheme(
         backgroundColor: AppColors.primary,
-        foregroundColor: AppColors.onPrimary,
+        foregroundColor: AppColors.textOnPrimary,
         elevation: AppSizes.elevation,
         centerTitle: true,
-        titleTextStyle: AppTextStyles.h6.copyWith(
-          color: AppColors.onPrimary,
+        titleTextStyle: AppTextStyles.headlineSmall.copyWith(
+          color: AppColors.textOnPrimary,
           fontWeight: FontWeight.bold,
         ),
       ),
 
       // Card Theme
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         elevation: AppSizes.elevation,
-        margin: const EdgeInsets.all(AppSizes.s),
+        margin: const EdgeInsets.all(AppSizes.sm),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppSizes.m),
+          borderRadius: BorderRadius.circular(AppSizes.radiusMd),
         ),
       ),
 
@@ -144,32 +144,32 @@ class AppTheme {
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.primary,
-          foregroundColor: AppColors.onPrimary,
+          foregroundColor: AppColors.textOnPrimary,
           elevation: AppSizes.elevation,
           padding: const EdgeInsets.symmetric(
-            horizontal: AppSizes.l,
-            vertical: AppSizes.m,
+            horizontal: AppSizes.lg,
+            vertical: AppSizes.md,
           ),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppSizes.s),
+            borderRadius: BorderRadius.circular(AppSizes.radiusSm),
           ),
-          textStyle: AppTextStyles.button,
+          textStyle: AppTextStyles.buttonMedium,
         ),
       ),
 
       // Input Decoration Theme
       inputDecorationTheme: InputDecorationTheme(
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppSizes.s),
+          borderRadius: BorderRadius.circular(AppSizes.radiusSm),
         ),
-        contentPadding: const EdgeInsets.all(AppSizes.m),
-        labelStyle: AppTextStyles.body1,
+        contentPadding: const EdgeInsets.all(AppSizes.md),
+        labelStyle: AppTextStyles.bodyLarge,
       ),
 
       // FAB Theme
       floatingActionButtonTheme: FloatingActionButtonThemeData(
         backgroundColor: AppColors.primary,
-        foregroundColor: AppColors.onPrimary,
+        foregroundColor: AppColors.textOnPrimary,
         elevation: AppSizes.elevation,
       ),
     );

@@ -44,7 +44,7 @@ class CustomersCubit extends Cubit<CustomersState> {
     try {
       emit(const CustomersLoading());
       final customerId = await _customersRepository.createCustomer(customer);
-      if (customerId != null) {
+      if (customerId > 0) {
         await loadCustomers();
       } else {
         emit(const CustomersError(message: 'فشل في إضافة العميل'));

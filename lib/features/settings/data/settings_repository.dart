@@ -172,4 +172,142 @@ class SettingsRepository {
       return '';
     }
   }
+
+  // Get all settings (for compatibility with cubit)
+  Future<Map<String, dynamic>> getAllSettings() async {
+    try {
+      final settings = await getSettings();
+      return settings?.toMap() ?? {};
+    } catch (e) {
+      throw Exception('فشل في تحميل جميع الإعدادات: $e');
+    }
+  }
+
+  // Get single setting by key
+  Future<dynamic> getSetting(String key) async {
+    try {
+      final settings = await getSettings();
+      final settingsMap = settings?.toMap() ?? {};
+      return settingsMap[key];
+    } catch (e) {
+      throw Exception('فشل في تحميل الإعداد: $e');
+    }
+  }
+
+  // Update single setting
+  Future<bool> updateSetting(String key, dynamic value) async {
+    try {
+      final now = DateTime.now();
+      final updateCount = await _databaseHelper.update(
+        DatabaseConstants.settingsTable,
+        {
+          key: value,
+          DatabaseConstants.settingsUpdatedDate: now.toIso8601String(),
+        },
+        where: '${DatabaseConstants.settingsId} = ?',
+        whereArgs: [1],
+      );
+      return updateCount > 0;
+    } catch (e) {
+      throw Exception('فشل في تحديث الإعداد: $e');
+    }
+  }
+
+  // Create single setting
+  Future<bool> createSetting(String key, dynamic value) async {
+    // For this app, we only have one settings record, so we update instead
+    return await updateSetting(key, value);
+  }
+
+  // Delete setting (set to null)
+  Future<bool> deleteSetting(String key) async {
+    return await updateSetting(key, null);
+  }
+
+  // Get business settings
+  Future<Map<String, dynamic>> getBusinessSettings() async {
+    try {
+      final settings = await getSettings();
+      return {
+        'businessName': settings?.businessName,
+        'ownerName': settings?.ownerName,
+        'phone': settings?.phone,
+      };
+    } catch (e) {
+      throw Exception('فشل في تحميل إعدادات الشركة: $e');
+    }
+  }
+
+  // Update business settings
+  Future<bool> updateBusinessSettings(Map<String, dynamic> businessSettings) async {
+    return await updateBusinessInfo(
+      businessName: businessSettings['businessName'],
+      ownerName: businessSettings['ownerName'],
+      phone: businessSettings['phone'],
+    );
+  }
+
+  // Get app preferences (placeholder for future features)
+  Future<Map<String, dynamic>> getAppPreferences() async {
+    return {
+      'theme': 'light',
+      'language': 'ar',
+      'notifications': true,
+    };
+  }
+
+  // Update app preferences
+  Future<bool> updateAppPreferences(Map<String, dynamic> preferences) async {
+    // For now, just return true as these settings aren't stored in DB yet
+    return true;
+  }
+
+  // Get backup settings
+  Future<Map<String, dynamic>> getBackupSettings() async {
+    return {
+      'autoBackup': false,
+      'backupFrequency': 'daily',
+      'cloudBackup': false,
+    };
+  }
+
+  // Update backup settings
+  Future<bool> updateBackupSettings(Map<String, dynamic> backupSettings) async {
+    // For now, just return true as these settings aren't stored in DB yet
+    return true;
+  }
+
+  // Reset to defaults
+  Future<bool> resetToDefaults() async {
+    return await resetSettings();
+  }
+
+  // Export settings
+  Future<Map<String, dynamic>> exportSettings() async {
+    try {
+      final settings = await getSettings();
+      return settings?.toMap() ?? {};
+    } catch (e) {
+      throw Exception('فشل في تصدير الإعدادات: $e');
+    }
+  }
+
+  // Import settings
+  Future<bool> importSettings(Map<String, dynamic> settingsData) async {
+    try {
+      final now = DateTime.now();
+      settingsData[DatabaseConstants.settingsUpdatedDate] = now.toIso8601String();
+      
+      final updateCount = await _databaseHelper.update(
+        DatabaseConstants.settingsTable,
+        settingsData,
+        where: '${DatabaseConstants.settingsId} = ?',
+        whereArgs: [1],
+      );
+      
+      return updateCount > 0;
+    } catch (e) {
+      throw Exception('فشل في استيراد الإعدادات: $e');
+    }
+  }
 }

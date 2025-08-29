@@ -293,4 +293,106 @@ class CustomersRepository {
       throw Exception('فشل في تصدير بيانات العملاء: $e');
     }
   }
+
+  // Create customer (alternative method name)
+  Future<int> createCustomer(CustomerModel customer) async {
+    return await addCustomer(customer);
+  }
+
+  // Get customers statistics
+  Future<Map<String, dynamic>> getCustomersStatistics() async {
+    try {
+      final totalCustomers = await getCustomersCount();
+      final recentCustomers = await getRecentCustomers(limit: 5);
+      
+      return {
+        'total': totalCustomers,
+        'recent': recentCustomers.length,
+        'recentList': recentCustomers.map((c) => c.toMap()).toList(),
+      };
+    } catch (e) {
+      throw Exception('فشل في تحميل إحصائيات العملاء: $e');
+    }
+  }
+
+  // Get customers with their products
+  Future<List<Map<String, dynamic>>> getCustomersWithProducts() async {
+    try {
+      const sql = '''
+        SELECT c.*, 
+               COUNT(p.${DatabaseConstants.productsId}) as products_count,
+               COALESCE(SUM(p.${DatabaseConstants.productsFinalPrice}), 0) as total_purchases,
+               COALESCE(SUM(p.${DatabaseConstants.productsTotalPaid}), 0) as total_paid
+        FROM ${DatabaseConstants.customersTable} c
+        LEFT JOIN ${DatabaseConstants.productsTable} p ON c.${DatabaseConstants.customersId} = p.${DatabaseConstants.productsCustomerId}
+        GROUP BY c.${DatabaseConstants.customersId}
+        ORDER BY c.${DatabaseConstants.customersName} ASC
+      ''';
+      
+      return await _databaseHelper.rawQuery(sql);
+    } catch (e) {
+      throw Exception('فشل في تحميل العملاء مع منتجاتهم: $e');
+    }
+  }
+
+  // Export customers
+  Future<List<Map<String, dynamic>>> exportCustomers() async {
+    return await exportCustomersData();
+  }
+
+  // Import customers
+  Future<Map<String, dynamic>> importCustomers(List<Map<String, dynamic>> customersData) async {
+    int imported = 0;
+    int skipped = 0;
+    int errors = 0;
+    
+    try {
+      await _databaseHelper.transaction((txn) async {
+        for (final customerData in customersData) {
+          try {
+            await txn.insert(DatabaseConstants.customersTable, customerData);
+            imported++;
+          } catch (e) {
+            errors++;
+          }
+        }
+      });
+      
+      return {
+        'imported': imported,
+        'skipped': skipped,
+        'errors': errors,
+      };
+    } catch (e) {
+      throw Exception('فشل في استيراد العملاء: $e');
+    }
+  }
+
+  // Validate customer
+  Future<Map<String, dynamic>> validateCustomer(CustomerModel customer) async {
+    final errors = <String>[];
+    
+    if (customer.customerName.trim().isEmpty) {
+      errors.add('اسم العميل مطلوب');
+    }
+    
+    if (customer.customerName.trim().length < 2) {
+      errors.add('اسم العميل يجب أن يكون أكثر من حرفين');
+    }
+
+    // Check for duplicate names (excluding current customer if editing)
+    final existingCustomers = await getAllCustomers(searchQuery: customer.customerName);
+    final hasDuplicate = existingCustomers.any((c) => 
+        c.customerName.toLowerCase() == customer.customerName.toLowerCase() && 
+        c.customerId != customer.customerId);
+    
+    if (hasDuplicate) {
+      errors.add('يوجد عميل آخر بنفس الاسم');
+    }
+
+    return {
+      'isValid': errors.isEmpty,
+      'errors': errors,
+    };
+  }
 }

@@ -122,7 +122,7 @@ class RouteGenerator {
 
   static Route<dynamic> _errorRoute(String message) {
     return MaterialPageRoute(
-      builder: (_) => Scaffold(
+      builder: (context) => Scaffold(
         appBar: AppBar(title: const Text('خطأ')),
         body: Center(
           child: Column(
@@ -138,7 +138,7 @@ class RouteGenerator {
               const SizedBox(height: 24),
               ElevatedButton(
                 onPressed: () {
-                  Navigator.of(_).pop();
+                  Navigator.of(context).pop();
                 },
                 child: const Text('العودة'),
               ),
