@@ -9,12 +9,22 @@ class CurrencyUtils {
   //   decimalDigits: 2,
   // );
 
-  static final NumberFormat _numberFormat = NumberFormat('#,##0.00', 'ar');
+  static final NumberFormat _numberFormat = NumberFormat('#,##0.##', 'ar');
+  static final NumberFormat _integerFormat = NumberFormat('#,##0', 'ar');
+
+  // Helper to format amount without trailing zeros if it's a whole number
+  static String _formatAmountWithoutTrailingZeros(double? amount) {
+    if (amount == null) return '0';
+    if (amount == amount.toInt()) {
+      return _integerFormat.format(amount);
+    }
+    return _numberFormat.format(amount);
+  }
 
   // Format currency for display
   static String formatCurrency(double? amount) {
-    if (amount == null) return '0.00 ${AppConstants.currencySymbol}';
-    return '${_numberFormat.format(amount)} ${AppConstants.currencySymbol}';
+    if (amount == null) return '0 ${AppConstants.currencySymbol}';
+    return '${_formatAmountWithoutTrailingZeros(amount)} ${AppConstants.currencySymbol}';
   }
 
   static String formatCurrencyCompact(double? amount) {
@@ -31,8 +41,8 @@ class CurrencyUtils {
 
   // Format number without currency symbol
   static String formatNumber(double? number) {
-    if (number == null) return '0.00';
-    return _numberFormat.format(number);
+    if (number == null) return '0';
+    return _formatAmountWithoutTrailingZeros(number);
   }
 
   static String formatNumberCompact(double? number) {

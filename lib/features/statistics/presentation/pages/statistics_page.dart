@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/database/database_helper.dart';
 import '../../../../app/routes/app_routes.dart';
+import '../../../../core/utils/currency_utils.dart';
 
 class StatisticsPage extends StatefulWidget {
   const StatisticsPage({super.key});
@@ -204,30 +205,29 @@ class _StatisticsPageState extends State<StatisticsPage> {
                             ],
                           ),
                           const SizedBox(height: 16),
-                          _buildRevenueRow(
-                            'إجمالي المبيعات',
-                            _statistics['totalSales'],
-                            Colors.blue,
-                          ),
-                          const SizedBox(height: 12),
-                          _buildRevenueRow(
-                            'إجمالي المحصل',
-                            _statistics['totalPaid'],
-                            Colors.green,
-                          ),
-                          const SizedBox(height: 12),
-                          _buildRevenueRow(
-                            'إجمالي الأرباح',
-                            _statistics['totalProfit'],
-                            Colors.orange,
-                          ),
-                          const SizedBox(height: 12),
-                          _buildRevenueRow(
-                            'المبلغ المتبقي',
-                            _statistics['totalSales'] -
-                                _statistics['totalPaid'],
-                            Colors.red,
-                          ),
+          _buildRevenueRow(
+            'إجمالي المبيعات',
+            _statistics['totalSales'],
+            Colors.blue,
+          ),
+          const SizedBox(height: 12),
+          _buildRevenueRow(
+            'إجمالي المحصل',
+            _statistics['totalPaid'],
+            Colors.green,
+          ),
+          const SizedBox(height: 12),
+          _buildRevenueRow(
+            'إجمالي الأرباح',
+            _statistics['totalProfit'],
+            Colors.orange,
+          ),
+          const SizedBox(height: 12),
+          _buildRevenueRow(
+            'المبلغ المتبقي',
+            _statistics['totalSales'] - _statistics['totalPaid'],
+            Colors.red,
+          ),
                         ],
                       ),
                     ),
@@ -264,7 +264,8 @@ class _StatisticsPageState extends State<StatisticsPage> {
                               Expanded(
                                 child: _buildStatCard(
                                   'المحصل',
-                                  '${_statistics['thisMonthPayments'].toStringAsFixed(0)} د.ع',
+                                  CurrencyUtils.formatCurrency(
+                                      _statistics['thisMonthPayments']),
                                   Icons.attach_money,
                                   Colors.green,
                                 ),
@@ -414,7 +415,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
       children: [
         Text(title, style: const TextStyle(fontSize: 16)),
         Text(
-          '${amount.toStringAsFixed(0)} د.ع',
+          CurrencyUtils.formatCurrency(amount),
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
