@@ -264,7 +264,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
                               Expanded(
                                 child: _buildStatCard(
                                   'المحصل',
-                                  '${_statistics['thisMonthPayments'].toStringAsFixed(0)} ريال',
+                                  '${_statistics['thisMonthPayments'].toStringAsFixed(0)} د.ع',
                                   Icons.attach_money,
                                   Colors.green,
                                 ),
@@ -414,7 +414,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
       children: [
         Text(title, style: const TextStyle(fontSize: 16)),
         Text(
-          '${amount.toStringAsFixed(0)} ريال',
+          '${amount.toStringAsFixed(0)} د.ع',
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,

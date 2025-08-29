@@ -9,7 +9,7 @@ class AppConstants {
   static const String displayDateFormat = 'dd/MM/yyyy';
 
   // Currency
-  static const String currencySymbol = 'ريال';
+  static const String currencySymbol = 'د.ع';
   static const String currencyCode = 'SAR';
 
   // Defaults

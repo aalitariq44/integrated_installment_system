@@ -275,15 +275,15 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage> {
                                   children: [
                                     const SizedBox(height: 8),
                                     Text(
-                                      'السعر النهائي: ${product.finalPrice.toStringAsFixed(0)} ريال',
+                                      'السعر النهائي: ${product.finalPrice.toStringAsFixed(0)} د.ع',
                                       style: const TextStyle(fontSize: 14),
                                     ),
                                     Text(
-                                      'المدفوع: ${product.totalPaid.toStringAsFixed(0)} ريال',
+                                      'المدفوع: ${product.totalPaid.toStringAsFixed(0)} د.ع',
                                       style: const TextStyle(fontSize: 14),
                                     ),
                                     Text(
-                                      'المتبقي: ${product.remainingBalance.toStringAsFixed(0)} ريال',
+                                      'المتبقي: ${product.remainingBalance.toStringAsFixed(0)} د.ع',
                                       style: TextStyle(
                                         fontSize: 14,
                                         color: product.remainingBalance == 0

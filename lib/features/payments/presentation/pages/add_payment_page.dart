@@ -248,7 +248,7 @@ class _AddPaymentPageState extends State<AddPaymentPage> {
                                         ),
                                       ),
                                       Text(
-                                        '${_product!.totalPaid.toStringAsFixed(0)} ريال',
+                                        '${_product!.totalPaid.toStringAsFixed(0)} د.ع',
                                         style: const TextStyle(
                                           fontSize: 14,
                                           fontWeight: FontWeight.bold,
@@ -270,7 +270,7 @@ class _AddPaymentPageState extends State<AddPaymentPage> {
                                         ),
                                       ),
                                       Text(
-                                        '${_product!.remainingBalance.toStringAsFixed(0)} ريال',
+                                        '${_product!.remainingBalance.toStringAsFixed(0)} د.ع',
                                         style: const TextStyle(
                                           fontSize: 14,
                                           fontWeight: FontWeight.bold,
@@ -294,7 +294,7 @@ class _AddPaymentPageState extends State<AddPaymentPage> {
                         labelText: 'مبلغ الدفعة *',
                         border: OutlineInputBorder(),
                         prefixIcon: Icon(Icons.attach_money),
-                        suffixText: 'ريال',
+                        suffixText: 'د.ع',
                       ),
                       keyboardType: TextInputType.number,
                       validator: (value) {

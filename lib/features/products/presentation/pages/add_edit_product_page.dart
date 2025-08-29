@@ -279,7 +279,7 @@ class _AddEditProductPageState extends State<AddEditProductPage> {
                         labelText: 'السعر الأصلي (بدون فوائد) *',
                         border: OutlineInputBorder(),
                         prefixIcon: Icon(Icons.money),
-                        suffixText: 'ريال',
+                        suffixText: 'د.ع',
                       ),
                       keyboardType: TextInputType.number,
                       validator: (value) {
@@ -307,7 +307,7 @@ class _AddEditProductPageState extends State<AddEditProductPage> {
                         labelText: 'السعر النهائي (بعد الفوائد) *',
                         border: OutlineInputBorder(),
                         prefixIcon: Icon(Icons.attach_money),
-                        suffixText: 'ريال',
+                        suffixText: 'د.ع',
                       ),
                       keyboardType: TextInputType.number,
                       validator: (value) {

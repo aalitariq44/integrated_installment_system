@@ -382,7 +382,7 @@ class _PaymentReceiptPageState extends State<PaymentReceiptPage> {
                         style: const TextStyle(fontSize: 16),
                       ),
                       Text(
-                        'السعر النهائي: ${(widget.productData!['final_price'] as num).toStringAsFixed(0)} ريال',
+                        'السعر النهائي: ${(widget.productData!['final_price'] as num).toStringAsFixed(0)} د.ع',
                         style: const TextStyle(fontSize: 16),
                       ),
                     ],
@@ -433,7 +433,7 @@ class _PaymentReceiptPageState extends State<PaymentReceiptPage> {
                                 style: TextStyle(fontSize: 16),
                               ),
                               Text(
-                                '${paymentAmount.toStringAsFixed(0)} ريال',
+                                '${paymentAmount.toStringAsFixed(0)} د.ع',
                                 style: const TextStyle(
                                   fontSize: 20,
                                   fontWeight: FontWeight.bold,

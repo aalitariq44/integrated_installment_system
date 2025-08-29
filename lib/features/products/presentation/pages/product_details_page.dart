@@ -234,7 +234,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                     ),
                                   ),
                                   Text(
-                                    '${product!.originalPrice.toStringAsFixed(0)} ريال',
+                                    '${product!.originalPrice.toStringAsFixed(0)} د.ع',
                                     style: const TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold,
@@ -255,7 +255,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                     ),
                                   ),
                                   Text(
-                                    '${product!.finalPrice.toStringAsFixed(0)} ريال',
+                                    '${product!.finalPrice.toStringAsFixed(0)} د.ع',
                                     style: const TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold,
@@ -285,7 +285,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                     ),
                                   ),
                                   Text(
-                                    '${product!.profit.toStringAsFixed(0)} ريال',
+                                    '${product!.profit.toStringAsFixed(0)} د.ع',
                                     style: const TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold,
@@ -333,11 +333,11 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
-                                        'المدفوع: ${product!.totalPaid.toStringAsFixed(0)} ريال',
+                                        'المدفوع: ${product!.totalPaid.toStringAsFixed(0)} د.ع',
                                         style: const TextStyle(fontSize: 14),
                                       ),
                                       Text(
-                                        'المتبقي: ${product!.remainingBalance.toStringAsFixed(0)} ريال',
+                                        'المتبقي: ${product!.remainingBalance.toStringAsFixed(0)} د.ع',
                                         style: TextStyle(
                                           fontSize: 14,
                                           color: product!.remainingBalance == 0
@@ -455,7 +455,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                   ),
                                 ),
                                 title: Text(
-                                  '${payment.paymentAmount.toStringAsFixed(0)} ريال',
+                                  '${payment.paymentAmount.toStringAsFixed(0)} د.ع',
                                   style: const TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 16,
