@@ -504,42 +504,15 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                           return;
                                         }
 
-                                        // بناء بيانات الإيصال المطلوبة
-                                        final paymentData = {
-                                          'payment_amount':
-                                              payment.paymentAmount,
-                                          'payment_date': payment.paymentDate
-                                              ?.toIso8601String(),
-                                          'notes': payment.notes,
-                                        };
-
-                                        final productData = product == null
-                                            ? null
-                                            : {
-                                                'product_name':
-                                                    product!.productName,
-                                                'final_price':
-                                                    product!.finalPrice,
-                                              };
-
-                                        final customerData = customer == null
-                                            ? null
-                                            : {
-                                                'customer_name':
-                                                    customer!.customerName,
-                                                'phone_number':
-                                                    customer!.phoneNumber,
-                                              };
-
                                         Navigator.pushNamed(
                                           context,
                                           AppRoutes.paymentReceipt,
                                           arguments: {
                                             'receiptNumber':
                                                 payment.receiptNumber,
-                                            'paymentData': paymentData,
-                                            'productData': productData,
-                                            'customerData': customerData,
+                                            'paymentData': payment.toMap(),
+                                            'productData': product?.toMap(),
+                                            'customerData': customer?.toMap(),
                                           },
                                         );
                                       },

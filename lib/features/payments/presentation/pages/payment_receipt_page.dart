@@ -31,7 +31,6 @@ class _PaymentReceiptPageState extends State<PaymentReceiptPage> {
   @override
   void initState() {
     super.initState();
-    print(widget.paymentData);
     _initializeData();
   }
 

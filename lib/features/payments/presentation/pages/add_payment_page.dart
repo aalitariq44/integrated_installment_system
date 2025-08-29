@@ -164,31 +164,29 @@ class _AddPaymentPageState extends State<AddPaymentPage> {
               ),
             );
 
-            final paymentData = PaymentModel(
-              paymentId: state.paymentId,
-              productId: widget.productId,
-              customerId: widget.customerId,
-              paymentAmount: double.parse(_amountController.text.trim()),
-              paymentDate: _paymentDate,
-              nextDueDate: _product != null
-                  ? _paymentDate.add(
-                      Duration(days: _product!.paymentIntervalDays),
-                    )
-                  : null,
-              notes: _notesController.text.trim().isEmpty
-                  ? null
-                  : _notesController.text.trim(),
-              receiptNumber: state.receiptNumber,
-              createdDate: DateTime.now(),
-            ).toMap();
-            print(paymentData);
             // Navigate to receipt page
             Navigator.pushReplacementNamed(
               context,
               AppRoutes.paymentReceipt,
               arguments: {
                 'receiptNumber': state.receiptNumber,
-                'paymentData': paymentData,
+                'paymentData': PaymentModel(
+                  paymentId: state.paymentId,
+                  productId: widget.productId,
+                  customerId: widget.customerId,
+                  paymentAmount: double.parse(_amountController.text.trim()),
+                  paymentDate: _paymentDate,
+                  nextDueDate: _product != null
+                      ? _paymentDate.add(
+                          Duration(days: _product!.paymentIntervalDays),
+                        )
+                      : null,
+                  notes: _notesController.text.trim().isEmpty
+                      ? null
+                      : _notesController.text.trim(),
+                  receiptNumber: state.receiptNumber,
+                  createdDate: DateTime.now(),
+                ).toMap(),
                 'productData': _product?.toMap(),
                 'customerData': _customer?.toMap(),
               },
