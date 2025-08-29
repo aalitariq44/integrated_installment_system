@@ -175,6 +175,11 @@ class CustomersCubit extends Cubit<CustomersState> {
     }
   }
 
+  // Get customers count
+  Future<int> getCustomersCountAsync() async {
+    return await _customersRepository.getCustomersCount();
+  }
+
   // Clear state
   void clearState() {
     emit(const CustomersInitial());

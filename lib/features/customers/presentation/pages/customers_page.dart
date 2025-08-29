@@ -15,12 +15,29 @@ class CustomersPage extends StatefulWidget {
 class _CustomersPageState extends State<CustomersPage> {
   String _searchQuery = '';
   late CustomersCubit _customersCubit;
+  int _totalCustomersCount = 0;
 
   @override
   void initState() {
     super.initState();
     _customersCubit = context.read<CustomersCubit>();
-    _customersCubit.loadCustomers();
+    _loadData();
+  }
+
+  Future<void> _loadData() async {
+    await _customersCubit.loadCustomers();
+    await _loadCustomersCount();
+  }
+
+  Future<void> _loadCustomersCount() async {
+    try {
+      final count = await _customersCubit.getCustomersCountAsync();
+      setState(() {
+        _totalCustomersCount = count;
+      });
+    } catch (e) {
+      // Handle error silently or show snackbar if needed
+    }
   }
 
   Future<void> _createBackup() async {
@@ -100,9 +117,37 @@ class _CustomersPageState extends State<CustomersPage> {
             ),
           ),
 
+          // Total Customers Count
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.people, color: Colors.blue),
+                const SizedBox(width: 8),
+                Text(
+                  'إجمالي العملاء: $_totalCustomersCount',
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blue,
+                  ),
+                ),
+              ],
+            ),
+          ),
+
           // Customers List
           Expanded(
-            child: BlocBuilder<CustomersCubit, CustomersState>(
+            child: BlocConsumer<CustomersCubit, CustomersState>(
+              listener: (context, state) {
+                if (state is CustomersLoaded) {
+                  // Update count when customers are loaded
+                  setState(() {
+                    _totalCustomersCount = state.customers.length;
+                  });
+                }
+              },
               builder: (context, state) {
                 if (state is CustomersLoading) {
                   return const Center(child: CircularProgressIndicator());

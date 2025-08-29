@@ -94,6 +94,15 @@ class CustomerValidated extends CustomersState {
   List<Object?> get props => [isValid, errors];
 }
 
+class CustomersCountLoaded extends CustomersState {
+  final int count;
+
+  const CustomersCountLoaded({required this.count});
+
+  @override
+  List<Object?> get props => [count];
+}
+
 class CustomersError extends CustomersState {
   final String message;
 
