@@ -14,7 +14,10 @@ import '../../features/settings/presentation/pages/settings_page.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
-    final args = settings.arguments as Map<String, dynamic>?;
+  // Safely cast arguments to Map<String, dynamic> only if it's already a Map
+  final Map<String, dynamic>? args = settings.arguments is Map<String, dynamic>
+    ? settings.arguments as Map<String, dynamic>
+    : null;
 
     switch (settings.name) {
       case AppRoutes.splash:
