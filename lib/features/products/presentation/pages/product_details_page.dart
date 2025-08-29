@@ -707,29 +707,124 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
   }
 
   void _confirmDeletePayment(int paymentId) {
+    final _passwordController = TextEditingController();
+    final _formKey = GlobalKey<FormState>();
+    bool _obscurePassword = true;
+
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('تأكيد حذف الدفعة'),
-        content: const Text(
-          'هل أنت متأكد من حذف هذه الدفعة؟ سيتم تحديث المبالغ تلقائياً.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('إلغاء'),
-          ),
-          TextButton(
-            onPressed: () async {
-              Navigator.of(context).pop();
-              await _deletePayment(paymentId);
-            },
-            style: TextButton.styleFrom(foregroundColor: Colors.red),
-            child: const Text('حذف'),
-          ),
-        ],
-      ),
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: const Text('تأكيد حذف الدفعة'),
+              content: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Text(
+                      'هل أنت متأكد من حذف هذه الدفعة؟ سيتم تحديث المبالغ تلقائياً.',
+                      style: TextStyle(fontSize: 14),
+                    ),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: _passwordController,
+                      obscureText: _obscurePassword,
+                      textDirection: TextDirection.ltr,
+                      decoration: InputDecoration(
+                        labelText: 'كلمة المرور',
+                        hintText: 'أدخل كلمة مرور التطبيق',
+                        prefixIcon: const Icon(Icons.lock),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _obscurePassword
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _obscurePassword = !_obscurePassword;
+                            });
+                          },
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'كلمة المرور مطلوبة';
+                        }
+                        return null;
+                      },
+                      onFieldSubmitted: (_) => _verifyAndDeletePayment(
+                        _passwordController,
+                        _formKey,
+                        context,
+                        paymentId,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text('إلغاء'),
+                ),
+                TextButton(
+                  onPressed: () => _verifyAndDeletePayment(
+                    _passwordController,
+                    _formKey,
+                    context,
+                    paymentId,
+                  ),
+                  style: TextButton.styleFrom(foregroundColor: Colors.red),
+                  child: const Text('حذف'),
+                ),
+              ],
+            );
+          },
+        );
+      },
     );
+  }
+
+  Future<void> _verifyAndDeletePayment(
+    TextEditingController passwordController,
+    GlobalKey<FormState> formKey,
+    BuildContext dialogContext,
+    int paymentId,
+  ) async {
+    if (!formKey.currentState!.validate()) return;
+
+    try {
+      final settingsRepository = context.read<SettingsRepository>();
+      final isValid = await settingsRepository.validatePassword(
+        passwordController.text.trim(),
+      );
+
+      if (isValid) {
+        Navigator.of(dialogContext).pop(); // Close dialog
+        await _deletePayment(paymentId);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('كلمة المرور غير صحيحة'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('خطأ في التحقق من كلمة المرور: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 
   Future<void> _deletePayment(int paymentId) async {
