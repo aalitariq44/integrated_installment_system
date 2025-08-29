@@ -55,243 +55,247 @@ class _PaymentReceiptPageState extends State<PaymentReceiptPage> {
 
     pdf.addPage(
       pw.Page(
-        pageFormat: PdfPageFormat.a4,
-        textDirection: pw.TextDirection.rtl,
+        pageFormat: PdfPageFormat.a4, // Use A4 without custom margins on the page itself
+        textDirection: pw.TextDirection.rtl, // Apply text direction to the page
         build: (pw.Context context) {
-          return pw.Column(
-            crossAxisAlignment: pw.CrossAxisAlignment.start,
-            children: [
-              // Header
-              pw.Center(
-                child: pw.Column(
-                  children: [
-                    pw.Text(
-                      'محلات فدك',
-                      style: pw.TextStyle(
-                        fontSize: 24,
-                        fontWeight: pw.FontWeight.bold,
-                        font: arabicFont,
+          return pw.Container(
+            color: PdfColors.white, // Set white background for the page
+            padding: const pw.EdgeInsets.all(20), // Apply padding to the container
+            child: pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              children: [
+                // Header
+                pw.Center(
+                  child: pw.Column(
+                    children: [
+                      pw.Text(
+                        'محلات فدك',
+                        style: pw.TextStyle(
+                          fontSize: 24,
+                          fontWeight: pw.FontWeight.bold,
+                          font: arabicFont,
+                        ),
+                        textDirection: pw.TextDirection.rtl,
                       ),
-                      textDirection: pw.TextDirection.rtl,
-                    ),
-                    pw.SizedBox(height: 5),
-                    pw.Text(
-                      'إيصال دفعة',
-                      style: pw.TextStyle(
-                        fontSize: 20,
-                        fontWeight: pw.FontWeight.bold,
-                        font: arabicFont,
-                      ),
-                      textDirection: pw.TextDirection.rtl,
-                    ),
-                    pw.SizedBox(height: 10),
-                    pw.Row(
-                      mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-                      children: [
-                        pw.Text(
-                          'رمز الإيصال: ${widget.receiptNumber}',
-                          style: pw.TextStyle(fontSize: 16, font: arabicFont),
-                          textDirection: pw.TextDirection.rtl,
-                        ),
-                        pw.Text(
-                          'رقم الإيصال: ${widget.paymentData['payment_id'] ?? 'غير محدد'}',
-                          style: pw.TextStyle(fontSize: 16, font: arabicFont),
-                          textDirection: pw.TextDirection.rtl,
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-
-              pw.SizedBox(height: 30),
-              pw.Divider(),
-              pw.SizedBox(height: 20),
-
-              // Customer Info
-              if (widget.customerData != null) ...[
-                pw.Text(
-                  'بيانات العميل:',
-                  style: pw.TextStyle(
-                    fontSize: 16,
-                    fontWeight: pw.FontWeight.bold,
-                    font: arabicFont,
-                  ),
-                  textDirection: pw.TextDirection.rtl,
-                ),
-                pw.SizedBox(height: 10),
-                pw.Row(
-                  mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-                  children: [
-                    pw.Text(
-                      'الاسم: ${widget.customerData!['customer_name']}',
-                      style: pw.TextStyle(fontSize: 14, font: arabicFont),
-                      textDirection: pw.TextDirection.rtl,
-                    ),
-                    pw.Text(
-                      'رقم الزبون: ${widget.paymentData['customer_id']}',
-                      style: pw.TextStyle(fontSize: 14, font: arabicFont),
-                      textDirection: pw.TextDirection.rtl,
-                    ),
-                  ],
-                ),
-                pw.SizedBox(height: 20),
-              ],
-
-              // Product Info
-              if (widget.productData != null) ...[
-                pw.Text(
-                  'بيانات المنتج:',
-                  style: pw.TextStyle(
-                    fontSize: 16,
-                    fontWeight: pw.FontWeight.bold,
-                    font: arabicFont,
-                  ),
-                  textDirection: pw.TextDirection.rtl,
-                ),
-                pw.SizedBox(height: 10),
-                pw.Row(
-                  mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-                  children: [
-                    pw.Text(
-                      'اسم المنتج: ${widget.productData!['product_name']}',
-                      style: pw.TextStyle(fontSize: 14, font: arabicFont),
-                      textDirection: pw.TextDirection.rtl,
-                    ),
-                    pw.Text(
-                      'السعر النهائي: ${(widget.productData!['final_price'] as num).toStringAsFixed(0)} د.ع',
-                      style: pw.TextStyle(fontSize: 14, font: arabicFont),
-                      textDirection: pw.TextDirection.rtl,
-                    ),
-                  ],
-                ),
-                pw.SizedBox(height: 5),
-                pw.Row(
-                  mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-                  children: [
-                    pw.Text(
-                      'المبلغ الإجمالي المدفوع: ${(widget.productData!['total_paid'] as num?)?.toStringAsFixed(0) ?? '0'} د.ع',
-                      style: pw.TextStyle(fontSize: 14, font: arabicFont),
-                      textDirection: pw.TextDirection.rtl,
-                    ),
-                    pw.Text(
-                      'المبلغ المتبقي: ${(widget.productData!['remaining_amount'] as num?)?.toStringAsFixed(0) ?? '0'} د.ع',
-                      style: pw.TextStyle(fontSize: 14, font: arabicFont),
-                      textDirection: pw.TextDirection.rtl,
-                    ),
-                  ],
-                ),
-                pw.SizedBox(height: 20),
-              ],
-
-              // Payment Info
-              pw.Text(
-                'تفاصيل الدفعة:',
-                style: pw.TextStyle(
-                  fontSize: 16,
-                  fontWeight: pw.FontWeight.bold,
-                  font: arabicFont,
-                ),
-                textDirection: pw.TextDirection.rtl,
-              ),
-              pw.SizedBox(height: 10),
-
-              pw.Container(
-                padding: const pw.EdgeInsets.all(15),
-                decoration: pw.BoxDecoration(
-                  border: pw.Border.all(color: PdfColors.grey),
-                  borderRadius: const pw.BorderRadius.all(
-                    pw.Radius.circular(8),
-                  ),
-                ),
-                child: pw.Column(
-                  crossAxisAlignment: pw.CrossAxisAlignment.start,
-                  children: [
-                    pw.Row(
-                      mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-                      children: [
-                        pw.Text(
-                          'مبلغ الدفعة:',
-                          style: pw.TextStyle(font: arabicFont, fontSize: 16),
-                          textDirection: pw.TextDirection.rtl,
-                        ),
-                        pw.Text(
-                          '${paymentAmount.toStringAsFixed(0)} د.ع',
-                          style: pw.TextStyle(
-                            fontSize: 16,
-                            fontWeight: pw.FontWeight.bold,
-                            font: arabicFont,
-                          ),
-                          textDirection: pw.TextDirection.rtl,
-                        ),
-                      ],
-                    ),
-                    pw.SizedBox(height: 5),
-                    pw.Row(
-                      mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-                      children: [
-                        pw.Text(
-                          'تاريخ الدفع:',
-                          style: pw.TextStyle(font: arabicFont, fontSize: 16),
-                          textDirection: pw.TextDirection.rtl,
-                        ),
-                        pw.Text(
-                          DateFormat(
-                            'yyyy-MM-dd – hh:mm a',
-                          ).format(paymentDate),
-                          style: pw.TextStyle(font: arabicFont, fontSize: 16),
-                        ),
-                      ],
-                    ),
-                    if (notes != null && notes!.isNotEmpty) ...[
                       pw.SizedBox(height: 5),
                       pw.Text(
-                        'ملاحظات: $notes',
-                        style: pw.TextStyle(font: arabicFont),
+                        'إيصال دفعة',
+                        style: pw.TextStyle(
+                          fontSize: 20,
+                          fontWeight: pw.FontWeight.bold,
+                          font: arabicFont,
+                        ),
+                        textDirection: pw.TextDirection.rtl,
+                      ),
+                      pw.SizedBox(height: 10),
+                      pw.Row(
+                        mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                        children: [
+                          pw.Text(
+                            'رمز الإيصال: ${widget.receiptNumber}',
+                            style: pw.TextStyle(fontSize: 16, font: arabicFont),
+                            textDirection: pw.TextDirection.rtl,
+                          ),
+                          pw.Text(
+                            'رقم الإيصال: ${widget.paymentData['payment_id'] ?? 'غير محدد'}',
+                            style: pw.TextStyle(fontSize: 16, font: arabicFont),
+                            textDirection: pw.TextDirection.rtl,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+
+                pw.SizedBox(height: 30),
+                pw.Divider(),
+                pw.SizedBox(height: 20),
+
+                // Customer Info
+                if (widget.customerData != null) ...[
+                  pw.Text(
+                    'بيانات العميل:',
+                    style: pw.TextStyle(
+                      fontSize: 16,
+                      fontWeight: pw.FontWeight.bold,
+                      font: arabicFont,
+                    ),
+                    textDirection: pw.TextDirection.rtl,
+                  ),
+                  pw.SizedBox(height: 10),
+                  pw.Row(
+                    mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                    children: [
+                      pw.Text(
+                        'الاسم: ${widget.customerData!['customer_name']}',
+                        style: pw.TextStyle(fontSize: 14, font: arabicFont),
+                        textDirection: pw.TextDirection.rtl,
+                      ),
+                      pw.Text(
+                        'رقم الزبون: ${widget.paymentData['customer_id']}',
+                        style: pw.TextStyle(fontSize: 14, font: arabicFont),
                         textDirection: pw.TextDirection.rtl,
                       ),
                     ],
-                  ],
-                ),
-              ),
+                  ),
+                  pw.SizedBox(height: 20),
+                ],
 
-              pw.Spacer(),
+                // Product Info
+                if (widget.productData != null) ...[
+                  pw.Text(
+                    'بيانات المنتج:',
+                    style: pw.TextStyle(
+                      fontSize: 16,
+                      fontWeight: pw.FontWeight.bold,
+                      font: arabicFont,
+                    ),
+                    textDirection: pw.TextDirection.rtl,
+                  ),
+                  pw.SizedBox(height: 10),
+                  pw.Row(
+                    mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                    children: [
+                      pw.Text(
+                        'اسم المنتج: ${widget.productData!['product_name']}',
+                        style: pw.TextStyle(fontSize: 14, font: arabicFont),
+                        textDirection: pw.TextDirection.rtl,
+                      ),
+                      pw.Text(
+                        'السعر النهائي: ${(widget.productData!['final_price'] as num).toStringAsFixed(0)} د.ع',
+                        style: pw.TextStyle(fontSize: 14, font: arabicFont),
+                        textDirection: pw.TextDirection.rtl,
+                      ),
+                    ],
+                  ),
+                  pw.SizedBox(height: 5),
+                  pw.Row(
+                    mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                    children: [
+                      pw.Text(
+                        'المبلغ الإجمالي المدفوع: ${(widget.productData!['total_paid'] as num?)?.toStringAsFixed(0) ?? '0'} د.ع',
+                        style: pw.TextStyle(fontSize: 14, font: arabicFont),
+                        textDirection: pw.TextDirection.rtl,
+                      ),
+                      pw.Text(
+                        'المبلغ المتبقي: ${(widget.productData!['remaining_amount'] as num?)?.toStringAsFixed(0) ?? '0'} د.ع',
+                        style: pw.TextStyle(fontSize: 14, font: arabicFont),
+                        textDirection: pw.TextDirection.rtl,
+                      ),
+                    ],
+                  ),
+                  pw.SizedBox(height: 20),
+                ],
 
-              // Footer
-              pw.Center(
-                child: pw.Column(
-                  children: [
-                    pw.Divider(),
-                    pw.SizedBox(height: 10),
-                    pw.Text(
-                      'تم إنشاء الإيصال بتاريخ: ${DateFormat('yyyy-MM-dd – hh:mm a').format(DateTime.now())}',
-                      style: pw.TextStyle(fontSize: 14, font: arabicFont),
-                      textDirection: pw.TextDirection.rtl,
-                    ),
-                    pw.SizedBox(height: 5),
-                    pw.Text(
-                      'للاستفسار: 07705606175',
-                      style: pw.TextStyle(
-                        fontSize: 14,
-                        fontWeight: pw.FontWeight.bold,
-                        font: arabicFont,
-                      ),
-                      textDirection: pw.TextDirection.rtl,
-                    ),
-                    pw.SizedBox(height: 5),
-                    pw.Text(
-                      'شكراً لك',
-                      style: pw.TextStyle(
-                        fontSize: 14,
-                        fontWeight: pw.FontWeight.bold,
-                        font: arabicFont,
-                      ),
-                      textDirection: pw.TextDirection.rtl,
-                    ),
-                  ],
+                // Payment Info
+                pw.Text(
+                  'تفاصيل الدفعة:',
+                  style: pw.TextStyle(
+                    fontSize: 16,
+                    fontWeight: pw.FontWeight.bold,
+                    font: arabicFont,
+                  ),
+                  textDirection: pw.TextDirection.rtl,
                 ),
-              ),
-            ],
+                pw.SizedBox(height: 10),
+
+                pw.Container(
+                  padding: const pw.EdgeInsets.all(15),
+                  decoration: pw.BoxDecoration(
+                    border: pw.Border.all(color: PdfColors.grey),
+                    borderRadius: const pw.BorderRadius.all(
+                      pw.Radius.circular(8),
+                    ),
+                  ),
+                  child: pw.Column(
+                    crossAxisAlignment: pw.CrossAxisAlignment.start,
+                    children: [
+                      pw.Row(
+                        mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                        children: [
+                          pw.Text(
+                            'مبلغ الدفعة:',
+                            style: pw.TextStyle(font: arabicFont, fontSize: 16),
+                            textDirection: pw.TextDirection.rtl,
+                          ),
+                          pw.Text(
+                            '${paymentAmount.toStringAsFixed(0)} د.ع',
+                            style: pw.TextStyle(
+                              fontSize: 16,
+                              fontWeight: pw.FontWeight.bold,
+                              font: arabicFont,
+                            ),
+                            textDirection: pw.TextDirection.rtl,
+                          ),
+                        ],
+                      ),
+                      pw.SizedBox(height: 5),
+                      pw.Row(
+                        mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                        children: [
+                          pw.Text(
+                            'تاريخ الدفع:',
+                            style: pw.TextStyle(font: arabicFont, fontSize: 16),
+                            textDirection: pw.TextDirection.rtl,
+                          ),
+                          pw.Text(
+                            DateFormat(
+                              'yyyy-MM-dd – hh:mm a',
+                            ).format(paymentDate),
+                            style: pw.TextStyle(font: arabicFont, fontSize: 16),
+                          ),
+                        ],
+                      ),
+                      if (notes != null && notes!.isNotEmpty) ...[
+                        pw.SizedBox(height: 5),
+                        pw.Text(
+                          'ملاحظات: $notes',
+                          style: pw.TextStyle(font: arabicFont),
+                          textDirection: pw.TextDirection.rtl,
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+
+                pw.Spacer(),
+
+                // Footer
+                pw.Center(
+                  child: pw.Column(
+                    children: [
+                      pw.Divider(),
+                      pw.SizedBox(height: 10),
+                      pw.Text(
+                        'تم إنشاء الإيصال بتاريخ: ${DateFormat('yyyy-MM-dd – hh:mm a').format(DateTime.now())}',
+                        style: pw.TextStyle(fontSize: 14, font: arabicFont),
+                        textDirection: pw.TextDirection.rtl,
+                      ),
+                      pw.SizedBox(height: 5),
+                      pw.Text(
+                        'للاستفسار: 07705606175',
+                        style: pw.TextStyle(
+                          fontSize: 14,
+                          fontWeight: pw.FontWeight.bold,
+                          font: arabicFont,
+                        ),
+                        textDirection: pw.TextDirection.rtl,
+                      ),
+                      pw.SizedBox(height: 5),
+                      pw.Text(
+                        'شكراً لك',
+                        style: pw.TextStyle(
+                          fontSize: 14,
+                          fontWeight: pw.FontWeight.bold,
+                          font: arabicFont,
+                        ),
+                        textDirection: pw.TextDirection.rtl,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           );
         },
       ),
