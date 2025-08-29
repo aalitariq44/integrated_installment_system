@@ -204,9 +204,15 @@ class _SettingsPageState extends State<SettingsPage> {
                       ),
                     );
                   } catch (e) {
+                    String errorMessage = 'خطأ في تغيير كلمة المرور';
+                    if (e is Exception) {
+                      errorMessage = e.toString().replaceFirst('Exception: ', '');
+                    } else {
+                      errorMessage = e.toString();
+                    }
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                        content: Text('خطأ في تغيير كلمة المرور: $e'),
+                        content: Text(errorMessage),
                         backgroundColor: Colors.red,
                       ),
                     );

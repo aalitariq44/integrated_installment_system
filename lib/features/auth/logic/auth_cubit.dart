@@ -67,8 +67,7 @@ class AuthCubit extends Cubit<AuthState> {
         oldPassword,
       );
       if (!isOldPasswordValid) {
-        emit(const AuthError(message: 'كلمة المرور الحالية غير صحيحة'));
-        return;
+        throw Exception('كلمة المرور الحالية غير صحيحة');
       }
 
       // Update password
@@ -76,10 +75,11 @@ class AuthCubit extends Cubit<AuthState> {
       if (success) {
         emit(const AuthPasswordChanged());
       } else {
-        emit(const AuthError(message: 'فشل في تحديث كلمة المرور'));
+        throw Exception('فشل في تحديث كلمة المرور');
       }
     } catch (e) {
       emit(AuthError(message: e.toString()));
+      rethrow; // Re-throw the exception so it can be caught by the UI
     }
   }
 
