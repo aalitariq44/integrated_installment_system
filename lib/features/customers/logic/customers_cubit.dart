@@ -7,7 +7,8 @@ part 'customers_state.dart';
 class CustomersCubit extends Cubit<CustomersState> {
   final CustomersRepository customersRepository;
 
-  CustomersCubit({required this.customersRepository}) : super(const CustomersInitial());
+  CustomersCubit({required this.customersRepository})
+    : super(const CustomersInitial());
 
   Future<void> loadCustomers() async {
     try {

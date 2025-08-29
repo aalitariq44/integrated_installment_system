@@ -7,7 +7,8 @@ part 'products_state.dart';
 class ProductsCubit extends Cubit<ProductsState> {
   final ProductsRepository productsRepository;
 
-  ProductsCubit({required this.productsRepository}) : super(const ProductsInitial());
+  ProductsCubit({required this.productsRepository})
+    : super(const ProductsInitial());
 
   Future<void> loadProducts() async {
     try {

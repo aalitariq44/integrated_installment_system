@@ -7,7 +7,8 @@ part 'payments_state.dart';
 class PaymentsCubit extends Cubit<PaymentsState> {
   final PaymentsRepository paymentsRepository;
 
-  PaymentsCubit({required this.paymentsRepository}) : super(const PaymentsInitial());
+  PaymentsCubit({required this.paymentsRepository})
+    : super(const PaymentsInitial());
 
   Future<void> loadPayments() async {
     try {
