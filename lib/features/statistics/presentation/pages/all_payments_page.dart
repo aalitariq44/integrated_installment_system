@@ -17,6 +17,9 @@ class _AllPaymentsPageState extends State<AllPaymentsPage> {
   List<Map<String, dynamic>> _filteredPayments = [];
   final TextEditingController _searchController = TextEditingController();
 
+  String _sortBy = 'payment_date'; // Default sort by date
+  bool _sortAscending = false; // Default sort descending (newest to oldest)
+
   @override
   void initState() {
     super.initState();
@@ -46,7 +49,7 @@ class _AllPaymentsPageState extends State<AllPaymentsPage> {
         FROM payments p
         JOIN customers c ON p.customer_id = c.customer_id
         JOIN products prod ON p.product_id = prod.product_id
-        ORDER BY p.payment_date DESC
+        ORDER BY $_sortBy ${_sortAscending ? 'ASC' : 'DESC'}
       ''');
 
       setState(() {
@@ -91,6 +94,34 @@ class _AllPaymentsPageState extends State<AllPaymentsPage> {
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: _loadAllPayments,
+          ),
+          PopupMenuButton<String>(
+            icon: const Icon(Icons.sort),
+            onSelected: (String result) {
+              setState(() {
+                if (result == 'toggle_order') {
+                  _sortAscending = !_sortAscending;
+                } else {
+                  _sortBy = result;
+                }
+                _loadAllPayments(); // Reload with new sorting
+              });
+            },
+            itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+              PopupMenuItem<String>(
+                value: 'payment_date',
+                child: Text('الفرز حسب التاريخ ${_sortBy == 'payment_date' ? (_sortAscending ? '(تصاعدي)' : '(تنازلي)') : ''}'),
+              ),
+              PopupMenuItem<String>(
+                value: 'payment_amount',
+                child: Text('الفرز حسب المبلغ ${_sortBy == 'payment_amount' ? (_sortAscending ? '(تصاعدي)' : '(تنازلي)') : ''}'),
+              ),
+              const PopupMenuDivider(),
+              PopupMenuItem<String>(
+                value: 'toggle_order',
+                child: Text(_sortAscending ? 'فرز تنازلي' : 'فرز تصاعدي'),
+              ),
+            ],
           ),
         ],
       ),
