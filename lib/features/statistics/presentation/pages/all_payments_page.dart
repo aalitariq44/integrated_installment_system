@@ -120,7 +120,10 @@ class _AllPaymentsPageState extends State<AllPaymentsPage> {
                     itemCount: _filteredPayments.length,
                     itemBuilder: (context, index) {
                       final payment = _filteredPayments[index];
-                      return PaymentCard(payment: payment);
+                      return PaymentCard(
+                        payment: payment,
+                        sequenceNumber: index + 1,
+                      );
                     },
                   ),
           ),
@@ -132,8 +135,13 @@ class _AllPaymentsPageState extends State<AllPaymentsPage> {
 
 class PaymentCard extends StatelessWidget {
   final Map<String, dynamic> payment;
+  final int sequenceNumber;
 
-  const PaymentCard({super.key, required this.payment});
+  const PaymentCard({
+    super.key,
+    required this.payment,
+    required this.sequenceNumber,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -150,7 +158,7 @@ class PaymentCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'الزبون: ${payment['customer_name']}',
+                  '$sequenceNumber - الزبون: ${payment['customer_name']}',
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
