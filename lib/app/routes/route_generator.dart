@@ -11,6 +11,7 @@ import '../../features/products/presentation/pages/add_edit_product_page.dart';
 import '../../features/payments/presentation/pages/add_payment_page.dart';
 import '../../features/payments/presentation/pages/payment_receipt_page.dart';
 import '../../features/statistics/presentation/pages/statistics_page.dart';
+import '../../features/statistics/presentation/pages/all_payments_page.dart'; // New import
 import '../../features/settings/presentation/pages/settings_page.dart';
 
 class RouteGenerator {
@@ -127,6 +128,12 @@ class RouteGenerator {
             productData: productData,
             customerData: customerData,
           ),
+          settings: settings,
+        );
+
+      case AppRoutes.allPayments: // New route case
+        return MaterialPageRoute(
+          builder: (_) => const AllPaymentsPage(),
           settings: settings,
         );
 

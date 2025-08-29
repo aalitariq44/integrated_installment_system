@@ -21,6 +21,7 @@ class AppRoutes {
   // Payment routes
   static const String addPayment = '/add-payment';
   static const String paymentReceipt = '/payment-receipt';
+  static const String allPayments = '/all-payments';
 
   // Utility routes
   static const String backup = '/backup';
