@@ -85,11 +85,7 @@ class QuickActions extends StatelessWidget {
             ),
             child: Column(
               children: [
-                Icon(
-                  icon,
-                  color: color,
-                  size: 28,
-                ),
+                Icon(icon, color: color, size: 28),
                 const SizedBox(height: 8),
                 Text(
                   title,

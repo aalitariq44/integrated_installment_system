@@ -528,10 +528,7 @@ class PaymentsRepository {
       final results = await _databaseHelper.query(
         DatabaseConstants.paymentsTable,
         where: '${DatabaseConstants.paymentsDate} BETWEEN ? AND ?',
-        whereArgs: [
-          startDate.toIso8601String(),
-          endDate.toIso8601String(),
-        ],
+        whereArgs: [startDate.toIso8601String(), endDate.toIso8601String()],
         orderBy: '${DatabaseConstants.paymentsDate} DESC',
       );
 
@@ -544,7 +541,8 @@ class PaymentsRepository {
   // Search payments
   Future<List<PaymentModel>> searchPayments(String query) async {
     try {
-      const sql = '''
+      const sql =
+          '''
         SELECT p.*, c.${DatabaseConstants.customersName}, pr.${DatabaseConstants.productsName}
         FROM ${DatabaseConstants.paymentsTable} p
         LEFT JOIN ${DatabaseConstants.customersTable} c ON p.${DatabaseConstants.paymentsCustomerId} = c.${DatabaseConstants.customersId}
@@ -570,7 +568,8 @@ class PaymentsRepository {
   // Get payments with details (including customer and product info)
   Future<List<Map<String, dynamic>>> getPaymentsWithDetails() async {
     try {
-      const sql = '''
+      const sql =
+          '''
         SELECT p.*, 
                c.${DatabaseConstants.customersName} as customer_name,
                c.${DatabaseConstants.customersPhone} as customer_phone,
@@ -592,7 +591,8 @@ class PaymentsRepository {
   Future<List<Map<String, dynamic>>> getOverduePayments() async {
     try {
       final now = DateTime.now();
-      const sql = '''
+      const sql =
+          '''
         SELECT p.*, 
                c.${DatabaseConstants.customersName} as customer_name,
                c.${DatabaseConstants.customersPhone} as customer_phone,
@@ -614,7 +614,8 @@ class PaymentsRepository {
   // Generate payment receipt
   Future<Map<String, dynamic>> generatePaymentReceipt(int paymentId) async {
     try {
-      const sql = '''
+      const sql =
+          '''
         SELECT p.*, 
                c.${DatabaseConstants.customersName} as customer_name,
                c.${DatabaseConstants.customersPhone} as customer_phone,
@@ -662,8 +663,13 @@ class PaymentsRepository {
         throw Exception('المنتج غير موجود');
       }
 
-      final finalPrice = (productResult[DatabaseConstants.productsFinalPrice] as num).toDouble();
-      final totalPaid = (productResult[DatabaseConstants.productsTotalPaid] as num?)?.toDouble() ?? 0.0;
+      final finalPrice =
+          (productResult[DatabaseConstants.productsFinalPrice] as num)
+              .toDouble();
+      final totalPaid =
+          (productResult[DatabaseConstants.productsTotalPaid] as num?)
+              ?.toDouble() ??
+          0.0;
       final remainingAmount = finalPrice - totalPaid;
 
       final schedule = <Map<String, dynamic>>[];
@@ -672,8 +678,10 @@ class PaymentsRepository {
       int installmentNumber = 1;
 
       while (remaining > 0) {
-        final paymentAmount = remaining >= monthlyAmount ? monthlyAmount : remaining;
-        
+        final paymentAmount = remaining >= monthlyAmount
+            ? monthlyAmount
+            : remaining;
+
         schedule.add({
           'installment_number': installmentNumber,
           'due_date': currentDate.toIso8601String(),
@@ -682,7 +690,11 @@ class PaymentsRepository {
         });
 
         remaining -= paymentAmount;
-        currentDate = DateTime(currentDate.year, currentDate.month + 1, currentDate.day);
+        currentDate = DateTime(
+          currentDate.year,
+          currentDate.month + 1,
+          currentDate.day,
+        );
         installmentNumber++;
       }
 
@@ -702,7 +714,9 @@ class PaymentsRepository {
   }
 
   // Import payments
-  Future<Map<String, dynamic>> importPayments(List<Map<String, dynamic>> paymentsData) async {
+  Future<Map<String, dynamic>> importPayments(
+    List<Map<String, dynamic>> paymentsData,
+  ) async {
     int imported = 0;
     int skipped = 0;
     int errors = 0;
@@ -719,11 +733,7 @@ class PaymentsRepository {
         }
       });
 
-      return {
-        'imported': imported,
-        'skipped': skipped,
-        'errors': errors,
-      };
+      return {'imported': imported, 'skipped': skipped, 'errors': errors};
     } catch (e) {
       throw Exception('فشل في استيراد المدفوعات: $e');
     }
@@ -748,7 +758,10 @@ class PaymentsRepository {
     if (productExists == null) {
       errors.add('المنتج غير موجود');
     } else {
-      final remainingAmount = (productExists[DatabaseConstants.productsRemainingAmount] as num?)?.toDouble() ?? 0.0;
+      final remainingAmount =
+          (productExists[DatabaseConstants.productsRemainingAmount] as num?)
+              ?.toDouble() ??
+          0.0;
       if (payment.paymentAmount > remainingAmount) {
         errors.add('مبلغ الدفعة أكبر من المبلغ المتبقي');
       }
@@ -765,10 +778,7 @@ class PaymentsRepository {
       errors.add('العميل غير موجود');
     }
 
-    return {
-      'isValid': errors.isEmpty,
-      'errors': errors,
-    };
+    return {'isValid': errors.isEmpty, 'errors': errors};
   }
 
   Future<void> _updateProductTotalPaid(dynamic txn, int productId) async {

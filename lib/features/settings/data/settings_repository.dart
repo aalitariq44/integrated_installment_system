@@ -1,5 +1,6 @@
 import '../../../core/database/database_helper.dart';
-import '../../../core/database/models/settings_model.dart' as core_settings_model;
+import '../../../core/database/models/settings_model.dart'
+    as core_settings_model;
 import '../../../core/database/models/key_value_settings_model.dart';
 import '../../../core/constants/database_constants.dart';
 
@@ -185,31 +186,39 @@ class SettingsRepository {
       final List<KeyValueSettingsModel> keyValueSettings = [];
 
       // Convert SettingsModel fields to KeyValueSettingsModel
-      keyValueSettings.add(KeyValueSettingsModel(
-        key: 'appPassword',
-        value: settings.appPassword,
-        description: 'كلمة مرور التطبيق',
-      ));
+      keyValueSettings.add(
+        KeyValueSettingsModel(
+          key: 'appPassword',
+          value: settings.appPassword,
+          description: 'كلمة مرور التطبيق',
+        ),
+      );
       if (settings.businessName != null) {
-        keyValueSettings.add(KeyValueSettingsModel(
-          key: 'businessName',
-          value: settings.businessName!,
-          description: 'اسم الشركة',
-        ));
+        keyValueSettings.add(
+          KeyValueSettingsModel(
+            key: 'businessName',
+            value: settings.businessName!,
+            description: 'اسم الشركة',
+          ),
+        );
       }
       if (settings.ownerName != null) {
-        keyValueSettings.add(KeyValueSettingsModel(
-          key: 'ownerName',
-          value: settings.ownerName!,
-          description: 'اسم المالك',
-        ));
+        keyValueSettings.add(
+          KeyValueSettingsModel(
+            key: 'ownerName',
+            value: settings.ownerName!,
+            description: 'اسم المالك',
+          ),
+        );
       }
       if (settings.phone != null) {
-        keyValueSettings.add(KeyValueSettingsModel(
-          key: 'phone',
-          value: settings.phone!,
-          description: 'رقم الهاتف',
-        ));
+        keyValueSettings.add(
+          KeyValueSettingsModel(
+            key: 'phone',
+            value: settings.phone!,
+            description: 'رقم الهاتف',
+          ),
+        );
       }
       // Add other fields from SettingsModel if necessary
 

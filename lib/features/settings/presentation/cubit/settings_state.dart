@@ -34,7 +34,7 @@ class SettingLoaded extends SettingsState {
 }
 
 class BusinessSettingsLoaded extends SettingsState {
-  final Map<String, String> settings;
+  final Map<String, dynamic> settings;
 
   const BusinessSettingsLoaded({required this.settings});
 
@@ -43,7 +43,7 @@ class BusinessSettingsLoaded extends SettingsState {
 }
 
 class AppPreferencesLoaded extends SettingsState {
-  final Map<String, String> preferences;
+  final Map<String, dynamic> preferences;
 
   const AppPreferencesLoaded({required this.preferences});
 
@@ -52,7 +52,7 @@ class AppPreferencesLoaded extends SettingsState {
 }
 
 class BackupSettingsLoaded extends SettingsState {
-  final Map<String, String> settings;
+  final Map<String, dynamic> settings;
 
   const BackupSettingsLoaded({required this.settings});
 

@@ -3,10 +3,7 @@ import 'package:flutter/material.dart';
 class RecentActivity extends StatelessWidget {
   final List<Map<String, dynamic>> activities;
 
-  const RecentActivity({
-    super.key,
-    required this.activities,
-  });
+  const RecentActivity({super.key, required this.activities});
 
   @override
   Widget build(BuildContext context) {
@@ -14,9 +11,7 @@ class RecentActivity extends StatelessWidget {
       return const Card(
         child: Padding(
           padding: EdgeInsets.all(32),
-          child: Center(
-            child: Text('لا توجد أنشطة حديثة'),
-          ),
+          child: Center(child: Text('لا توجد أنشطة حديثة')),
         ),
       );
     }
@@ -38,9 +33,7 @@ class RecentActivity extends StatelessWidget {
                 _getActivityTitle(activity),
                 style: const TextStyle(fontWeight: FontWeight.w500),
               ),
-              subtitle: Text(
-                _getActivitySubtitle(activity),
-              ),
+              subtitle: Text(_getActivitySubtitle(activity)),
               trailing: Text(
                 _formatDate(activity['activity_date']),
                 style: Theme.of(context).textTheme.bodySmall,
@@ -95,7 +88,7 @@ class RecentActivity extends StatelessWidget {
     final customerName = activity['customer_name'] ?? '';
     final productName = activity['product_name'] ?? '';
     final amount = activity['amount']?.toString() ?? '0';
-    
+
     if (activity['activity_type'] == 'payment') {
       return '$customerName - $amount ر.س';
     } else if (activity['activity_type'] == 'product') {
@@ -106,7 +99,7 @@ class RecentActivity extends StatelessWidget {
 
   String _formatDate(String? dateStr) {
     if (dateStr == null) return '';
-    
+
     try {
       final date = DateTime.parse(dateStr);
       return '${date.day}/${date.month}/${date.year}';

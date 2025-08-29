@@ -455,7 +455,8 @@ class ProductsRepository {
   // Get products statistics
   Future<Map<String, dynamic>> getProductsStatistics() async {
     try {
-      const sql = '''
+      const sql =
+          '''
         SELECT 
           COUNT(*) as total_products,
           COUNT(CASE WHEN ${DatabaseConstants.productsIsCompleted} = 1 THEN 1 END) as completed_products,
@@ -476,7 +477,8 @@ class ProductsRepository {
   // Get products with payment details
   Future<List<Map<String, dynamic>>> getProductsWithPaymentDetails() async {
     try {
-      const sql = '''
+      const sql =
+          '''
         SELECT 
           p.*,
           c.${DatabaseConstants.customersName} as customer_name,
@@ -498,7 +500,10 @@ class ProductsRepository {
   }
 
   // Update product completion status
-  Future<bool> updateProductCompletionStatus(int productId, bool isCompleted) async {
+  Future<bool> updateProductCompletionStatus(
+    int productId,
+    bool isCompleted,
+  ) async {
     try {
       final now = DateTime.now();
       final updateCount = await _databaseHelper.update(
@@ -527,7 +532,9 @@ class ProductsRepository {
   }
 
   // Import products
-  Future<Map<String, dynamic>> importProducts(List<Map<String, dynamic>> productsData) async {
+  Future<Map<String, dynamic>> importProducts(
+    List<Map<String, dynamic>> productsData,
+  ) async {
     int imported = 0;
     int skipped = 0;
     int errors = 0;
@@ -544,11 +551,7 @@ class ProductsRepository {
         }
       });
 
-      return {
-        'imported': imported,
-        'skipped': skipped,
-        'errors': errors,
-      };
+      return {'imported': imported, 'skipped': skipped, 'errors': errors};
     } catch (e) {
       throw Exception('فشل في استيراد المنتجات: $e');
     }
@@ -592,9 +595,6 @@ class ProductsRepository {
       errors.add('العميل غير موجود');
     }
 
-    return {
-      'isValid': errors.isEmpty,
-      'errors': errors,
-    };
+    return {'isValid': errors.isEmpty, 'errors': errors};
   }
 }
