@@ -334,7 +334,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage> {
                                     context,
                                     AppRoutes.productDetails,
                                     arguments: product.productId,
-                                  );
+                                  ).then((_) => _loadCustomerProducts());
                                 },
                               ),
                             );
