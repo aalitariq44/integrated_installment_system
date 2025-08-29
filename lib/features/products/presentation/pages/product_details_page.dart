@@ -654,11 +654,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                   child: const Text('إلغاء'),
                 ),
                 TextButton(
-                  onPressed: () => _verifyAndDelete(
-                    _passwordController,
-                    _formKey,
-                    context,
-                  ),
+                  onPressed: () =>
+                      _verifyAndDelete(_passwordController, _formKey, context),
                   style: TextButton.styleFrom(foregroundColor: Colors.red),
                   child: const Text('حذف'),
                 ),
