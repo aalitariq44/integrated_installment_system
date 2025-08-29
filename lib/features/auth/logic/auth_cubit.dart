@@ -1,22 +1,27 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
-import '../../settings/data/settings_repository.dart';
+import '../data/auth_repository.dart'; // Import AuthRepository
+import '../../settings/data/settings_repository.dart'; // Keep SettingsRepository for password management
 
 part 'auth_state.dart';
 
 class AuthCubit extends Cubit<AuthState> {
-  final SettingsRepository _settingsRepository;
+  final AuthRepository _authRepository;
+  final SettingsRepository _settingsRepository; // Keep SettingsRepository
 
-  AuthCubit({required SettingsRepository settingsRepository})
-    : _settingsRepository = settingsRepository,
-      super(const AuthInitial());
+  AuthCubit({
+    required AuthRepository authRepository,
+    required SettingsRepository settingsRepository,
+  })  : _authRepository = authRepository,
+        _settingsRepository = settingsRepository,
+        super(const AuthInitial());
 
   // Check if user is authenticated
   Future<void> checkAuthStatus() async {
     try {
       emit(const AuthLoading());
-      final hasSettings = await _settingsRepository.hasSettings();
-      if (hasSettings) {
+      final isAuthenticated = await _authRepository.checkAuthStatus();
+      if (isAuthenticated) {
         emit(const AuthAuthenticated());
       } else {
         emit(const AuthUnauthenticated());
@@ -26,27 +31,29 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
-  // Login with password
-  Future<void> login(String password) async {
+  // Login with username and password
+  Future<void> login(String username, String password) async {
     try {
       emit(const AuthLoading());
-      final isValid = await _settingsRepository.validatePassword(password);
-      if (isValid) {
-        emit(const AuthAuthenticated());
-      } else {
-        emit(const AuthError(message: 'كلمة المرور غير صحيحة'));
-      }
+      await _authRepository.login(username, password);
+      emit(const AuthAuthenticated());
     } catch (e) {
       emit(AuthError(message: e.toString()));
     }
   }
 
   // Logout
-  void logout() {
-    emit(const AuthUnauthenticated());
+  Future<void> logout() async {
+    try {
+      emit(const AuthLoading());
+      await _authRepository.logout();
+      emit(const AuthUnauthenticated());
+    } catch (e) {
+      emit(AuthError(message: e.toString()));
+    }
   }
 
-  // Change password
+  // Change password (still uses SettingsRepository as it's a setting)
   Future<void> changePassword(String oldPassword, String newPassword) async {
     try {
       emit(const AuthLoading());
@@ -72,7 +79,7 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
-  // Setup initial password
+  // Setup initial password (still uses SettingsRepository as it's a setting)
   Future<void> setupPassword(String password) async {
     try {
       emit(const AuthLoading());

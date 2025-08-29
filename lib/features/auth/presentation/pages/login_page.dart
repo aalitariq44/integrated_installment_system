@@ -32,7 +32,7 @@ class _LoginPageState extends State<LoginPage> {
 
     try {
       final authCubit = context.read<AuthCubit>();
-      await authCubit.login(_passwordController.text.trim());
+      await authCubit.login('admin', _passwordController.text.trim());
 
       final state = authCubit.state;
       if (state is AuthAuthenticated) {

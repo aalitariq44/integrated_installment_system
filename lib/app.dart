@@ -14,7 +14,10 @@ import 'features/customers/presentation/cubit/customers_cubit.dart';
 import 'features/products/presentation/cubit/products_cubit.dart';
 import 'features/payments/presentation/cubit/payments_cubit.dart';
 import 'features/statistics/presentation/cubit/statistics_cubit.dart';
-import 'features/home/presentation/pages/home_page.dart';
+import 'features/auth/data/auth_repository.dart';
+import 'features/auth/logic/auth_cubit.dart';
+import 'app/routes/app_routes.dart';
+import 'app/routes/route_generator.dart';
 
 class InstallmentApp extends StatelessWidget {
   const InstallmentApp({super.key});
@@ -51,6 +54,11 @@ class InstallmentApp extends StatelessWidget {
             databaseHelper: context.read<DatabaseHelper>(),
           ),
         ),
+        RepositoryProvider<AuthRepository>(
+          create: (context) => AuthRepository(
+            databaseHelper: context.read<DatabaseHelper>(),
+          ),
+        ),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -79,13 +87,20 @@ class InstallmentApp extends StatelessWidget {
               statisticsRepository: context.read<StatisticsRepository>(),
             ),
           ),
+          BlocProvider<AuthCubit>(
+            create: (context) => AuthCubit(
+              authRepository: context.read<AuthRepository>(),
+              settingsRepository: context.read<SettingsRepository>(),
+            ),
+          ),
         ],
         child: MaterialApp(
           title: 'نظام الأقساط المتكامل',
           theme: AppTheme.lightTheme,
           darkTheme: AppTheme.darkTheme,
           themeMode: ThemeMode.system,
-          home: const HomePage(),
+          initialRoute: AppRoutes.splash,
+          onGenerateRoute: RouteGenerator.generateRoute,
           debugShowCheckedModeBanner: false,
           locale: const Locale('ar', 'SA'),
           supportedLocales: const [Locale('ar', 'SA'), Locale('en', 'US')],
