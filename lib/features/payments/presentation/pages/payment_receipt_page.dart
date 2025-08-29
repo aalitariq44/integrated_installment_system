@@ -76,10 +76,7 @@ class _PaymentReceiptPageState extends State<PaymentReceiptPage> {
                     pw.SizedBox(height: 10),
                     pw.Text(
                       'رقم الإيصال: ${widget.receiptNumber}',
-                      style: pw.TextStyle(
-                        fontSize: 16,
-                        font: arabicFont,
-                      ),
+                      style: pw.TextStyle(fontSize: 16, font: arabicFont),
                       textDirection: pw.TextDirection.rtl,
                     ),
                   ],
@@ -104,19 +101,13 @@ class _PaymentReceiptPageState extends State<PaymentReceiptPage> {
                 pw.SizedBox(height: 10),
                 pw.Text(
                   'الاسم: ${widget.customerData!['customer_name']}',
-                  style: pw.TextStyle(
-                    fontSize: 14,
-                    font: arabicFont,
-                  ),
+                  style: pw.TextStyle(fontSize: 14, font: arabicFont),
                   textDirection: pw.TextDirection.rtl,
                 ),
                 if (widget.customerData!['phone_number'] != null)
                   pw.Text(
                     'الهاتف: ${widget.customerData!['phone_number']}',
-                    style: pw.TextStyle(
-                      fontSize: 14,
-                      font: arabicFont,
-                    ),
+                    style: pw.TextStyle(fontSize: 14, font: arabicFont),
                     textDirection: pw.TextDirection.rtl,
                   ),
                 pw.SizedBox(height: 20),
@@ -136,18 +127,12 @@ class _PaymentReceiptPageState extends State<PaymentReceiptPage> {
                 pw.SizedBox(height: 10),
                 pw.Text(
                   'اسم المنتج: ${widget.productData!['product_name']}',
-                  style: pw.TextStyle(
-                    fontSize: 14,
-                    font: arabicFont,
-                  ),
+                  style: pw.TextStyle(fontSize: 14, font: arabicFont),
                   textDirection: pw.TextDirection.rtl,
                 ),
                 pw.Text(
                   'السعر النهائي: ${(widget.productData!['final_price'] as num).toStringAsFixed(0)} د.ع',
-                  style: pw.TextStyle(
-                    fontSize: 14,
-                    font: arabicFont,
-                  ),
+                  style: pw.TextStyle(fontSize: 14, font: arabicFont),
                   textDirection: pw.TextDirection.rtl,
                 ),
                 pw.SizedBox(height: 20),
@@ -232,10 +217,7 @@ class _PaymentReceiptPageState extends State<PaymentReceiptPage> {
                     pw.SizedBox(height: 10),
                     pw.Text(
                       'تم إنشاء الإيصال بتاريخ: ${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}',
-                      style: pw.TextStyle(
-                        fontSize: 12,
-                        font: arabicFont,
-                      ),
+                      style: pw.TextStyle(fontSize: 12, font: arabicFont),
                       textDirection: pw.TextDirection.rtl,
                     ),
                     pw.Text(
