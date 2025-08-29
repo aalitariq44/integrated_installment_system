@@ -12,9 +12,9 @@ class AuthCubit extends Cubit<AuthState> {
   AuthCubit({
     required AuthRepository authRepository,
     required SettingsRepository settingsRepository,
-  })  : _authRepository = authRepository,
-        _settingsRepository = settingsRepository,
-        super(const AuthInitial());
+  }) : _authRepository = authRepository,
+       _settingsRepository = settingsRepository,
+       super(const AuthInitial());
 
   // Check if user is authenticated
   Future<void> checkAuthStatus() async {
@@ -35,8 +35,12 @@ class AuthCubit extends Cubit<AuthState> {
   Future<void> login(String username, String password) async {
     try {
       emit(const AuthLoading());
-      await _authRepository.login(username, password);
-      emit(const AuthAuthenticated());
+      final success = await _authRepository.login(username, password);
+      if (success) {
+        emit(const AuthAuthenticated());
+      } else {
+        emit(const AuthError(message: 'بيانات الدخول غير صحيحة'));
+      }
     } catch (e) {
       emit(AuthError(message: e.toString()));
     }

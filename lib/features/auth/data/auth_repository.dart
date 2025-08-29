@@ -1,4 +1,5 @@
 import '../../../core/database/database_helper.dart';
+import '../../../core/constants/database_constants.dart';
 
 class AuthRepository {
   final DatabaseHelper databaseHelper;
@@ -11,14 +12,25 @@ class AuthRepository {
     return true;
   }
 
-  Future<void> login(String username, String password) async {
+  Future<bool> login(String username, String password) async {
     // Implement login logic
     await Future.delayed(const Duration(seconds: 1)); // Simulate network delay
-    if (username == 'admin' && password == 'admin') {
-      // Simulate successful login
-      return;
+
+    // Get the stored password from settings
+    final settings = await databaseHelper.queryFirst(
+      DatabaseConstants.settingsTable,
+      columns: [DatabaseConstants.settingsAppPassword],
+      where: '${DatabaseConstants.settingsId} = ?',
+      whereArgs: [1],
+    );
+
+    if (settings != null &&
+        settings[DatabaseConstants.settingsAppPassword] == password) {
+      // Successful login
+      return true;
     } else {
-      throw Exception('Invalid credentials');
+      // Invalid credentials
+      return false;
     }
   }
 
