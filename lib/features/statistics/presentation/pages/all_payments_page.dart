@@ -19,6 +19,7 @@ class _AllPaymentsPageState extends State<AllPaymentsPage> {
 
   String _sortBy = 'payment_date'; // Default sort by date
   bool _sortAscending = false; // Default sort descending (newest to oldest)
+  String _timeFilter = 'all'; // 'all', 'week', 'month', 'year'
 
   int _totalPaymentsCount = 0;
   double _totalPaymentsAmount = 0.0;
@@ -41,6 +42,25 @@ class _AllPaymentsPageState extends State<AllPaymentsPage> {
     setState(() => _isLoading = true);
     try {
       final dbHelper = context.read<DatabaseHelper>();
+      String dateFilterClause = '';
+      DateTime now = DateTime.now();
+      if (_timeFilter == 'week') {
+        DateTime startOfWeek = AppDateUtils.AppDateUtils.startOfWeek(now);
+        DateTime endOfWeek = AppDateUtils.AppDateUtils.endOfWeek(now);
+        dateFilterClause =
+            "WHERE p.payment_date BETWEEN '${AppDateUtils.AppDateUtils.formatForDatabase(startOfWeek)}' AND '${AppDateUtils.AppDateUtils.formatForDatabase(endOfWeek)}'";
+      } else if (_timeFilter == 'month') {
+        DateTime startOfMonth = AppDateUtils.AppDateUtils.startOfMonth(now);
+        DateTime endOfMonth = AppDateUtils.AppDateUtils.endOfMonth(now);
+        dateFilterClause =
+            "WHERE p.payment_date BETWEEN '${AppDateUtils.AppDateUtils.formatForDatabase(startOfMonth)}' AND '${AppDateUtils.AppDateUtils.formatForDatabase(endOfMonth)}'";
+      } else if (_timeFilter == 'year') {
+        DateTime startOfYear = AppDateUtils.AppDateUtils.startOfYear(now);
+        DateTime endOfYear = AppDateUtils.AppDateUtils.endOfYear(now);
+        dateFilterClause =
+            "WHERE p.payment_date BETWEEN '${AppDateUtils.AppDateUtils.formatForDatabase(startOfYear)}' AND '${AppDateUtils.AppDateUtils.formatForDatabase(endOfYear)}'";
+      }
+
       final payments = await dbHelper.rawQuery('''
         SELECT
           p.payment_id,
@@ -52,6 +72,7 @@ class _AllPaymentsPageState extends State<AllPaymentsPage> {
         FROM payments p
         JOIN customers c ON p.customer_id = c.customer_id
         JOIN products prod ON p.product_id = prod.product_id
+        $dateFilterClause
         ORDER BY $_sortBy ${_sortAscending ? 'ASC' : 'DESC'}
       ''');
 
@@ -105,6 +126,33 @@ class _AllPaymentsPageState extends State<AllPaymentsPage> {
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: _loadAllPayments,
+          ),
+          PopupMenuButton<String>(
+            icon: const Icon(Icons.filter_list),
+            onSelected: (String result) {
+              setState(() {
+                _timeFilter = result;
+                _loadAllPayments();
+              });
+            },
+            itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+              PopupMenuItem<String>(
+                value: 'all',
+                child: Text('كل الدفعات', style: TextStyle(fontWeight: _timeFilter == 'all' ? FontWeight.bold : FontWeight.normal)),
+              ),
+              PopupMenuItem<String>(
+                value: 'week',
+                child: Text('هذا الأسبوع', style: TextStyle(fontWeight: _timeFilter == 'week' ? FontWeight.bold : FontWeight.normal)),
+              ),
+              PopupMenuItem<String>(
+                value: 'month',
+                child: Text('هذا الشهر', style: TextStyle(fontWeight: _timeFilter == 'month' ? FontWeight.bold : FontWeight.normal)),
+              ),
+              PopupMenuItem<String>(
+                value: 'year',
+                child: Text('هذا العام', style: TextStyle(fontWeight: _timeFilter == 'year' ? FontWeight.bold : FontWeight.normal)),
+              ),
+            ],
           ),
           PopupMenuButton<String>(
             icon: const Icon(Icons.sort),
