@@ -5,7 +5,8 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import '../../../../core/database/database_helper.dart';
-import '../../logic/settings_cubit.dart';
+// استخدام SettingsCubit من مجلد presentation/cubit بدلاً من logic لتجنب التعارض
+import '../cubit/settings_cubit.dart';
 import '../../../auth/logic/auth_cubit.dart';
 import '../../../../app/routes/app_routes.dart';
 
