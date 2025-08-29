@@ -205,29 +205,30 @@ class _StatisticsPageState extends State<StatisticsPage> {
                             ],
                           ),
                           const SizedBox(height: 16),
-          _buildRevenueRow(
-            'إجمالي المبيعات',
-            _statistics['totalSales'],
-            Colors.blue,
-          ),
-          const SizedBox(height: 12),
-          _buildRevenueRow(
-            'إجمالي المحصل',
-            _statistics['totalPaid'],
-            Colors.green,
-          ),
-          const SizedBox(height: 12),
-          _buildRevenueRow(
-            'إجمالي الأرباح',
-            _statistics['totalProfit'],
-            Colors.orange,
-          ),
-          const SizedBox(height: 12),
-          _buildRevenueRow(
-            'المبلغ المتبقي',
-            _statistics['totalSales'] - _statistics['totalPaid'],
-            Colors.red,
-          ),
+                          _buildRevenueRow(
+                            'إجمالي المبيعات',
+                            _statistics['totalSales'],
+                            Colors.blue,
+                          ),
+                          const SizedBox(height: 12),
+                          _buildRevenueRow(
+                            'إجمالي المحصل',
+                            _statistics['totalPaid'],
+                            Colors.green,
+                          ),
+                          const SizedBox(height: 12),
+                          _buildRevenueRow(
+                            'إجمالي الأرباح',
+                            _statistics['totalProfit'],
+                            Colors.orange,
+                          ),
+                          const SizedBox(height: 12),
+                          _buildRevenueRow(
+                            'المبلغ المتبقي',
+                            _statistics['totalSales'] -
+                                _statistics['totalPaid'],
+                            Colors.red,
+                          ),
                         ],
                       ),
                     ),
@@ -265,7 +266,8 @@ class _StatisticsPageState extends State<StatisticsPage> {
                                 child: _buildStatCard(
                                   'المحصل',
                                   CurrencyUtils.formatCurrency(
-                                      _statistics['thisMonthPayments']),
+                                    _statistics['thisMonthPayments'],
+                                  ),
                                   Icons.attach_money,
                                   Colors.green,
                                 ),
@@ -351,10 +353,6 @@ class _StatisticsPageState extends State<StatisticsPage> {
             icon: Icon(Icons.analytics),
             label: 'الإحصائيات',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'الإعدادات',
-          ),
         ],
         onTap: (index) {
           switch (index) {
@@ -363,9 +361,6 @@ class _StatisticsPageState extends State<StatisticsPage> {
               break;
             case 1:
               // Already on statistics page
-              break;
-            case 2:
-              Navigator.pushNamed(context, AppRoutes.settings);
               break;
           }
         },

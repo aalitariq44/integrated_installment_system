@@ -170,7 +170,8 @@ class _CustomersPageState extends State<CustomersPage> {
                               Text('رقم الزبون: ${customer.customerId}'),
                               const SizedBox(height: 4),
                               Text(
-                                  'الهاتف: ${customer.phoneNumber ?? 'لايوجد'}'),
+                                'الهاتف: ${customer.phoneNumber ?? 'لايوجد'}',
+                              ),
                             ],
                           ),
                           onTap: () async {
@@ -212,10 +213,6 @@ class _CustomersPageState extends State<CustomersPage> {
             icon: Icon(Icons.analytics),
             label: 'الإحصائيات',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'الإعدادات',
-          ),
         ],
         onTap: (index) {
           switch (index) {
@@ -224,9 +221,6 @@ class _CustomersPageState extends State<CustomersPage> {
               break;
             case 1:
               Navigator.pushNamed(context, '/statistics');
-              break;
-            case 2:
-              Navigator.pushNamed(context, '/settings');
               break;
           }
         },

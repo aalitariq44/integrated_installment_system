@@ -477,36 +477,6 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
               ],
             ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        currentIndex: 2,
-        selectedItemColor: Colors.blue,
-        unselectedItemColor: Colors.grey,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.people), label: 'العملاء'),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.analytics),
-            label: 'الإحصائيات',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'الإعدادات',
-          ),
-        ],
-        onTap: (index) {
-          switch (index) {
-            case 0:
-              Navigator.pushReplacementNamed(context, AppRoutes.customers);
-              break;
-            case 1:
-              Navigator.pushReplacementNamed(context, AppRoutes.statistics);
-              break;
-            case 2:
-              // Already on settings page
-              break;
-          }
-        },
-      ),
     );
   }
 }
