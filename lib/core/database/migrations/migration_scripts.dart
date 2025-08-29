@@ -1,7 +1,11 @@
 import 'package:sqflite/sqflite.dart';
 
 class MigrationScripts {
-  static Future<void> migrate(Database db, int oldVersion, int newVersion) async {
+  static Future<void> migrate(
+    Database db,
+    int oldVersion,
+    int newVersion,
+  ) async {
     for (int version = oldVersion + 1; version <= newVersion; version++) {
       await _migrateToVersion(db, version);
     }
@@ -37,7 +41,11 @@ class MigrationScripts {
   }
 
   // Utility method to check if column exists
-  static Future<bool> columnExists(Database db, String tableName, String columnName) async {
+  static Future<bool> columnExists(
+    Database db,
+    String tableName,
+    String columnName,
+  ) async {
     final result = await db.rawQuery('PRAGMA table_info($tableName)');
     return result.any((column) => column['name'] == columnName);
   }

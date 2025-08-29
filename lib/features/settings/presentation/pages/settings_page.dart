@@ -11,19 +11,14 @@ class SettingsPage extends StatelessWidget {
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
       ),
-      body: const Center(
-        child: Text('صفحة الإعدادات'),
-      ),
+      body: const Center(child: Text('صفحة الإعدادات')),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         currentIndex: 2,
         selectedItemColor: Colors.blue,
         unselectedItemColor: Colors.grey,
         items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.people),
-            label: 'العملاء',
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.people), label: 'العملاء'),
           BottomNavigationBarItem(
             icon: Icon(Icons.analytics),
             label: 'الإحصائيات',

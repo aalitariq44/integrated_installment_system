@@ -6,12 +6,13 @@ class StatisticsRepository {
   final DatabaseHelper _databaseHelper;
 
   StatisticsRepository({required DatabaseHelper databaseHelper})
-      : _databaseHelper = databaseHelper;
+    : _databaseHelper = databaseHelper;
 
   // Get overall statistics
   Future<Map<String, dynamic>> getOverallStatistics() async {
     try {
-      final sql = '''
+      final sql =
+          '''
         SELECT 
           (SELECT COUNT(*) FROM ${DatabaseConstants.customersTable}) as total_customers,
           (SELECT COUNT(*) FROM ${DatabaseConstants.productsTable}) as total_products,
@@ -25,7 +26,7 @@ class StatisticsRepository {
       ''';
 
       final result = await _databaseHelper.rawQuery(sql);
-      
+
       if (result.isNotEmpty) {
         final data = result.first;
         return {
@@ -35,8 +36,10 @@ class StatisticsRepository {
           'active_products': data['active_products'] ?? 0,
           'total_payments': data['total_payments'] ?? 0,
           'total_sales': (data['total_sales'] as num?)?.toDouble() ?? 0.0,
-          'total_collected': (data['total_collected'] as num?)?.toDouble() ?? 0.0,
-          'total_remaining': (data['total_remaining'] as num?)?.toDouble() ?? 0.0,
+          'total_collected':
+              (data['total_collected'] as num?)?.toDouble() ?? 0.0,
+          'total_remaining':
+              (data['total_remaining'] as num?)?.toDouble() ?? 0.0,
           'total_profit': (data['total_profit'] as num?)?.toDouble() ?? 0.0,
         };
       }
@@ -60,7 +63,8 @@ class StatisticsRepository {
         final startDate = DateTime(currentYear, month, 1);
         final endDate = DateTime(currentYear, month + 1, 0);
 
-        final sql = '''
+        final sql =
+            '''
           SELECT 
             COUNT(DISTINCT p.${DatabaseConstants.paymentsCustomerId}) as customers_count,
             COUNT(p.${DatabaseConstants.paymentsId}) as payments_count,
@@ -78,7 +82,7 @@ class StatisticsRepository {
         ]);
 
         final data = result.isNotEmpty ? result.first : {};
-        
+
         monthlyStats.add({
           'month': month,
           'month_name': AppDateUtils.getMonthName(month),
@@ -106,7 +110,8 @@ class StatisticsRepository {
       final startDate = AppDateUtils.startOfMonth(month);
       final endDate = AppDateUtils.endOfMonth(month);
 
-      final sql = '''
+      final sql =
+          '''
         SELECT 
           date(p.${DatabaseConstants.paymentsDate}) as payment_date,
           COUNT(p.${DatabaseConstants.paymentsId}) as payments_count,
@@ -122,11 +127,15 @@ class StatisticsRepository {
         AppDateUtils.formatForDatabase(endDate),
       ]);
 
-      return result.map((data) => {
-        'date': data['payment_date'],
-        'payments_count': data['payments_count'] ?? 0,
-        'total_amount': (data['total_amount'] as num?)?.toDouble() ?? 0.0,
-      }).toList();
+      return result
+          .map(
+            (data) => {
+              'date': data['payment_date'],
+              'payments_count': data['payments_count'] ?? 0,
+              'total_amount': (data['total_amount'] as num?)?.toDouble() ?? 0.0,
+            },
+          )
+          .toList();
     } catch (e) {
       throw Exception('فشل في تحميل الإحصائيات اليومية: $e');
     }
@@ -135,7 +144,8 @@ class StatisticsRepository {
   // Get top customers by revenue
   Future<List<Map<String, dynamic>>> getTopCustomers({int limit = 10}) async {
     try {
-      final sql = '''
+      final sql =
+          '''
         SELECT 
           c.${DatabaseConstants.customersId},
           c.${DatabaseConstants.customersName},
@@ -154,16 +164,21 @@ class StatisticsRepository {
 
       final result = await _databaseHelper.rawQuery(sql, [limit]);
 
-      return result.map((data) => {
-        'customer_id': data[DatabaseConstants.customersId],
-        'customer_name': data[DatabaseConstants.customersName],
-        'customer_phone': data[DatabaseConstants.customersPhone],
-        'products_count': data['products_count'] ?? 0,
-        'total_sales': (data['total_sales'] as num?)?.toDouble() ?? 0.0,
-        'total_paid': (data['total_paid'] as num?)?.toDouble() ?? 0.0,
-        'remaining_amount': (data['remaining_amount'] as num?)?.toDouble() ?? 0.0,
-        'total_profit': (data['total_profit'] as num?)?.toDouble() ?? 0.0,
-      }).toList();
+      return result
+          .map(
+            (data) => {
+              'customer_id': data[DatabaseConstants.customersId],
+              'customer_name': data[DatabaseConstants.customersName],
+              'customer_phone': data[DatabaseConstants.customersPhone],
+              'products_count': data['products_count'] ?? 0,
+              'total_sales': (data['total_sales'] as num?)?.toDouble() ?? 0.0,
+              'total_paid': (data['total_paid'] as num?)?.toDouble() ?? 0.0,
+              'remaining_amount':
+                  (data['remaining_amount'] as num?)?.toDouble() ?? 0.0,
+              'total_profit': (data['total_profit'] as num?)?.toDouble() ?? 0.0,
+            },
+          )
+          .toList();
     } catch (e) {
       throw Exception('فشل في تحميل أفضل العملاء: $e');
     }
@@ -179,7 +194,8 @@ class StatisticsRepository {
       final end = endDate ?? AppDateUtils.endOfMonth(DateTime.now());
 
       // Current period statistics
-      final currentSql = '''
+      final currentSql =
+          '''
         SELECT 
           COUNT(*) as payments_count,
           SUM(${DatabaseConstants.paymentsAmount}) as total_amount,
@@ -206,27 +222,36 @@ class StatisticsRepository {
       final current = currentResult.isNotEmpty ? currentResult.first : {};
       final previous = previousResult.isNotEmpty ? previousResult.first : {};
 
-      final currentAmount = (current['total_amount'] as num?)?.toDouble() ?? 0.0;
-      final previousAmount = (previous['total_amount'] as num?)?.toDouble() ?? 0.0;
+      final currentAmount =
+          (current['total_amount'] as num?)?.toDouble() ?? 0.0;
+      final previousAmount =
+          (previous['total_amount'] as num?)?.toDouble() ?? 0.0;
 
       double percentageChange = 0.0;
       if (previousAmount > 0) {
-        percentageChange = ((currentAmount - previousAmount) / previousAmount) * 100;
+        percentageChange =
+            ((currentAmount - previousAmount) / previousAmount) * 100;
       }
 
       return {
         'current_period': {
           'payments_count': current['payments_count'] ?? 0,
           'total_amount': currentAmount,
-          'average_amount': (current['average_amount'] as num?)?.toDouble() ?? 0.0,
+          'average_amount':
+              (current['average_amount'] as num?)?.toDouble() ?? 0.0,
         },
         'previous_period': {
           'payments_count': previous['payments_count'] ?? 0,
           'total_amount': previousAmount,
-          'average_amount': (previous['average_amount'] as num?)?.toDouble() ?? 0.0,
+          'average_amount':
+              (previous['average_amount'] as num?)?.toDouble() ?? 0.0,
         },
         'percentage_change': percentageChange,
-        'trend': percentageChange > 0 ? 'increasing' : percentageChange < 0 ? 'decreasing' : 'stable',
+        'trend': percentageChange > 0
+            ? 'increasing'
+            : percentageChange < 0
+            ? 'decreasing'
+            : 'stable',
       };
     } catch (e) {
       throw Exception('فشل في تحميل اتجاهات المدفوعات: $e');
@@ -236,7 +261,8 @@ class StatisticsRepository {
   // Get overdue statistics
   Future<Map<String, dynamic>> getOverdueStatistics() async {
     try {
-      final sql = '''
+      final sql =
+          '''
         SELECT 
           COUNT(DISTINCT p.${DatabaseConstants.productsId}) as overdue_products,
           COUNT(DISTINCT c.${DatabaseConstants.customersId}) as overdue_customers,
@@ -256,7 +282,7 @@ class StatisticsRepository {
       ''';
 
       final result = await _databaseHelper.rawQuery(sql);
-      
+
       if (result.isNotEmpty) {
         final data = result.first;
         return {
@@ -280,7 +306,8 @@ class StatisticsRepository {
   Future<List<Map<String, dynamic>>> getProductCategoriesStatistics() async {
     try {
       // Since we don't have categories in the current schema, we'll analyze by price ranges
-      final sql = '''
+      final sql =
+          '''
         SELECT 
           CASE 
             WHEN ${DatabaseConstants.productsFinalPrice} < 1000 THEN 'أقل من 1000'
@@ -299,13 +326,17 @@ class StatisticsRepository {
 
       final result = await _databaseHelper.rawQuery(sql);
 
-      return result.map((data) => {
-        'category': data['price_range'],
-        'products_count': data['products_count'] ?? 0,
-        'total_sales': (data['total_sales'] as num?)?.toDouble() ?? 0.0,
-        'total_paid': (data['total_paid'] as num?)?.toDouble() ?? 0.0,
-        'total_profit': (data['total_profit'] as num?)?.toDouble() ?? 0.0,
-      }).toList();
+      return result
+          .map(
+            (data) => {
+              'category': data['price_range'],
+              'products_count': data['products_count'] ?? 0,
+              'total_sales': (data['total_sales'] as num?)?.toDouble() ?? 0.0,
+              'total_paid': (data['total_paid'] as num?)?.toDouble() ?? 0.0,
+              'total_profit': (data['total_profit'] as num?)?.toDouble() ?? 0.0,
+            },
+          )
+          .toList();
     } catch (e) {
       throw Exception('فشل في تحميل إحصائيات فئات المنتجات: $e');
     }
@@ -314,7 +345,8 @@ class StatisticsRepository {
   // Get recent activity
   Future<List<Map<String, dynamic>>> getRecentActivity({int limit = 20}) async {
     try {
-      final sql = '''
+      final sql =
+          '''
         SELECT 
           'payment' as activity_type,
           p.${DatabaseConstants.paymentsDate} as activity_date,
@@ -344,14 +376,18 @@ class StatisticsRepository {
 
       final result = await _databaseHelper.rawQuery(sql, [limit]);
 
-      return result.map((data) => {
-        'activity_type': data['activity_type'],
-        'activity_date': data['activity_date'],
-        'amount': (data['amount'] as num?)?.toDouble() ?? 0.0,
-        'customer_name': data['customer_name'],
-        'product_name': data['product_name'],
-        'receipt_number': data['receipt_number'],
-      }).toList();
+      return result
+          .map(
+            (data) => {
+              'activity_type': data['activity_type'],
+              'activity_date': data['activity_date'],
+              'amount': (data['amount'] as num?)?.toDouble() ?? 0.0,
+              'customer_name': data['customer_name'],
+              'product_name': data['product_name'],
+              'receipt_number': data['receipt_number'],
+            },
+          )
+          .toList();
     } catch (e) {
       throw Exception('فشل في تحميل النشاط الحديث: $e');
     }
@@ -360,7 +396,8 @@ class StatisticsRepository {
   // Get collection efficiency
   Future<Map<String, dynamic>> getCollectionEfficiency() async {
     try {
-      final sql = '''
+      final sql =
+          '''
         SELECT 
           COUNT(*) as total_products,
           COUNT(CASE WHEN ${DatabaseConstants.productsIsCompleted} = 1 THEN 1 END) as completed_products,
@@ -372,20 +409,26 @@ class StatisticsRepository {
       ''';
 
       final result = await _databaseHelper.rawQuery(sql);
-      
+
       if (result.isNotEmpty) {
         final data = result.first;
         final totalProducts = data['total_products'] ?? 0;
         final completedProducts = data['completed_products'] ?? 0;
         final totalSales = (data['total_sales'] as num?)?.toDouble() ?? 0.0;
-        final totalCollected = (data['total_collected'] as num?)?.toDouble() ?? 0.0;
-        
+        final totalCollected =
+            (data['total_collected'] as num?)?.toDouble() ?? 0.0;
+
         return {
           'total_products': totalProducts,
           'completed_products': completedProducts,
-          'completion_rate': totalProducts > 0 ? (completedProducts / totalProducts) * 100 : 0.0,
-          'average_collection_rate': (data['average_collection_rate'] as num?)?.toDouble() ?? 0.0,
-          'overall_collection_rate': totalSales > 0 ? (totalCollected / totalSales) * 100 : 0.0,
+          'completion_rate': totalProducts > 0
+              ? (completedProducts / totalProducts) * 100
+              : 0.0,
+          'average_collection_rate':
+              (data['average_collection_rate'] as num?)?.toDouble() ?? 0.0,
+          'overall_collection_rate': totalSales > 0
+              ? (totalCollected / totalSales) * 100
+              : 0.0,
           'total_sales': totalSales,
           'total_collected': totalCollected,
         };

@@ -88,10 +88,7 @@ class ProductValidated extends ProductsState {
   final bool isValid;
   final List<String> errors;
 
-  const ProductValidated({
-    required this.isValid,
-    required this.errors,
-  });
+  const ProductValidated({required this.isValid, required this.errors});
 
   @override
   List<Object?> get props => [isValid, errors];

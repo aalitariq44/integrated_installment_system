@@ -90,13 +90,11 @@ class InstallmentsApp extends StatelessWidget {
           title: AppConstants.appName,
           debugShowCheckedModeBanner: false,
           theme: AppTheme.lightTheme,
-          
+
           // Locale configuration for Arabic
           locale: const Locale('ar', 'SA'),
-          supportedLocales: const [
-            Locale('ar', 'SA'),
-          ],
-          
+          supportedLocales: const [Locale('ar', 'SA')],
+
           // Text direction for RTL
           builder: (context, child) {
             return Directionality(
@@ -104,11 +102,11 @@ class InstallmentsApp extends StatelessWidget {
               child: child!,
             );
           },
-          
+
           // Navigation
           initialRoute: AppRoutes.splash,
           onGenerateRoute: RouteGenerator.generateRoute,
-          
+
           // Navigation observer for debugging
           navigatorObservers: [
             // Add analytics or logging observers here if needed

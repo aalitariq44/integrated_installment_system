@@ -40,8 +40,10 @@ class _CustomersPageState extends State<CustomersPage> {
   List<Map<String, dynamic>> get _filteredCustomers {
     if (_searchQuery.isEmpty) return _customers;
     return _customers.where((customer) {
-      return customer['name'].toString().toLowerCase().contains(_searchQuery.toLowerCase()) ||
-             customer['phone'].toString().contains(_searchQuery);
+      return customer['name'].toString().toLowerCase().contains(
+            _searchQuery.toLowerCase(),
+          ) ||
+          customer['phone'].toString().contains(_searchQuery);
     }).toList();
   }
 
@@ -91,7 +93,7 @@ class _CustomersPageState extends State<CustomersPage> {
               },
             ),
           ),
-          
+
           // Customers List
           Expanded(
             child: _filteredCustomers.isEmpty
@@ -107,10 +109,7 @@ class _CustomersPageState extends State<CustomersPage> {
                         SizedBox(height: 16),
                         Text(
                           'لا توجد عملاء',
-                          style: TextStyle(
-                            fontSize: 18,
-                            color: Colors.grey,
-                          ),
+                          style: TextStyle(fontSize: 18, color: Colors.grey),
                         ),
                       ],
                     ),
@@ -120,15 +119,19 @@ class _CustomersPageState extends State<CustomersPage> {
                     itemCount: _filteredCustomers.length,
                     itemBuilder: (context, index) {
                       final customer = _filteredCustomers[index];
-                      final remainingAmount = customer['totalAmount'] - customer['paidAmount'];
-                      final progress = customer['paidAmount'] / customer['totalAmount'];
-                      
+                      final remainingAmount =
+                          customer['totalAmount'] - customer['paidAmount'];
+                      final progress =
+                          customer['paidAmount'] / customer['totalAmount'];
+
                       return Card(
                         margin: const EdgeInsets.only(bottom: 12),
                         child: ListTile(
                           contentPadding: const EdgeInsets.all(16),
                           leading: CircleAvatar(
-                            backgroundColor: customer['isOverdue'] ? Colors.red : Colors.blue,
+                            backgroundColor: customer['isOverdue']
+                                ? Colors.red
+                                : Colors.blue,
                             child: Text(
                               customer['name'][0],
                               style: const TextStyle(
@@ -157,7 +160,9 @@ class _CustomersPageState extends State<CustomersPage> {
                                       value: progress,
                                       backgroundColor: Colors.grey[300],
                                       valueColor: AlwaysStoppedAnimation<Color>(
-                                        progress == 1.0 ? Colors.green : Colors.blue,
+                                        progress == 1.0
+                                            ? Colors.green
+                                            : Colors.blue,
                                       ),
                                     ),
                                   ),
@@ -172,7 +177,9 @@ class _CustomersPageState extends State<CustomersPage> {
                               Text(
                                 'المتبقي: ${remainingAmount.toStringAsFixed(0)} ريال',
                                 style: TextStyle(
-                                  color: remainingAmount == 0 ? Colors.green : Colors.orange,
+                                  color: remainingAmount == 0
+                                      ? Colors.green
+                                      : Colors.orange,
                                   fontSize: 12,
                                 ),
                               ),
@@ -180,7 +187,10 @@ class _CustomersPageState extends State<CustomersPage> {
                           ),
                           trailing: customer['isOverdue']
                               ? Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                    vertical: 4,
+                                  ),
                                   decoration: BoxDecoration(
                                     color: Colors.red,
                                     borderRadius: BorderRadius.circular(12),
@@ -204,7 +214,7 @@ class _CustomersPageState extends State<CustomersPage> {
           ),
         ],
       ),
-      
+
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           // Navigate to add customer page
@@ -212,17 +222,14 @@ class _CustomersPageState extends State<CustomersPage> {
         backgroundColor: Colors.blue,
         child: const Icon(Icons.add, color: Colors.white),
       ),
-      
+
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         currentIndex: 0,
         selectedItemColor: Colors.blue,
         unselectedItemColor: Colors.grey,
         items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.people),
-            label: 'العملاء',
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.people), label: 'العملاء'),
           BottomNavigationBarItem(
             icon: Icon(Icons.analytics),
             label: 'الإحصائيات',

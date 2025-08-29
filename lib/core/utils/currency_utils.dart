@@ -18,7 +18,7 @@ class CurrencyUtils {
 
   static String formatCurrencyCompact(double? amount) {
     if (amount == null) return '0 ${AppConstants.currencySymbol}';
-    
+
     if (amount >= 1000000) {
       return '${(amount / 1000000).toStringAsFixed(1)}م ${AppConstants.currencySymbol}';
     } else if (amount >= 1000) {
@@ -36,7 +36,7 @@ class CurrencyUtils {
 
   static String formatNumberCompact(double? number) {
     if (number == null) return '0';
-    
+
     if (number >= 1000000) {
       return '${(number / 1000000).toStringAsFixed(1)}م';
     } else if (number >= 1000) {
@@ -49,14 +49,14 @@ class CurrencyUtils {
   // Parse currency from string
   static double? parseCurrency(String? text) {
     if (text == null || text.isEmpty) return null;
-    
+
     // Remove currency symbol and non-numeric characters except decimal point
     final cleanText = text
         .replaceAll(AppConstants.currencySymbol, '')
         .replaceAll(',', '')
         .replaceAll(' ', '')
         .trim();
-    
+
     return double.tryParse(cleanText);
   }
 
@@ -75,22 +75,34 @@ class CurrencyUtils {
     return finalPrice - originalPrice;
   }
 
-  static double calculateProfitPercentage(double originalPrice, double finalPrice) {
+  static double calculateProfitPercentage(
+    double originalPrice,
+    double finalPrice,
+  ) {
     if (originalPrice <= 0) return 0;
     return ((finalPrice - originalPrice) / originalPrice) * 100;
   }
 
-  static double calculateRemainingAmount(double totalAmount, double paidAmount) {
+  static double calculateRemainingAmount(
+    double totalAmount,
+    double paidAmount,
+  ) {
     return totalAmount - paidAmount;
   }
 
-  static double calculatePaymentProgress(double totalAmount, double paidAmount) {
+  static double calculatePaymentProgress(
+    double totalAmount,
+    double paidAmount,
+  ) {
     if (totalAmount <= 0) return 0;
     return (paidAmount / totalAmount) * 100;
   }
 
   // Installment calculations
-  static double calculateInstallmentAmount(double totalAmount, int numberOfInstallments) {
+  static double calculateInstallmentAmount(
+    double totalAmount,
+    int numberOfInstallments,
+  ) {
     if (numberOfInstallments <= 0) return totalAmount;
     return totalAmount / numberOfInstallments;
   }
@@ -108,18 +120,19 @@ class CurrencyUtils {
     int numberOfInstallments,
   ) {
     if (numberOfInstallments <= 0) return [totalAmount];
-    
+
     final installmentAmount = totalAmount / numberOfInstallments;
     final schedule = <double>[];
-    
+
     for (int i = 0; i < numberOfInstallments - 1; i++) {
       schedule.add(installmentAmount);
     }
-    
+
     // Last installment might be different due to rounding
-    final remainingAmount = totalAmount - (installmentAmount * (numberOfInstallments - 1));
+    final remainingAmount =
+        totalAmount - (installmentAmount * (numberOfInstallments - 1));
     schedule.add(remainingAmount);
-    
+
     return schedule;
   }
 
@@ -155,7 +168,11 @@ class CurrencyUtils {
   }
 
   // Currency comparison
-  static bool isEqual(double amount1, double amount2, {double tolerance = 0.01}) {
+  static bool isEqual(
+    double amount1,
+    double amount2, {
+    double tolerance = 0.01,
+  }) {
     return (amount1 - amount2).abs() < tolerance;
   }
 
@@ -169,8 +186,9 @@ class CurrencyUtils {
 
   // Format for different contexts
   static String formatForDisplay(double? amount, {bool showSymbol = true}) {
-    if (amount == null) return showSymbol ? '0.00 ${AppConstants.currencySymbol}' : '0.00';
-    
+    if (amount == null)
+      return showSymbol ? '0.00 ${AppConstants.currencySymbol}' : '0.00';
+
     if (showSymbol) {
       return formatCurrency(amount);
     } else {
@@ -188,15 +206,25 @@ class CurrencyUtils {
   }
 
   // Discount calculations
-  static double calculateDiscountAmount(double originalAmount, double discountPercentage) {
+  static double calculateDiscountAmount(
+    double originalAmount,
+    double discountPercentage,
+  ) {
     return originalAmount * (discountPercentage / 100);
   }
 
-  static double applyDiscount(double originalAmount, double discountPercentage) {
-    return originalAmount - calculateDiscountAmount(originalAmount, discountPercentage);
+  static double applyDiscount(
+    double originalAmount,
+    double discountPercentage,
+  ) {
+    return originalAmount -
+        calculateDiscountAmount(originalAmount, discountPercentage);
   }
 
-  static double calculateDiscountPercentage(double originalAmount, double discountedAmount) {
+  static double calculateDiscountPercentage(
+    double originalAmount,
+    double discountedAmount,
+  ) {
     if (originalAmount <= 0) return 0;
     return ((originalAmount - discountedAmount) / originalAmount) * 100;
   }

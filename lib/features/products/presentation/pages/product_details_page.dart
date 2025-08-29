@@ -8,12 +8,8 @@ class ProductDetailsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('تفاصيل المنتج'),
-      ),
-      body: Center(
-        child: Text('تفاصيل المنتج رقم: $productId'),
-      ),
+      appBar: AppBar(title: const Text('تفاصيل المنتج')),
+      body: Center(child: Text('تفاصيل المنتج رقم: $productId')),
     );
   }
 }

@@ -17,17 +17,17 @@ class ValidationUtils {
     if (!isNotEmpty(value)) {
       return '$fieldName مطلوب';
     }
-    
+
     if (!isValidLength(value, 2, AppConstants.maxNameLength)) {
       return '$fieldName يجب أن يكون بين 2 و ${AppConstants.maxNameLength} حرف';
     }
-    
+
     // Check for valid characters (Arabic, English, numbers, spaces, and some special characters)
     final nameRegex = RegExp(r'^[\u0600-\u06FFa-zA-Z0-9\s\.\-\_]+$');
     if (!nameRegex.hasMatch(value!.trim())) {
       return '$fieldName يحتوي على أحرف غير صالحة';
     }
-    
+
     return null;
   }
 
@@ -58,19 +58,20 @@ class ValidationUtils {
     if (value == null || value.trim().isEmpty) {
       return null; // Phone is optional
     }
-    
+
     final cleanPhone = value.replaceAll(RegExp(r'[\s\-\(\)]'), '');
-    
-    if (cleanPhone.length < 9 || cleanPhone.length > AppConstants.maxPhoneLength) {
+
+    if (cleanPhone.length < 9 ||
+        cleanPhone.length > AppConstants.maxPhoneLength) {
       return 'رقم الهاتف يجب أن يكون بين 9 و ${AppConstants.maxPhoneLength} رقم';
     }
-    
+
     // Saudi phone number patterns
     final phoneRegex = RegExp(r'^((\+966)|966|05|5)([0-9]{8})$');
     if (!phoneRegex.hasMatch(cleanPhone)) {
       return 'رقم الهاتف غير صحيح';
     }
-    
+
     return null;
   }
 
@@ -79,24 +80,24 @@ class ValidationUtils {
     if (!isNotEmpty(value)) {
       return '$fieldName مطلوب';
     }
-    
+
     final price = double.tryParse(value!.trim());
     if (price == null) {
       return '$fieldName يجب أن يكون رقم صحيح';
     }
-    
+
     if (price < 0) {
       return '$fieldName لا يمكن أن يكون سالب';
     }
-    
+
     if (price == 0) {
       return '$fieldName لا يمكن أن يكون صفر';
     }
-    
+
     if (price > 999999999) {
       return '$fieldName كبير جداً';
     }
-    
+
     return null;
   }
 
@@ -113,18 +114,21 @@ class ValidationUtils {
   }
 
   // Price comparison validation
-  static String? validateFinalPriceVsOriginal(String? finalPriceStr, String? originalPriceStr) {
+  static String? validateFinalPriceVsOriginal(
+    String? finalPriceStr,
+    String? originalPriceStr,
+  ) {
     final finalPrice = double.tryParse(finalPriceStr ?? '');
     final originalPrice = double.tryParse(originalPriceStr ?? '');
-    
+
     if (finalPrice == null || originalPrice == null) {
       return null; // Individual validation will catch this
     }
-    
+
     if (finalPrice < originalPrice) {
       return 'السعر النهائي لا يمكن أن يكون أقل من السعر الأصلي';
     }
-    
+
     return null;
   }
 
@@ -133,20 +137,20 @@ class ValidationUtils {
     if (!isNotEmpty(value)) {
       return 'فترة الدفع مطلوبة';
     }
-    
+
     final interval = int.tryParse(value!.trim());
     if (interval == null) {
       return 'فترة الدفع يجب أن تكون رقم صحيح';
     }
-    
+
     if (interval < 1) {
       return 'فترة الدفع يجب أن تكون يوم واحد على الأقل';
     }
-    
+
     if (interval > 365) {
       return 'فترة الدفع لا يمكن أن تكون أكثر من 365 يوم';
     }
-    
+
     return null;
   }
 
@@ -155,15 +159,18 @@ class ValidationUtils {
     if (!isNotEmpty(value)) {
       return 'كلمة المرور مطلوبة';
     }
-    
+
     if (!isValidLength(value, AppConstants.minPasswordLength)) {
       return 'كلمة المرور يجب أن تكون ${AppConstants.minPasswordLength} أحرف على الأقل';
     }
-    
+
     return null;
   }
 
-  static String? validatePasswordConfirmation(String? password, String? confirmation) {
+  static String? validatePasswordConfirmation(
+    String? password,
+    String? confirmation,
+  ) {
     if (password != confirmation) {
       return 'كلمة المرور غير متطابقة';
     }
@@ -175,11 +182,11 @@ class ValidationUtils {
     if (value == null || value.trim().isEmpty) {
       return null; // Notes are optional
     }
-    
+
     if (value.trim().length > AppConstants.maxNotesLength) {
       return 'الملاحظات لا يمكن أن تكون أكثر من ${AppConstants.maxNotesLength} حرف';
     }
-    
+
     return null;
   }
 
@@ -188,15 +195,15 @@ class ValidationUtils {
     if (date == null) {
       return '$fieldName مطلوب';
     }
-    
+
     final now = DateTime.now();
     final minDate = DateTime(1900);
     final maxDate = DateTime(now.year + 10);
-    
+
     if (date.isBefore(minDate) || date.isAfter(maxDate)) {
       return '$fieldName غير صالح';
     }
-    
+
     return null;
   }
 
@@ -204,12 +211,12 @@ class ValidationUtils {
     if (date == null) {
       return 'تاريخ البيع مطلوب';
     }
-    
+
     final now = DateTime.now();
     if (date.isAfter(now)) {
       return 'تاريخ البيع لا يمكن أن يكون في المستقبل';
     }
-    
+
     return validateDate(date, fieldName: 'تاريخ البيع');
   }
 
@@ -217,12 +224,12 @@ class ValidationUtils {
     if (date == null) {
       return 'تاريخ الدفعة مطلوب';
     }
-    
+
     final now = DateTime.now();
     if (date.isAfter(now)) {
       return 'تاريخ الدفعة لا يمكن أن يكون في المستقبل';
     }
-    
+
     return validateDate(date, fieldName: 'تاريخ الدفعة');
   }
 
@@ -231,12 +238,12 @@ class ValidationUtils {
     if (value == null || value.trim().isEmpty) {
       return null; // Email is optional
     }
-    
+
     final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+$');
     if (!emailRegex.hasMatch(value.trim())) {
       return 'البريد الإلكتروني غير صحيح';
     }
-    
+
     return null;
   }
 
@@ -245,15 +252,15 @@ class ValidationUtils {
     if (value == null || value.trim().isEmpty) {
       return 'أدخل نص البحث';
     }
-    
+
     if (value.trim().length < 2) {
       return 'نص البحث يجب أن يكون حرفين على الأقل';
     }
-    
+
     if (value.trim().length > 100) {
       return 'نص البحث طويل جداً';
     }
-    
+
     return null;
   }
 
@@ -263,7 +270,10 @@ class ValidationUtils {
   }
 
   static String? getFirstError(List<String?> validationResults) {
-    return validationResults.firstWhere((result) => result != null, orElse: () => null);
+    return validationResults.firstWhere(
+      (result) => result != null,
+      orElse: () => null,
+    );
   }
 
   // Payment validation against product
@@ -275,12 +285,12 @@ class ValidationUtils {
     if (paymentAmount <= 0) {
       return 'مبلغ الدفعة يجب أن يكون أكبر من صفر';
     }
-    
+
     final remainingAmount = productPrice - totalPaid;
     if (paymentAmount > remainingAmount) {
       return 'مبلغ الدفعة أكبر من المبلغ المتبقي';
     }
-    
+
     return null;
   }
 
@@ -306,7 +316,7 @@ class ValidationUtils {
     if (value == null || value.trim().isEmpty) {
       return null;
     }
-    
+
     return validator(value.trim()) ? null : errorMessage;
   }
 }

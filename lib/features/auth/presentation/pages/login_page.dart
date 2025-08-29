@@ -69,7 +69,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                   const SizedBox(height: 32),
-                  
+
                   const Text(
                     'نظام إدارة الأقساط',
                     style: TextStyle(
@@ -79,16 +79,13 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  
+
                   const Text(
                     'أدخل كلمة المرور للمتابعة',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.grey,
-                    ),
+                    style: TextStyle(fontSize: 16, color: Colors.grey),
                   ),
                   const SizedBox(height: 48),
-                  
+
                   // Password Field
                   TextFormField(
                     controller: _passwordController,
@@ -99,7 +96,9 @@ class _LoginPageState extends State<LoginPage> {
                       prefixIcon: const Icon(Icons.lock),
                       suffixIcon: IconButton(
                         icon: Icon(
-                          _obscurePassword ? Icons.visibility : Icons.visibility_off,
+                          _obscurePassword
+                              ? Icons.visibility
+                              : Icons.visibility_off,
                         ),
                         onPressed: () {
                           setState(() {
@@ -121,7 +120,7 @@ class _LoginPageState extends State<LoginPage> {
                     },
                   ),
                   const SizedBox(height: 32),
-                  
+
                   // Login Button
                   SizedBox(
                     width: double.infinity,

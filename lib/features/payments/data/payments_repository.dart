@@ -8,13 +8,10 @@ class PaymentsRepository {
   final DatabaseHelper _databaseHelper;
 
   PaymentsRepository({required DatabaseHelper databaseHelper})
-      : _databaseHelper = databaseHelper;
+    : _databaseHelper = databaseHelper;
 
   // Get all payments
-  Future<List<PaymentModel>> getAllPayments({
-    int? limit,
-    int? offset,
-  }) async {
+  Future<List<PaymentModel>> getAllPayments({int? limit, int? offset}) async {
     try {
       final results = await _databaseHelper.query(
         DatabaseConstants.paymentsTable,
@@ -84,10 +81,11 @@ class PaymentsRepository {
     try {
       return await _databaseHelper.transaction((txn) async {
         final now = DateTime.now();
-        
+
         // Generate receipt number if not provided
-        String receiptNumber = payment.receiptNumber ?? await _generateReceiptNumber();
-        
+        String receiptNumber =
+            payment.receiptNumber ?? await _generateReceiptNumber();
+
         // Calculate next due date based on product interval
         DateTime? nextDueDate;
         if (payment.paymentDate != null) {
@@ -97,9 +95,11 @@ class PaymentsRepository {
             where: '${DatabaseConstants.productsId} = ?',
             whereArgs: [payment.productId],
           );
-          
+
           if (productResult.isNotEmpty) {
-            final intervalDays = productResult.first[DatabaseConstants.productsPaymentInterval] as int;
+            final intervalDays =
+                productResult.first[DatabaseConstants.productsPaymentInterval]
+                    as int;
             nextDueDate = AppDateUtils.calculateNextDueDate(
               payment.paymentDate!,
               intervalDays,
@@ -107,12 +107,14 @@ class PaymentsRepository {
           }
         }
 
-        final paymentData = payment.copyWith(
-          paymentDate: payment.paymentDate ?? now,
-          nextDueDate: nextDueDate,
-          receiptNumber: receiptNumber,
-          createdDate: now,
-        ).toMap();
+        final paymentData = payment
+            .copyWith(
+              paymentDate: payment.paymentDate ?? now,
+              nextDueDate: nextDueDate,
+              receiptNumber: receiptNumber,
+              createdDate: now,
+            )
+            .toMap();
 
         // Insert payment
         final paymentId = await txn.insert(
@@ -219,16 +221,19 @@ class PaymentsRepository {
       }
 
       if (startDate != null) {
-        whereClause += ' AND date(p.${DatabaseConstants.paymentsDate}) >= date(?)';
+        whereClause +=
+            ' AND date(p.${DatabaseConstants.paymentsDate}) >= date(?)';
         whereArgs.add(AppDateUtils.formatForDatabase(startDate));
       }
 
       if (endDate != null) {
-        whereClause += ' AND date(p.${DatabaseConstants.paymentsDate}) <= date(?)';
+        whereClause +=
+            ' AND date(p.${DatabaseConstants.paymentsDate}) <= date(?)';
         whereArgs.add(AppDateUtils.formatForDatabase(endDate));
       }
 
-      final sql = '''
+      final sql =
+          '''
         SELECT 
           p.*,
           c.${DatabaseConstants.customersName} as customer_name,
@@ -270,23 +275,26 @@ class PaymentsRepository {
       }
 
       if (startDate != null) {
-        whereClause += ' AND date(${DatabaseConstants.paymentsDate}) >= date(?)';
+        whereClause +=
+            ' AND date(${DatabaseConstants.paymentsDate}) >= date(?)';
         whereArgs.add(AppDateUtils.formatForDatabase(startDate));
       }
 
       if (endDate != null) {
-        whereClause += ' AND date(${DatabaseConstants.paymentsDate}) <= date(?)';
+        whereClause +=
+            ' AND date(${DatabaseConstants.paymentsDate}) <= date(?)';
         whereArgs.add(AppDateUtils.formatForDatabase(endDate));
       }
 
-      final sql = '''
+      final sql =
+          '''
         SELECT SUM(${DatabaseConstants.paymentsAmount}) as total_amount
         FROM ${DatabaseConstants.paymentsTable}
         WHERE $whereClause
       ''';
 
       final result = await _databaseHelper.rawQuery(sql, whereArgs);
-      
+
       if (result.isNotEmpty && result.first['total_amount'] != null) {
         return (result.first['total_amount'] as num).toDouble();
       }
@@ -328,16 +336,19 @@ class PaymentsRepository {
       }
 
       if (startDate != null) {
-        whereClause += ' AND date(${DatabaseConstants.paymentsDate}) >= date(?)';
+        whereClause +=
+            ' AND date(${DatabaseConstants.paymentsDate}) >= date(?)';
         whereArgs.add(AppDateUtils.formatForDatabase(startDate));
       }
 
       if (endDate != null) {
-        whereClause += ' AND date(${DatabaseConstants.paymentsDate}) <= date(?)';
+        whereClause +=
+            ' AND date(${DatabaseConstants.paymentsDate}) <= date(?)';
         whereArgs.add(AppDateUtils.formatForDatabase(endDate));
       }
 
-      final sql = '''
+      final sql =
+          '''
         SELECT 
           COUNT(*) as total_payments,
           SUM(${DatabaseConstants.paymentsAmount}) as total_amount,
@@ -349,7 +360,7 @@ class PaymentsRepository {
       ''';
 
       final result = await _databaseHelper.rawQuery(sql, whereArgs);
-      
+
       if (result.isNotEmpty) {
         return result.first;
       }
@@ -367,7 +378,10 @@ class PaymentsRepository {
   }
 
   // Check if receipt number is unique
-  Future<bool> isReceiptNumberUnique(String receiptNumber, {int? excludePaymentId}) async {
+  Future<bool> isReceiptNumberUnique(
+    String receiptNumber, {
+    int? excludePaymentId,
+  }) async {
     try {
       String whereClause = '${DatabaseConstants.paymentsReceiptNumber} = ?';
       List<dynamic> whereArgs = [receiptNumber];
@@ -429,12 +443,14 @@ class PaymentsRepository {
       }
 
       if (startDate != null) {
-        whereClause += ' AND date(${DatabaseConstants.paymentsDate}) >= date(?)';
+        whereClause +=
+            ' AND date(${DatabaseConstants.paymentsDate}) >= date(?)';
         whereArgs.add(AppDateUtils.formatForDatabase(startDate));
       }
 
       if (endDate != null) {
-        whereClause += ' AND date(${DatabaseConstants.paymentsDate}) <= date(?)';
+        whereClause +=
+            ' AND date(${DatabaseConstants.paymentsDate}) <= date(?)';
         whereArgs.add(AppDateUtils.formatForDatabase(endDate));
       }
 
@@ -453,15 +469,16 @@ class PaymentsRepository {
   Future<String> _generateReceiptNumber() async {
     try {
       final count = await getPaymentsCount();
-      final receiptNumber = '${AppConstants.receiptPrefix}${(count + 1).toString().padLeft(AppConstants.receiptNumberLength, '0')}';
-      
+      final receiptNumber =
+          '${AppConstants.receiptPrefix}${(count + 1).toString().padLeft(AppConstants.receiptNumberLength, '0')}';
+
       // Ensure uniqueness
       final isUnique = await isReceiptNumberUnique(receiptNumber);
       if (!isUnique) {
         // If not unique, use timestamp
         return '${AppConstants.receiptPrefix}${DateTime.now().millisecondsSinceEpoch}';
       }
-      
+
       return receiptNumber;
     } catch (e) {
       // Fallback to timestamp
@@ -471,14 +488,18 @@ class PaymentsRepository {
 
   Future<void> _updateProductTotalPaid(dynamic txn, int productId) async {
     // Calculate total paid for the product
-    final totalPaidResult = await txn.rawQuery('''
+    final totalPaidResult = await txn.rawQuery(
+      '''
       SELECT SUM(${DatabaseConstants.paymentsAmount}) as total_paid
       FROM ${DatabaseConstants.paymentsTable}
       WHERE ${DatabaseConstants.paymentsProductId} = ?
-    ''', [productId]);
+    ''',
+      [productId],
+    );
 
     double totalPaid = 0.0;
-    if (totalPaidResult.isNotEmpty && totalPaidResult.first['total_paid'] != null) {
+    if (totalPaidResult.isNotEmpty &&
+        totalPaidResult.first['total_paid'] != null) {
       totalPaid = (totalPaidResult.first['total_paid'] as num).toDouble();
     }
 
@@ -491,7 +512,9 @@ class PaymentsRepository {
     );
 
     if (productResult.isNotEmpty) {
-      final finalPrice = (productResult.first[DatabaseConstants.productsFinalPrice] as num).toDouble();
+      final finalPrice =
+          (productResult.first[DatabaseConstants.productsFinalPrice] as num)
+              .toDouble();
       final remainingAmount = finalPrice - totalPaid;
       final isCompleted = totalPaid >= finalPrice;
 
@@ -502,7 +525,8 @@ class PaymentsRepository {
           DatabaseConstants.productsTotalPaid: totalPaid,
           DatabaseConstants.productsRemainingAmount: remainingAmount,
           DatabaseConstants.productsIsCompleted: isCompleted ? 1 : 0,
-          DatabaseConstants.productsUpdatedDate: DateTime.now().toIso8601String(),
+          DatabaseConstants.productsUpdatedDate: DateTime.now()
+              .toIso8601String(),
         },
         where: '${DatabaseConstants.productsId} = ?',
         whereArgs: [productId],

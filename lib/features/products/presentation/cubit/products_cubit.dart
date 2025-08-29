@@ -10,8 +10,8 @@ class ProductsCubit extends Cubit<ProductsState> {
   final ProductsRepository _productsRepository;
 
   ProductsCubit({required ProductsRepository productsRepository})
-      : _productsRepository = productsRepository,
-        super(const ProductsInitial());
+    : _productsRepository = productsRepository,
+      super(const ProductsInitial());
 
   // Load all products
   Future<void> loadProducts() async {
@@ -88,7 +88,9 @@ class ProductsCubit extends Cubit<ProductsState> {
   Future<void> getProductsByCustomer(int customerId) async {
     try {
       emit(const ProductsLoading());
-      final products = await _productsRepository.getProductsByCustomerId(customerId);
+      final products = await _productsRepository.getProductsByCustomerId(
+        customerId,
+      );
       emit(ProductsLoaded(products: products));
     } catch (e) {
       emit(ProductsError(message: e.toString()));
@@ -143,7 +145,8 @@ class ProductsCubit extends Cubit<ProductsState> {
   Future<void> getProductsWithPaymentDetails() async {
     try {
       emit(const ProductsLoading());
-      final products = await _productsRepository.getProductsWithPaymentDetails();
+      final products = await _productsRepository
+          .getProductsWithPaymentDetails();
       emit(ProductsWithPaymentDetailsLoaded(products: products));
     } catch (e) {
       emit(ProductsError(message: e.toString()));
@@ -162,10 +165,16 @@ class ProductsCubit extends Cubit<ProductsState> {
   }
 
   // Update product completion status
-  Future<void> updateProductCompletionStatus(int productId, bool isCompleted) async {
+  Future<void> updateProductCompletionStatus(
+    int productId,
+    bool isCompleted,
+  ) async {
     try {
       emit(const ProductsLoading());
-      final success = await _productsRepository.updateProductCompletionStatus(productId, isCompleted);
+      final success = await _productsRepository.updateProductCompletionStatus(
+        productId,
+        isCompleted,
+      );
       if (success) {
         await loadProducts();
       } else {
@@ -192,11 +201,13 @@ class ProductsCubit extends Cubit<ProductsState> {
     try {
       emit(const ProductsLoading());
       final result = await _productsRepository.importProducts(data);
-      emit(ProductsImported(
-        importedCount: result['imported'],
-        skippedCount: result['skipped'],
-        errorCount: result['errors'],
-      ));
+      emit(
+        ProductsImported(
+          importedCount: result['imported'],
+          skippedCount: result['skipped'],
+          errorCount: result['errors'],
+        ),
+      );
       // Reload products after import
       await loadProducts();
     } catch (e) {
@@ -209,10 +220,12 @@ class ProductsCubit extends Cubit<ProductsState> {
     try {
       emit(const ProductsLoading());
       final validation = await _productsRepository.validateProduct(product);
-      emit(ProductValidated(
-        isValid: validation['isValid'],
-        errors: validation['errors'],
-      ));
+      emit(
+        ProductValidated(
+          isValid: validation['isValid'],
+          errors: validation['errors'],
+        ),
+      );
     } catch (e) {
       emit(ProductsError(message: e.toString()));
     }

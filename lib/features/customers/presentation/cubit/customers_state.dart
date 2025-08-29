@@ -88,10 +88,7 @@ class CustomerValidated extends CustomersState {
   final bool isValid;
   final List<String> errors;
 
-  const CustomerValidated({
-    required this.isValid,
-    required this.errors,
-  });
+  const CustomerValidated({required this.isValid, required this.errors});
 
   @override
   List<Object?> get props => [isValid, errors];

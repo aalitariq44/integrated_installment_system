@@ -3,8 +3,12 @@ import '../constants/app_constants.dart';
 
 class AppDateUtils {
   static final DateFormat _dateFormat = DateFormat(AppConstants.dateFormat);
-  static final DateFormat _dateTimeFormat = DateFormat(AppConstants.dateTimeFormat);
-  static final DateFormat _displayDateFormat = DateFormat(AppConstants.displayDateFormat);
+  static final DateFormat _dateTimeFormat = DateFormat(
+    AppConstants.dateTimeFormat,
+  );
+  static final DateFormat _displayDateFormat = DateFormat(
+    AppConstants.displayDateFormat,
+  );
 
   // Format dates for display
   static String formatDate(DateTime? date) {
@@ -57,7 +61,10 @@ class AppDateUtils {
   }
 
   // Payment due date calculations
-  static DateTime calculateNextDueDate(DateTime lastPaymentDate, int intervalDays) {
+  static DateTime calculateNextDueDate(
+    DateTime lastPaymentDate,
+    int intervalDays,
+  ) {
     return addDays(lastPaymentDate, intervalDays);
   }
 
@@ -68,17 +75,23 @@ class AppDateUtils {
   // Date comparisons
   static bool isToday(DateTime date) {
     final now = DateTime.now();
-    return date.year == now.year && date.month == now.month && date.day == now.day;
+    return date.year == now.year &&
+        date.month == now.month &&
+        date.day == now.day;
   }
 
   static bool isTomorrow(DateTime date) {
     final tomorrow = DateTime.now().add(const Duration(days: 1));
-    return date.year == tomorrow.year && date.month == tomorrow.month && date.day == tomorrow.day;
+    return date.year == tomorrow.year &&
+        date.month == tomorrow.month &&
+        date.day == tomorrow.day;
   }
 
   static bool isYesterday(DateTime date) {
     final yesterday = DateTime.now().subtract(const Duration(days: 1));
-    return date.year == yesterday.year && date.month == yesterday.month && date.day == yesterday.day;
+    return date.year == yesterday.year &&
+        date.month == yesterday.month &&
+        date.day == yesterday.day;
   }
 
   static bool isOverdue(DateTime dueDate) {
@@ -111,7 +124,7 @@ class AppDateUtils {
     } else {
       final now = DateTime.now();
       final difference = daysBetween(now, date);
-      
+
       if (difference > 0) {
         if (difference == 1) {
           return 'خلال يوم واحد';
@@ -144,8 +157,19 @@ class AppDateUtils {
   // Month and year utilities
   static String getMonthName(int month) {
     const monthNames = [
-      '', 'يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',
-      'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'
+      '',
+      'يناير',
+      'فبراير',
+      'مارس',
+      'أبريل',
+      'مايو',
+      'يونيو',
+      'يوليو',
+      'أغسطس',
+      'سبتمبر',
+      'أكتوبر',
+      'نوفمبر',
+      'ديسمبر',
     ];
     return month >= 1 && month <= 12 ? monthNames[month] : '';
   }
@@ -194,7 +218,7 @@ class AppDateUtils {
   static int calculateAge(DateTime birthDate) {
     final now = DateTime.now();
     int age = now.year - birthDate.year;
-    if (now.month < birthDate.month || 
+    if (now.month < birthDate.month ||
         (now.month == birthDate.month && now.day < birthDate.day)) {
       age--;
     }
@@ -220,8 +244,12 @@ class AppDateUtils {
     }
   }
 
-  static bool isDateInRange(DateTime date, DateTime startDate, DateTime endDate) {
+  static bool isDateInRange(
+    DateTime date,
+    DateTime startDate,
+    DateTime endDate,
+  ) {
     return date.isAfter(startDate.subtract(const Duration(days: 1))) &&
-           date.isBefore(endDate.add(const Duration(days: 1)));
+        date.isBefore(endDate.add(const Duration(days: 1)));
   }
 }

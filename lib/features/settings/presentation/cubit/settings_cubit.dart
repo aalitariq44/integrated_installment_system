@@ -10,8 +10,8 @@ class SettingsCubit extends Cubit<SettingsState> {
   final SettingsRepository _settingsRepository;
 
   SettingsCubit({required SettingsRepository settingsRepository})
-      : _settingsRepository = settingsRepository,
-        super(const SettingsInitial());
+    : _settingsRepository = settingsRepository,
+      super(const SettingsInitial());
 
   // Load all settings
   Future<void> loadSettings() async {
@@ -43,15 +43,15 @@ class SettingsCubit extends Cubit<SettingsState> {
   Future<void> updateSetting(KeyValueSettingsModel setting) async {
     try {
       emit(const SettingsLoading());
-      
+
       final existingSetting = await _settingsRepository.getSetting(setting.key);
-      
+
       if (existingSetting != null) {
         await _settingsRepository.updateSetting(setting);
       } else {
         await _settingsRepository.createSetting(setting);
       }
-      
+
       // Reload settings after update
       await loadSettings();
     } catch (e) {

@@ -7,7 +7,7 @@ class ProductsRepository {
   final DatabaseHelper _databaseHelper;
 
   ProductsRepository({required DatabaseHelper databaseHelper})
-      : _databaseHelper = databaseHelper;
+    : _databaseHelper = databaseHelper;
 
   // Get all products
   Future<List<ProductModel>> getAllProducts({
@@ -21,10 +21,7 @@ class ProductsRepository {
       if (searchQuery != null && searchQuery.isNotEmpty) {
         results = await _databaseHelper.search(
           DatabaseConstants.productsTable,
-          [
-            DatabaseConstants.productsName,
-            DatabaseConstants.productsDetails,
-          ],
+          [DatabaseConstants.productsName, DatabaseConstants.productsDetails],
           searchQuery,
           orderBy: '${DatabaseConstants.productsSaleDate} DESC',
           limit: limit,
@@ -82,12 +79,14 @@ class ProductsRepository {
   Future<int> addProduct(ProductModel product) async {
     try {
       final now = DateTime.now();
-      final productData = product.copyWith(
-        saleDate: product.saleDate ?? now,
-        remainingAmount: product.finalPrice - product.totalPaid,
-        createdDate: now,
-        updatedDate: now,
-      ).toMap();
+      final productData = product
+          .copyWith(
+            saleDate: product.saleDate ?? now,
+            remainingAmount: product.finalPrice - product.totalPaid,
+            createdDate: now,
+            updatedDate: now,
+          )
+          .toMap();
 
       return await _databaseHelper.insert(
         DatabaseConstants.productsTable,
@@ -106,10 +105,12 @@ class ProductsRepository {
       }
 
       final now = DateTime.now();
-      final productData = product.copyWith(
-        remainingAmount: product.finalPrice - product.totalPaid,
-        updatedDate: now,
-      ).toMap();
+      final productData = product
+          .copyWith(
+            remainingAmount: product.finalPrice - product.totalPaid,
+            updatedDate: now,
+          )
+          .toMap();
 
       final updateCount = await _databaseHelper.update(
         DatabaseConstants.productsTable,
@@ -140,7 +141,10 @@ class ProductsRepository {
   }
 
   // Update product total paid amount
-  Future<bool> updateProductTotalPaid(int productId, double newTotalPaid) async {
+  Future<bool> updateProductTotalPaid(
+    int productId,
+    double newTotalPaid,
+  ) async {
     try {
       final product = await getProductById(productId);
       if (product == null) {
@@ -184,7 +188,8 @@ class ProductsRepository {
   // Get overdue products
   Future<List<Map<String, dynamic>>> getOverdueProducts() async {
     try {
-      final sql = '''
+      final sql =
+          '''
         SELECT 
           p.*,
           c.${DatabaseConstants.customersName} as customer_name,
@@ -211,11 +216,14 @@ class ProductsRepository {
   }
 
   // Get products due soon
-  Future<List<Map<String, dynamic>>> getProductsDueSoon({int daysThreshold = 3}) async {
+  Future<List<Map<String, dynamic>>> getProductsDueSoon({
+    int daysThreshold = 3,
+  }) async {
     try {
       final futureDate = AppDateUtils.addDays(DateTime.now(), daysThreshold);
-      
-      final sql = '''
+
+      final sql =
+          '''
         SELECT 
           p.*,
           c.${DatabaseConstants.customersName} as customer_name,
@@ -235,7 +243,9 @@ class ProductsRepository {
         ORDER BY pay.${DatabaseConstants.paymentsNextDueDate} ASC
       ''';
 
-      return await _databaseHelper.rawQuery(sql, [AppDateUtils.formatForDatabase(futureDate)]);
+      return await _databaseHelper.rawQuery(sql, [
+        AppDateUtils.formatForDatabase(futureDate),
+      ]);
     } catch (e) {
       throw Exception('فشل في تحميل المنتجات المستحقة قريباً: $e');
     }
@@ -300,7 +310,8 @@ class ProductsRepository {
         whereArgs.add(customerId);
       }
 
-      final sql = '''
+      final sql =
+          '''
         SELECT 
           COUNT(*) as total_products,
           COUNT(CASE WHEN ${DatabaseConstants.productsIsCompleted} = 1 THEN 1 END) as completed_products,
@@ -315,7 +326,7 @@ class ProductsRepository {
       ''';
 
       final result = await _databaseHelper.rawQuery(sql, whereArgs);
-      
+
       if (result.isNotEmpty) {
         return result.first;
       }
@@ -336,10 +347,13 @@ class ProductsRepository {
   }
 
   // Search products
-  Future<List<ProductModel>> searchProducts(String query, {int? customerId}) async {
+  Future<List<ProductModel>> searchProducts(
+    String query, {
+    int? customerId,
+  }) async {
     try {
       if (query.isEmpty) {
-        return customerId != null 
+        return customerId != null
             ? await getProductsByCustomerId(customerId)
             : await getAllProducts();
       }
@@ -354,10 +368,7 @@ class ProductsRepository {
 
       final results = await _databaseHelper.search(
         DatabaseConstants.productsTable,
-        [
-          DatabaseConstants.productsName,
-          DatabaseConstants.productsDetails,
-        ],
+        [DatabaseConstants.productsName, DatabaseConstants.productsDetails],
         query,
         additionalWhere: additionalWhere,
         additionalWhereArgs: additionalWhereArgs,
@@ -380,7 +391,7 @@ class ProductsRepository {
           whereArgs: [customerId],
         );
       }
-      
+
       return await _databaseHelper.count(DatabaseConstants.productsTable);
     } catch (e) {
       throw Exception('فشل في عد المنتجات: $e');
@@ -413,7 +424,9 @@ class ProductsRepository {
   }
 
   // Export products data
-  Future<List<Map<String, dynamic>>> exportProductsData({int? customerId}) async {
+  Future<List<Map<String, dynamic>>> exportProductsData({
+    int? customerId,
+  }) async {
     try {
       String whereClause = '';
       List<dynamic> whereArgs = [];

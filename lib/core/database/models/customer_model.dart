@@ -28,10 +28,14 @@ class CustomerModel extends Equatable {
       address: map[DatabaseConstants.customersAddress] as String?,
       notes: map[DatabaseConstants.customersNotes] as String?,
       createdDate: map[DatabaseConstants.customersCreatedDate] != null
-          ? DateTime.parse(map[DatabaseConstants.customersCreatedDate] as String)
+          ? DateTime.parse(
+              map[DatabaseConstants.customersCreatedDate] as String,
+            )
           : null,
       updatedDate: map[DatabaseConstants.customersUpdatedDate] != null
-          ? DateTime.parse(map[DatabaseConstants.customersUpdatedDate] as String)
+          ? DateTime.parse(
+              map[DatabaseConstants.customersUpdatedDate] as String,
+            )
           : null,
     );
   }
@@ -72,14 +76,14 @@ class CustomerModel extends Equatable {
 
   @override
   List<Object?> get props => [
-        customerId,
-        customerName,
-        phoneNumber,
-        address,
-        notes,
-        createdDate,
-        updatedDate,
-      ];
+    customerId,
+    customerName,
+    phoneNumber,
+    address,
+    notes,
+    createdDate,
+    updatedDate,
+  ];
 
   @override
   String toString() {

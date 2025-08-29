@@ -10,8 +10,8 @@ class CustomersCubit extends Cubit<CustomersState> {
   final CustomersRepository _customersRepository;
 
   CustomersCubit({required CustomersRepository customersRepository})
-      : _customersRepository = customersRepository,
-        super(const CustomersInitial());
+    : _customersRepository = customersRepository,
+      super(const CustomersInitial());
 
   // Load all customers
   Future<void> loadCustomers() async {
@@ -121,7 +121,8 @@ class CustomersCubit extends Cubit<CustomersState> {
   Future<void> getCustomersWithOverduePayments() async {
     try {
       emit(const CustomersLoading());
-      final customers = await _customersRepository.getCustomersWithOverduePayments();
+      final customers = await _customersRepository
+          .getCustomersWithOverduePayments();
       emit(CustomersWithOverdueLoaded(customers: customers));
     } catch (e) {
       emit(CustomersError(message: e.toString()));
@@ -144,11 +145,13 @@ class CustomersCubit extends Cubit<CustomersState> {
     try {
       emit(const CustomersLoading());
       final result = await _customersRepository.importCustomers(data);
-      emit(CustomersImported(
-        importedCount: result['imported'],
-        skippedCount: result['skipped'],
-        errorCount: result['errors'],
-      ));
+      emit(
+        CustomersImported(
+          importedCount: result['imported'],
+          skippedCount: result['skipped'],
+          errorCount: result['errors'],
+        ),
+      );
       // Reload customers after import
       await loadCustomers();
     } catch (e) {
@@ -161,10 +164,12 @@ class CustomersCubit extends Cubit<CustomersState> {
     try {
       emit(const CustomersLoading());
       final validation = await _customersRepository.validateCustomer(customer);
-      emit(CustomerValidated(
-        isValid: validation['isValid'],
-        errors: validation['errors'],
-      ));
+      emit(
+        CustomerValidated(
+          isValid: validation['isValid'],
+          errors: validation['errors'],
+        ),
+      );
     } catch (e) {
       emit(CustomersError(message: e.toString()));
     }

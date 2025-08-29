@@ -87,16 +87,16 @@ class PaymentModel extends Equatable {
 
   @override
   List<Object?> get props => [
-        paymentId,
-        productId,
-        customerId,
-        paymentAmount,
-        paymentDate,
-        nextDueDate,
-        notes,
-        receiptNumber,
-        createdDate,
-      ];
+    paymentId,
+    productId,
+    customerId,
+    paymentAmount,
+    paymentDate,
+    nextDueDate,
+    notes,
+    receiptNumber,
+    createdDate,
+  ];
 
   @override
   String toString() {

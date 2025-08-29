@@ -40,15 +40,19 @@ class ProductModel extends Equatable {
       customerId: map[DatabaseConstants.productsCustomerId] as int,
       productName: map[DatabaseConstants.productsName] as String,
       details: map[DatabaseConstants.productsDetails] as String?,
-      originalPrice: (map[DatabaseConstants.productsOriginalPrice] as num).toDouble(),
+      originalPrice: (map[DatabaseConstants.productsOriginalPrice] as num)
+          .toDouble(),
       finalPrice: (map[DatabaseConstants.productsFinalPrice] as num).toDouble(),
-      paymentIntervalDays: map[DatabaseConstants.productsPaymentInterval] as int,
+      paymentIntervalDays:
+          map[DatabaseConstants.productsPaymentInterval] as int,
       saleDate: map[DatabaseConstants.productsSaleDate] != null
           ? DateTime.parse(map[DatabaseConstants.productsSaleDate] as String)
           : null,
       notes: map[DatabaseConstants.productsNotes] as String?,
-      totalPaid: (map[DatabaseConstants.productsTotalPaid] as num?)?.toDouble() ?? 0.0,
-      remainingAmount: (map[DatabaseConstants.productsRemainingAmount] as num?)?.toDouble(),
+      totalPaid:
+          (map[DatabaseConstants.productsTotalPaid] as num?)?.toDouble() ?? 0.0,
+      remainingAmount: (map[DatabaseConstants.productsRemainingAmount] as num?)
+          ?.toDouble(),
       isCompleted: (map[DatabaseConstants.productsIsCompleted] as int?) == 1,
       createdDate: map[DatabaseConstants.productsCreatedDate] != null
           ? DateTime.parse(map[DatabaseConstants.productsCreatedDate] as String)
@@ -117,27 +121,29 @@ class ProductModel extends Equatable {
 
   // Calculated properties
   double get profit => finalPrice - originalPrice;
-  double get profitPercentage => originalPrice > 0 ? (profit / originalPrice) * 100 : 0;
+  double get profitPercentage =>
+      originalPrice > 0 ? (profit / originalPrice) * 100 : 0;
   double get remainingBalance => finalPrice - totalPaid;
-  double get paymentProgress => finalPrice > 0 ? (totalPaid / finalPrice) * 100 : 0;
+  double get paymentProgress =>
+      finalPrice > 0 ? (totalPaid / finalPrice) * 100 : 0;
 
   @override
   List<Object?> get props => [
-        productId,
-        customerId,
-        productName,
-        details,
-        originalPrice,
-        finalPrice,
-        paymentIntervalDays,
-        saleDate,
-        notes,
-        totalPaid,
-        remainingAmount,
-        isCompleted,
-        createdDate,
-        updatedDate,
-      ];
+    productId,
+    customerId,
+    productName,
+    details,
+    originalPrice,
+    finalPrice,
+    paymentIntervalDays,
+    saleDate,
+    notes,
+    totalPaid,
+    remainingAmount,
+    isCompleted,
+    createdDate,
+    updatedDate,
+  ];
 
   @override
   String toString() {

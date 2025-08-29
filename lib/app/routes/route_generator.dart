@@ -19,9 +19,7 @@ class RouteGenerator {
     switch (settings.name) {
       case AppRoutes.splash:
         return MaterialPageRoute(
-          builder: (_) => const LoadingWidget(
-            message: 'جاري تحميل التطبيق...',
-          ),
+          builder: (_) => const LoadingWidget(message: 'جاري تحميل التطبيق...'),
           settings: settings,
         );
 
@@ -52,10 +50,8 @@ class RouteGenerator {
         final customerId = args?[AppRoutes.customerIdParam] as int?;
         final isEdit = args?[AppRoutes.isEditParam] as bool? ?? false;
         return MaterialPageRoute(
-          builder: (_) => AddEditCustomerPage(
-            customerId: customerId,
-            isEdit: isEdit,
-          ),
+          builder: (_) =>
+              AddEditCustomerPage(customerId: customerId, isEdit: isEdit),
           settings: settings,
         );
 
@@ -73,11 +69,11 @@ class RouteGenerator {
         final customerId = args?[AppRoutes.customerIdParam] as int?;
         final productId = args?[AppRoutes.productIdParam] as int?;
         final isEdit = args?[AppRoutes.isEditParam] as bool? ?? false;
-        
+
         if (!isEdit && customerId == null) {
           return _errorRoute('معرف العميل مطلوب لإضافة منتج جديد');
         }
-        
+
         return MaterialPageRoute(
           builder: (_) => AddEditProductPage(
             customerId: customerId,
@@ -127,18 +123,12 @@ class RouteGenerator {
   static Route<dynamic> _errorRoute(String message) {
     return MaterialPageRoute(
       builder: (_) => Scaffold(
-        appBar: AppBar(
-          title: const Text('خطأ'),
-        ),
+        appBar: AppBar(title: const Text('خطأ')),
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(
-                Icons.error_outline,
-                size: 64,
-                color: Colors.red,
-              ),
+              const Icon(Icons.error_outline, size: 64, color: Colors.red),
               const SizedBox(height: 16),
               Text(
                 message,
@@ -169,10 +159,7 @@ class RouteGenerator {
       pageBuilder: (context, animation, secondaryAnimation) => page,
       transitionDuration: const Duration(milliseconds: 300),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
-        return FadeTransition(
-          opacity: animation,
-          child: child,
-        );
+        return FadeTransition(opacity: animation, child: child);
       },
     );
   }

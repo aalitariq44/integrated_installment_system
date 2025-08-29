@@ -6,7 +6,7 @@ class SettingsRepository {
   final DatabaseHelper _databaseHelper;
 
   SettingsRepository({required DatabaseHelper databaseHelper})
-      : _databaseHelper = databaseHelper;
+    : _databaseHelper = databaseHelper;
 
   // Get app settings
   Future<SettingsModel?> getSettings() async {

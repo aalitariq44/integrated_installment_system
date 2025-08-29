@@ -11,19 +11,14 @@ class StatisticsPage extends StatelessWidget {
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
       ),
-      body: const Center(
-        child: Text('صفحة الإحصائيات'),
-      ),
+      body: const Center(child: Text('صفحة الإحصائيات')),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         currentIndex: 1,
         selectedItemColor: Colors.blue,
         unselectedItemColor: Colors.grey,
         items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.people),
-            label: 'العملاء',
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.people), label: 'العملاء'),
           BottomNavigationBarItem(
             icon: Icon(Icons.analytics),
             label: 'الإحصائيات',

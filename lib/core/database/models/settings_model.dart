@@ -72,12 +72,12 @@ class SettingsModel extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        appPassword,
-        businessName,
-        ownerName,
-        phone,
-        createdDate,
-        updatedDate,
-      ];
+    id,
+    appPassword,
+    businessName,
+    ownerName,
+    phone,
+    createdDate,
+    updatedDate,
+  ];
 }

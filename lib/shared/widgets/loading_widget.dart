@@ -6,12 +6,7 @@ class LoadingWidget extends StatelessWidget {
   final double? size;
   final Color? color;
 
-  const LoadingWidget({
-    super.key,
-    this.message,
-    this.size,
-    this.color,
-  });
+  const LoadingWidget({super.key, this.message, this.size, this.color});
 
   @override
   Widget build(BuildContext context) {
@@ -102,12 +97,7 @@ class InlineLoadingWidget extends StatelessWidget {
   final double? size;
   final Color? color;
 
-  const InlineLoadingWidget({
-    super.key,
-    this.message,
-    this.size,
-    this.color,
-  });
+  const InlineLoadingWidget({super.key, this.message, this.size, this.color});
 
   @override
   Widget build(BuildContext context) {

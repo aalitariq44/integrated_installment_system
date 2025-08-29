@@ -10,8 +10,8 @@ class PaymentsCubit extends Cubit<PaymentsState> {
   final PaymentsRepository _paymentsRepository;
 
   PaymentsCubit({required PaymentsRepository paymentsRepository})
-      : _paymentsRepository = paymentsRepository,
-        super(const PaymentsInitial());
+    : _paymentsRepository = paymentsRepository,
+      super(const PaymentsInitial());
 
   // Load all payments
   Future<void> loadPayments() async {
@@ -45,10 +45,12 @@ class PaymentsCubit extends Cubit<PaymentsState> {
       emit(const PaymentsLoading());
       final result = await _paymentsRepository.processPayment(payment);
       if (result['success']) {
-        emit(PaymentProcessed(
-          receiptNumber: result['receiptNumber'],
-          isCompleted: result['isCompleted'],
-        ));
+        emit(
+          PaymentProcessed(
+            receiptNumber: result['receiptNumber'],
+            isCompleted: result['isCompleted'],
+          ),
+        );
         // Reload payments after processing
         await loadPayments();
       } else {
@@ -93,7 +95,9 @@ class PaymentsCubit extends Cubit<PaymentsState> {
   Future<void> getPaymentsByCustomer(int customerId) async {
     try {
       emit(const PaymentsLoading());
-      final payments = await _paymentsRepository.getPaymentsByCustomerId(customerId);
+      final payments = await _paymentsRepository.getPaymentsByCustomerId(
+        customerId,
+      );
       emit(PaymentsLoaded(payments: payments));
     } catch (e) {
       emit(PaymentsError(message: e.toString()));
@@ -104,7 +108,9 @@ class PaymentsCubit extends Cubit<PaymentsState> {
   Future<void> getPaymentsByProduct(int productId) async {
     try {
       emit(const PaymentsLoading());
-      final payments = await _paymentsRepository.getPaymentsByProductId(productId);
+      final payments = await _paymentsRepository.getPaymentsByProductId(
+        productId,
+      );
       emit(PaymentsLoaded(payments: payments));
     } catch (e) {
       emit(PaymentsError(message: e.toString()));
@@ -112,10 +118,16 @@ class PaymentsCubit extends Cubit<PaymentsState> {
   }
 
   // Get payments by date range
-  Future<void> getPaymentsByDateRange(DateTime startDate, DateTime endDate) async {
+  Future<void> getPaymentsByDateRange(
+    DateTime startDate,
+    DateTime endDate,
+  ) async {
     try {
       emit(const PaymentsLoading());
-      final payments = await _paymentsRepository.getPaymentsByDateRange(startDate, endDate);
+      final payments = await _paymentsRepository.getPaymentsByDateRange(
+        startDate,
+        endDate,
+      );
       emit(PaymentsLoaded(payments: payments));
     } catch (e) {
       emit(PaymentsError(message: e.toString()));
@@ -170,7 +182,9 @@ class PaymentsCubit extends Cubit<PaymentsState> {
   Future<void> getRecentPayments({int limit = 50}) async {
     try {
       emit(const PaymentsLoading());
-      final payments = await _paymentsRepository.getRecentPayments(limit: limit);
+      final payments = await _paymentsRepository.getRecentPayments(
+        limit: limit,
+      );
       emit(PaymentsLoaded(payments: payments));
     } catch (e) {
       emit(PaymentsError(message: e.toString()));
@@ -181,7 +195,9 @@ class PaymentsCubit extends Cubit<PaymentsState> {
   Future<void> generateReceipt(int paymentId) async {
     try {
       emit(const PaymentsLoading());
-      final receiptData = await _paymentsRepository.generatePaymentReceipt(paymentId);
+      final receiptData = await _paymentsRepository.generatePaymentReceipt(
+        paymentId,
+      );
       if (receiptData != null) {
         emit(ReceiptGenerated(receiptData: receiptData));
       } else {
@@ -227,11 +243,13 @@ class PaymentsCubit extends Cubit<PaymentsState> {
     try {
       emit(const PaymentsLoading());
       final result = await _paymentsRepository.importPayments(data);
-      emit(PaymentsImported(
-        importedCount: result['imported'],
-        skippedCount: result['skipped'],
-        errorCount: result['errors'],
-      ));
+      emit(
+        PaymentsImported(
+          importedCount: result['imported'],
+          skippedCount: result['skipped'],
+          errorCount: result['errors'],
+        ),
+      );
       // Reload payments after import
       await loadPayments();
     } catch (e) {
@@ -244,10 +262,12 @@ class PaymentsCubit extends Cubit<PaymentsState> {
     try {
       emit(const PaymentsLoading());
       final validation = await _paymentsRepository.validatePayment(payment);
-      emit(PaymentValidated(
-        isValid: validation['isValid'],
-        errors: validation['errors'],
-      ));
+      emit(
+        PaymentValidated(
+          isValid: validation['isValid'],
+          errors: validation['errors'],
+        ),
+      );
     } catch (e) {
       emit(PaymentsError(message: e.toString()));
     }

@@ -15,12 +15,8 @@ class AddEditProductPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(isEdit ? 'تعديل المنتج' : 'إضافة منتج جديد'),
-      ),
-      body: const Center(
-        child: Text('صفحة إضافة/تعديل المنتج'),
-      ),
+      appBar: AppBar(title: Text(isEdit ? 'تعديل المنتج' : 'إضافة منتج جديد')),
+      body: const Center(child: Text('صفحة إضافة/تعديل المنتج')),
     );
   }
 }

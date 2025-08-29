@@ -9,8 +9,8 @@ class StatisticsCubit extends Cubit<StatisticsState> {
   final StatisticsRepository _statisticsRepository;
 
   StatisticsCubit({required StatisticsRepository statisticsRepository})
-      : _statisticsRepository = statisticsRepository,
-        super(const StatisticsInitial());
+    : _statisticsRepository = statisticsRepository,
+      super(const StatisticsInitial());
 
   // Get overall statistics
   Future<void> getOverallStatistics() async {
@@ -54,7 +54,9 @@ class StatisticsCubit extends Cubit<StatisticsState> {
   Future<void> getTopCustomers({int limit = 10}) async {
     try {
       emit(const StatisticsLoading());
-      final customers = await _statisticsRepository.getTopCustomers(limit: limit);
+      final customers = await _statisticsRepository.getTopCustomers(
+        limit: limit,
+      );
       emit(TopCustomersLoaded(customers: customers));
     } catch (e) {
       emit(StatisticsError(message: e.toString()));
@@ -93,7 +95,8 @@ class StatisticsCubit extends Cubit<StatisticsState> {
   Future<void> getProductCategoriesStatistics() async {
     try {
       emit(const StatisticsLoading());
-      final stats = await _statisticsRepository.getProductCategoriesStatistics();
+      final stats = await _statisticsRepository
+          .getProductCategoriesStatistics();
       emit(ProductCategoriesStatisticsLoaded(statistics: stats));
     } catch (e) {
       emit(StatisticsError(message: e.toString()));
@@ -104,7 +107,9 @@ class StatisticsCubit extends Cubit<StatisticsState> {
   Future<void> getRecentActivity({int limit = 20}) async {
     try {
       emit(const StatisticsLoading());
-      final activity = await _statisticsRepository.getRecentActivity(limit: limit);
+      final activity = await _statisticsRepository.getRecentActivity(
+        limit: limit,
+      );
       emit(RecentActivityLoaded(activity: activity));
     } catch (e) {
       emit(StatisticsError(message: e.toString()));

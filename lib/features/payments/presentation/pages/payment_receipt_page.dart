@@ -8,12 +8,8 @@ class PaymentReceiptPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('إيصال الدفع'),
-      ),
-      body: Center(
-        child: Text('إيصال الدفعة رقم: $paymentId'),
-      ),
+      appBar: AppBar(title: const Text('إيصال الدفع')),
+      body: Center(child: Text('إيصال الدفعة رقم: $paymentId')),
     );
   }
 }

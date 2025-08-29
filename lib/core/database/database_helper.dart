@@ -36,13 +36,13 @@ class DatabaseHelper {
 
   Future<void> _onCreate(Database db, int version) async {
     final batch = db.batch();
-    
+
     // Create all tables
     batch.execute(DatabaseConstants.createSettingsTable);
     batch.execute(DatabaseConstants.createCustomersTable);
     batch.execute(DatabaseConstants.createProductsTable);
     batch.execute(DatabaseConstants.createPaymentsTable);
-    
+
     // Create indexes
     final indexes = DatabaseConstants.createIndexes.split(';');
     for (final index in indexes) {
@@ -50,9 +50,9 @@ class DatabaseHelper {
         batch.execute(index.trim());
       }
     }
-    
+
     await batch.commit();
-    
+
     // Insert default settings
     await _insertDefaultSettings(db);
   }
@@ -66,18 +66,15 @@ class DatabaseHelper {
     // Check if settings already exist
     final result = await db.query(DatabaseConstants.settingsTable);
     if (result.isEmpty) {
-      await db.insert(
-        DatabaseConstants.settingsTable,
-        {
-          DatabaseConstants.settingsId: 1,
-          DatabaseConstants.settingsAppPassword: AppConstants.defaultPassword,
-          DatabaseConstants.settingsBusinessName: null,
-          DatabaseConstants.settingsOwnerName: null,
-          DatabaseConstants.settingsPhone: null,
-          DatabaseConstants.settingsCreatedDate: DateTime.now().toIso8601String(),
-          DatabaseConstants.settingsUpdatedDate: DateTime.now().toIso8601String(),
-        },
-      );
+      await db.insert(DatabaseConstants.settingsTable, {
+        DatabaseConstants.settingsId: 1,
+        DatabaseConstants.settingsAppPassword: AppConstants.defaultPassword,
+        DatabaseConstants.settingsBusinessName: null,
+        DatabaseConstants.settingsOwnerName: null,
+        DatabaseConstants.settingsPhone: null,
+        DatabaseConstants.settingsCreatedDate: DateTime.now().toIso8601String(),
+        DatabaseConstants.settingsUpdatedDate: DateTime.now().toIso8601String(),
+      });
     }
   }
 
@@ -226,10 +223,8 @@ class DatabaseHelper {
     final searchConditions = searchColumns
         .map((column) => '$column LIKE ?')
         .join(' OR ');
-    
-    final searchArgs = searchColumns
-        .map((column) => '%$searchTerm%')
-        .toList();
+
+    final searchArgs = searchColumns.map((column) => '%$searchTerm%').toList();
 
     String finalWhere = '($searchConditions)';
     List<dynamic> finalWhereArgs = searchArgs;
@@ -295,43 +290,45 @@ class DatabaseHelper {
   // Backup and restore
   Future<Map<String, List<Map<String, dynamic>>>> exportAllData() async {
     final data = <String, List<Map<String, dynamic>>>{};
-    
+
     data['settings'] = await query(DatabaseConstants.settingsTable);
     data['customers'] = await query(DatabaseConstants.customersTable);
     data['products'] = await query(DatabaseConstants.productsTable);
     data['payments'] = await query(DatabaseConstants.paymentsTable);
-    
+
     return data;
   }
 
-  Future<void> importAllData(Map<String, List<Map<String, dynamic>>> data) async {
+  Future<void> importAllData(
+    Map<String, List<Map<String, dynamic>>> data,
+  ) async {
     await transaction((txn) async {
       // Clear existing data (except settings)
       await txn.delete(DatabaseConstants.paymentsTable);
       await txn.delete(DatabaseConstants.productsTable);
       await txn.delete(DatabaseConstants.customersTable);
-      
+
       // Import customers
       if (data['customers'] != null) {
         for (final customer in data['customers']!) {
           await txn.insert(DatabaseConstants.customersTable, customer);
         }
       }
-      
+
       // Import products
       if (data['products'] != null) {
         for (final product in data['products']!) {
           await txn.insert(DatabaseConstants.productsTable, product);
         }
       }
-      
+
       // Import payments
       if (data['payments'] != null) {
         for (final payment in data['payments']!) {
           await txn.insert(DatabaseConstants.paymentsTable, payment);
         }
       }
-      
+
       // Update settings if provided
       if (data['settings'] != null && data['settings']!.isNotEmpty) {
         final settings = data['settings']!.first;

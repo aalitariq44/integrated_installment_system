@@ -87,10 +87,7 @@ class InstallmentApp extends StatelessWidget {
           home: const HomePage(),
           debugShowCheckedModeBanner: false,
           locale: const Locale('ar', 'SA'),
-          supportedLocales: const [
-            Locale('ar', 'SA'),
-            Locale('en', 'US'),
-          ],
+          supportedLocales: const [Locale('ar', 'SA'), Locale('en', 'US')],
           builder: (context, child) {
             return Directionality(
               textDirection: TextDirection.rtl,

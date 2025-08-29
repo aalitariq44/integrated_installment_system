@@ -8,12 +8,8 @@ class AddPaymentPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('إضافة دفعة'),
-      ),
-      body: Center(
-        child: Text('إضافة دفعة للمنتج رقم: $productId'),
-      ),
+      appBar: AppBar(title: const Text('إضافة دفعة')),
+      body: Center(child: Text('إضافة دفعة للمنتج رقم: $productId')),
     );
   }
 }

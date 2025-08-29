@@ -6,7 +6,7 @@ class AppTheme {
     return ThemeData(
       useMaterial3: true,
       fontFamily: 'Cairo',
-      
+
       // Color Scheme
       colorScheme: ColorScheme.fromSeed(
         seedColor: AppColors.primary,
@@ -22,7 +22,7 @@ class AppTheme {
         onBackground: AppColors.textPrimary,
         onError: AppColors.textOnPrimary,
       ),
-      
+
       // App Bar Theme
       appBarTheme: const AppBarTheme(
         backgroundColor: AppColors.primary,
@@ -40,7 +40,7 @@ class AppTheme {
           size: AppSizes.iconMd,
         ),
       ),
-      
+
       // Card Theme
       cardTheme: CardTheme(
         color: AppColors.cardBackground,
@@ -54,7 +54,7 @@ class AppTheme {
           vertical: AppSizes.sm,
         ),
       ),
-      
+
       // Elevated Button Theme
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
@@ -68,7 +68,7 @@ class AppTheme {
           textStyle: AppTextStyles.buttonMedium,
         ),
       ),
-      
+
       // Outlined Button Theme
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
@@ -83,7 +83,7 @@ class AppTheme {
           ),
         ),
       ),
-      
+
       // Text Button Theme
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
@@ -93,7 +93,7 @@ class AppTheme {
           ),
         ),
       ),
-      
+
       // Input Decoration Theme
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
@@ -121,18 +121,14 @@ class AppTheme {
         labelStyle: AppTextStyles.bodyMedium.copyWith(
           color: AppColors.textSecondary,
         ),
-        hintStyle: AppTextStyles.bodyMedium.copyWith(
-          color: AppColors.textHint,
-        ),
-        errorStyle: AppTextStyles.bodySmall.copyWith(
-          color: AppColors.error,
-        ),
+        hintStyle: AppTextStyles.bodyMedium.copyWith(color: AppColors.textHint),
+        errorStyle: AppTextStyles.bodySmall.copyWith(color: AppColors.error),
         contentPadding: const EdgeInsets.symmetric(
           horizontal: AppSizes.md,
           vertical: AppSizes.md,
         ),
       ),
-      
+
       // Floating Action Button Theme
       floatingActionButtonTheme: const FloatingActionButtonThemeData(
         backgroundColor: AppColors.primary,
@@ -140,7 +136,7 @@ class AppTheme {
         elevation: AppSizes.elevation,
         shape: CircleBorder(),
       ),
-      
+
       // Bottom Sheet Theme
       bottomSheetTheme: const BottomSheetThemeData(
         backgroundColor: AppColors.surface,
@@ -152,7 +148,7 @@ class AppTheme {
         ),
         elevation: AppSizes.elevationHigh,
       ),
-      
+
       // Dialog Theme
       dialogTheme: DialogTheme(
         backgroundColor: AppColors.surface,
@@ -163,7 +159,7 @@ class AppTheme {
         titleTextStyle: AppTextStyles.headlineSmall,
         contentTextStyle: AppTextStyles.bodyMedium,
       ),
-      
+
       // Snack Bar Theme
       snackBarTheme: SnackBarThemeData(
         backgroundColor: AppColors.textPrimary,
@@ -176,7 +172,7 @@ class AppTheme {
         behavior: SnackBarBehavior.floating,
         elevation: AppSizes.elevation,
       ),
-      
+
       // Chip Theme
       chipTheme: ChipThemeData(
         backgroundColor: AppColors.surfaceVariant,
@@ -191,7 +187,7 @@ class AppTheme {
           borderRadius: BorderRadius.circular(AppSizes.radiusLg),
         ),
       ),
-      
+
       // Tab Bar Theme
       tabBarTheme: TabBarTheme(
         labelColor: AppColors.primary,
@@ -199,14 +195,11 @@ class AppTheme {
         labelStyle: AppTextStyles.labelLarge,
         unselectedLabelStyle: AppTextStyles.labelMedium,
         indicator: UnderlineTabIndicator(
-          borderSide: const BorderSide(
-            color: AppColors.primary,
-            width: 3,
-          ),
+          borderSide: const BorderSide(color: AppColors.primary, width: 3),
           insets: const EdgeInsets.symmetric(horizontal: AppSizes.lg),
         ),
       ),
-      
+
       // List Tile Theme
       listTileTheme: const ListTileThemeData(
         contentPadding: EdgeInsets.symmetric(
@@ -217,21 +210,21 @@ class AppTheme {
         iconColor: AppColors.textSecondary,
         textColor: AppColors.textPrimary,
       ),
-      
+
       // Divider Theme
       dividerTheme: const DividerThemeData(
         color: AppColors.border,
         thickness: 1,
         space: 1,
       ),
-      
+
       // Progress Indicator Theme
       progressIndicatorTheme: const ProgressIndicatorThemeData(
         color: AppColors.primary,
         linearTrackColor: AppColors.borderLight,
         circularTrackColor: AppColors.borderLight,
       ),
-      
+
       // Switch Theme
       switchTheme: SwitchThemeData(
         thumbColor: MaterialStateProperty.resolveWith((states) {
@@ -247,7 +240,7 @@ class AppTheme {
           return AppColors.borderLight;
         }),
       ),
-      
+
       // Checkbox Theme
       checkboxTheme: CheckboxThemeData(
         fillColor: MaterialStateProperty.resolveWith((states) {
@@ -261,7 +254,7 @@ class AppTheme {
           borderRadius: BorderRadius.circular(AppSizes.radiusXs),
         ),
       ),
-      
+
       // Radio Theme
       radioTheme: RadioThemeData(
         fillColor: MaterialStateProperty.resolveWith((states) {
@@ -271,7 +264,7 @@ class AppTheme {
           return AppColors.textHint;
         }),
       ),
-      
+
       // Text Theme
       textTheme: const TextTheme(
         displayLarge: AppTextStyles.displayLarge,
@@ -290,13 +283,13 @@ class AppTheme {
         labelMedium: AppTextStyles.labelMedium,
         labelSmall: AppTextStyles.labelSmall,
       ),
-      
+
       // Visual Density
       visualDensity: VisualDensity.adaptivePlatformDensity,
-      
+
       // Material Tap Target Size
       materialTapTargetSize: MaterialTapTargetSize.padded,
-      
+
       // Page Transitions
       pageTransitionsTheme: const PageTransitionsTheme(
         builders: {
@@ -306,7 +299,7 @@ class AppTheme {
       ),
     );
   }
-  
+
   // Dark theme (for future use)
   static ThemeData get darkTheme {
     return lightTheme.copyWith(

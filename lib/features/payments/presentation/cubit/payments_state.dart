@@ -119,10 +119,7 @@ class PaymentValidated extends PaymentsState {
   final bool isValid;
   final List<String> errors;
 
-  const PaymentValidated({
-    required this.isValid,
-    required this.errors,
-  });
+  const PaymentValidated({required this.isValid, required this.errors});
 
   @override
   List<Object?> get props => [isValid, errors];

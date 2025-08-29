@@ -6,7 +6,7 @@ class CustomersRepository {
   final DatabaseHelper _databaseHelper;
 
   CustomersRepository({required DatabaseHelper databaseHelper})
-      : _databaseHelper = databaseHelper;
+    : _databaseHelper = databaseHelper;
 
   // Get all customers
   Future<List<CustomerModel>> getAllCustomers({
@@ -20,10 +20,7 @@ class CustomersRepository {
       if (searchQuery != null && searchQuery.isNotEmpty) {
         results = await _databaseHelper.search(
           DatabaseConstants.customersTable,
-          [
-            DatabaseConstants.customersName,
-            DatabaseConstants.customersPhone,
-          ],
+          [DatabaseConstants.customersName, DatabaseConstants.customersPhone],
           searchQuery,
           orderBy: '${DatabaseConstants.customersName} ASC',
           limit: limit,
@@ -65,10 +62,9 @@ class CustomersRepository {
   Future<int> addCustomer(CustomerModel customer) async {
     try {
       final now = DateTime.now();
-      final customerData = customer.copyWith(
-        createdDate: now,
-        updatedDate: now,
-      ).toMap();
+      final customerData = customer
+          .copyWith(createdDate: now, updatedDate: now)
+          .toMap();
 
       return await _databaseHelper.insert(
         DatabaseConstants.customersTable,
@@ -87,9 +83,7 @@ class CustomersRepository {
       }
 
       final now = DateTime.now();
-      final customerData = customer.copyWith(
-        updatedDate: now,
-      ).toMap();
+      final customerData = customer.copyWith(updatedDate: now).toMap();
 
       final updateCount = await _databaseHelper.update(
         DatabaseConstants.customersTable,
@@ -163,7 +157,10 @@ class CustomersRepository {
   }
 
   // Check if phone number is unique
-  Future<bool> isPhoneUnique(String phoneNumber, {int? excludeCustomerId}) async {
+  Future<bool> isPhoneUnique(
+    String phoneNumber, {
+    int? excludeCustomerId,
+  }) async {
     try {
       String whereClause = '${DatabaseConstants.customersPhone} = ?';
       List<dynamic> whereArgs = [phoneNumber];
@@ -188,7 +185,8 @@ class CustomersRepository {
   // Get customers with overdue payments
   Future<List<Map<String, dynamic>>> getCustomersWithOverduePayments() async {
     try {
-      final sql = '''
+      final sql =
+          '''
         SELECT DISTINCT 
           c.${DatabaseConstants.customersId},
           c.${DatabaseConstants.customersName},
@@ -213,7 +211,8 @@ class CustomersRepository {
   // Get customer statistics
   Future<Map<String, dynamic>> getCustomerStatistics(int customerId) async {
     try {
-      final sql = '''
+      final sql =
+          '''
         SELECT 
           COUNT(p.${DatabaseConstants.productsId}) as total_products,
           COUNT(CASE WHEN p.${DatabaseConstants.productsIsCompleted} = 1 THEN 1 END) as completed_products,
@@ -225,7 +224,7 @@ class CustomersRepository {
       ''';
 
       final result = await _databaseHelper.rawQuery(sql, [customerId]);
-      
+
       if (result.isNotEmpty) {
         return result.first;
       }
@@ -261,14 +260,13 @@ class CustomersRepository {
   Future<List<int>> addMultipleCustomers(List<CustomerModel> customers) async {
     try {
       final ids = <int>[];
-      
+
       await _databaseHelper.transaction((txn) async {
         for (final customer in customers) {
           final now = DateTime.now();
-          final customerData = customer.copyWith(
-            createdDate: now,
-            updatedDate: now,
-          ).toMap();
+          final customerData = customer
+              .copyWith(createdDate: now, updatedDate: now)
+              .toMap();
 
           final id = await txn.insert(
             DatabaseConstants.customersTable,

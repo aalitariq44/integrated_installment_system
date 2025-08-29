@@ -64,13 +64,13 @@ class KeyValueSettingsModel extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        key,
-        value,
-        description,
-        createdDate,
-        updatedDate,
-      ];
+    id,
+    key,
+    value,
+    description,
+    createdDate,
+    updatedDate,
+  ];
 }
 
 class SettingsModel extends Equatable {
@@ -144,12 +144,12 @@ class SettingsModel extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        appPassword,
-        businessName,
-        ownerName,
-        phone,
-        createdDate,
-        updatedDate,
-      ];
+    id,
+    appPassword,
+    businessName,
+    ownerName,
+    phone,
+    createdDate,
+    updatedDate,
+  ];
 }

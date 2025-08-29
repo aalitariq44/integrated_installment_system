@@ -8,12 +8,8 @@ class CustomerDetailsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('تفاصيل العميل'),
-      ),
-      body: Center(
-        child: Text('تفاصيل العميل رقم: $customerId'),
-      ),
+      appBar: AppBar(title: const Text('تفاصيل العميل')),
+      body: Center(child: Text('تفاصيل العميل رقم: $customerId')),
     );
   }
 }
