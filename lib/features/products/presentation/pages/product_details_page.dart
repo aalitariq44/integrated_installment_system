@@ -234,7 +234,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
 
                         const SizedBox(height: 16),
 
-                        // معلومات السعر
+                        // معلومات السعر وفترة الدفع
                         Row(
                           children: [
                             Expanded(
@@ -261,14 +261,6 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                 ],
                               ),
                             ),
-                          ],
-                        ),
-
-                        const SizedBox(height: 12),
-
-                        // فترة الدفع
-                        Row(
-                          children: [
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
