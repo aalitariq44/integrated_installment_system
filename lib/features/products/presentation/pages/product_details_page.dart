@@ -104,6 +104,9 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                 case 'delete':
                   _showDeleteDialog();
                   break;
+                case 'additional_details':
+                  _showAdditionalDetailsDialog();
+                  break;
               }
             },
             itemBuilder: (BuildContext context) => [
@@ -124,6 +127,16 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                     Icon(Icons.delete, color: Colors.red),
                     SizedBox(width: 8),
                     Text('حذف'),
+                  ],
+                ),
+              ),
+              const PopupMenuItem<String>(
+                value: 'additional_details',
+                child: Row(
+                  children: [
+                    Icon(Icons.info, color: Colors.green),
+                    SizedBox(width: 8),
+                    Text('تفاصيل إضافية'),
                   ],
                 ),
               ),
@@ -229,29 +242,6 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    'السعر الأصلي',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: Colors.grey[600],
-                                    ),
-                                  ),
-                                  Text(
-                                    CurrencyUtils.formatCurrency(
-                                      product!.originalPrice,
-                                    ),
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
                                     'السعر النهائي',
                                     style: TextStyle(
                                       fontSize: 12,
@@ -276,33 +266,9 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
 
                         const SizedBox(height: 12),
 
-                        // الربح
+                        // فترة الدفع
                         Row(
                           children: [
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'الربح',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: Colors.grey[600],
-                                    ),
-                                  ),
-                                  Text(
-                                    CurrencyUtils.formatCurrency(
-                                      product!.profit,
-                                    ),
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.green,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -713,6 +679,53 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
         ),
       );
     }
+  }
+
+  void _showAdditionalDetailsDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('تفاصيل إضافية'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                children: [
+                  const Text('السعر الأصلي: '),
+                  Text(
+                    CurrencyUtils.formatCurrency(product!.originalPrice),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.blue,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  const Text('الربح: '),
+                  Text(
+                    CurrencyUtils.formatCurrency(product!.profit),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.green,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('إغلاق'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void _confirmDeletePayment(int paymentId) {
